@@ -135,12 +135,12 @@ export function AuthExperience() {
             <p><strong>Reset link sent!</strong></p>
             <p>Check your inbox at <span className={styles.email}>{resetEmail}</span></p>
             <p className={styles.previewNote}>Prototype state only — no email was sent.</p>
-          </Surface> : <form ref={formRef} key={view} noValidate onSubmit={submit} aria-label={`${headings[view]} form`}>
+          </Surface> : <form ref={formRef} key={view} autoComplete="off" noValidate onSubmit={submit} aria-label={`${headings[view]} form`}>
             <div className={styles.fields} data-view={view}>
-              {view === "register" && field("fullName", "Full name", "user", "text", "name")}
-              {field("email", "Email address", "mail", "email", "email")}
-              {view === "register" && field("contactNumber", "Contact number", "phone", "tel", "tel-national", "912 345 6789")}
-              {view !== "forgot" && field("password", "Password", "lock", "password", view === "signin" ? "current-password" : "new-password", view === "register" ? "Password (min 8 characters)" : "Password")}
+              {view === "register" && field("fullName", "Full name", "user", "text", "off")}
+              {field("email", "Email address", "mail", "email", "off")}
+              {view === "register" && field("contactNumber", "Contact number", "phone", "tel", "off", "912 345 6789")}
+              {view !== "forgot" && field("password", "Password", "lock", "password", "new-password", view === "register" ? "Password (min 8 characters)" : "Password")}
               {view === "register" && field("confirmPassword", "Confirm password", "lock", "password", "new-password")}
             </div>
             <div className={styles.actions}><Button type="submit" variant="raised" size="large" className={styles.submit}>

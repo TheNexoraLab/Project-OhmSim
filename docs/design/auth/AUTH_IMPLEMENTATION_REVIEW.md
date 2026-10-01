@@ -53,7 +53,8 @@
 
 - One active form is mounted at a time; hidden forms cannot receive keyboard focus.
 - View switching clears local form state and focuses the new heading. Required/invalid submit focuses the first invalid field.
-- Inputs have associated visually hidden labels, autocomplete purposes, aria-invalid, and associated error text. Prefix is included in the contact input's description.
+- Inputs have associated visually hidden labels, aria-invalid, and associated error text. Prefix is included in the contact input's description.
+- PM requested no autofill: fields initialize empty, forms/name/email/contact request autocomplete off, and password fields use new-password to avoid requesting saved sign-in credentials. Browsers/password managers may override these hints; saved-profile autofill is not controlled by the application.
 - Password and confirmation visibility are independent, with Show/Hide accessible names and aria-pressed.
 - Input-wrapper focus styling remains visible; password-toggle buttons retain their own focus treatment and 44px targets.
 - Enter submits the active form. Feedback uses role=status. Password values are cleared following successful presentation submissions.
@@ -94,6 +95,10 @@ node tests/ui/landing-page.browser.mjs
 ```
 
 Review images are under `screenshots/`. The existing Next.js warning about an unrelated lockfile in the Windows user directory was left unchanged.
+
+### No-autofill follow-up
+
+After the PM reported saved-browser credentials appearing, removed personal-data autocomplete hints and the current-password hint. Lint, TypeScript, whitespace checks, and all 66 Auth browser assertions passed against the development preview on port 3000. The additional assertions verify initially empty inputs and the new autocomplete attributes; a clean test profile cannot verify every saved-password manager's behavior.
 
 ## Explicit deferrals and limitations
 

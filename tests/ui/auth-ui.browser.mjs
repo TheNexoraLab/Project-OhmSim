@@ -27,6 +27,9 @@ try {
   await page.waitForURL("**/login");
   await page.getByRole("heading", { name: "WELCOME BACK" }).waitFor();
   check(await page.getByRole("heading", { name: "WELCOME BACK" }).isVisible(), "Desktop Landing Login navigates to /login");
+  check(await page.locator("input").evaluateAll(inputs => inputs.every(input => input.value === "")), "Sign-in starts with empty fields");
+  check(await page.locator("form").getAttribute("autocomplete") === "off" && await page.getByLabel("Email address", { exact: true }).getAttribute("autocomplete") === "off", "Preview disables form and email autofill hints");
+  check(await page.getByLabel("Password", { exact: true }).getAttribute("autocomplete") === "new-password", "Preview does not request saved sign-in passwords");
   await page.getByRole("button", { name: "SIGN IN", exact: true }).click();
   check(await page.getByText("Email address is required", { exact: true }).isVisible(), "Empty sign-in shows required validation");
   check(await page.getByLabel("Email address", { exact: true }).evaluate(el => el === document.activeElement), "Invalid submit focuses first invalid field");
