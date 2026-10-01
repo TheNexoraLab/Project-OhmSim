@@ -15,13 +15,13 @@ export function getSurfaceClasses(
 
   const variantClasses: Record<SurfaceVariant, string> = {
     card:
-      "rounded-[22px] bg-gradient-to-br from-[#313244] to-[#1E1E2E] border border-[#585B70]/40 shadow-[0_12px_30px_rgba(0,0,0,0.18)]",
+      "rounded-card bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border-strong/40 shadow-[0_12px_30px_rgba(0,0,0,0.18)]",
     panel:
-      "rounded-[18px] bg-[#1E1E2E] border border-[#313244]",
+      "rounded-panel bg-mocha-panel border border-mocha-border",
     raised:
-      "rounded-[18px] bg-[#313244] border border-[#45475A] shadow-[0_8px_24px_rgba(0,0,0,0.28)]",
+      "rounded-panel bg-mocha-panel-raised border border-mocha-panel-high shadow-[0_8px_24px_rgba(0,0,0,0.28)]",
     hero:
-      "rounded-[24px] bg-gradient-to-br from-[#313244] to-[#1E1E2E] border border-[#585B70] shadow-[0_8px_24px_rgba(0,0,0,0.28)]",
+      "rounded-hero bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border-strong shadow-[0_8px_24px_rgba(0,0,0,0.28)]",
   };
 
   return `${baseClasses} ${variantClasses[variant]} ${className}`.trim();

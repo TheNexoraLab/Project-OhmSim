@@ -235,25 +235,25 @@ export function Categories() {
     >
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8 md:pb-12 border-b border-[#313244]/60">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8 md:pb-12 border-b border-mocha-border/60">
           <div>
-            <span className="font-mono text-xs font-bold tracking-[0.12em] text-[#89B4FA] uppercase">
+            <span className="font-mono text-xs font-bold tracking-[0.12em] text-mocha-accent uppercase">
               COMPONENT CATALOG
             </span>
             <h2
               id="categories-heading"
-              className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-[#CDD6F4]"
+              className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-mocha-text"
             >
               Browse by Category
             </h2>
-            <p className="mt-2 text-sm sm:text-base text-[#BAC2DE] max-w-xl">
+            <p className="mt-2 text-sm sm:text-base text-mocha-text-muted max-w-xl">
               Precision-stocked for embedded systems, power electronics, and IoT development.
             </p>
           </div>
           <button
             type="button"
             onClick={() => openPreview("View full catalog")}
-            className="group inline-flex items-center gap-1.5 text-sm font-semibold text-[#89B4FA] hover:text-[#74C7EC] transition-colors cursor-pointer self-start md:self-end py-1 focus-visible:outline-2 focus-visible:outline-[#89B4FA] rounded"
+            className="group inline-flex items-center gap-1.5 text-sm font-semibold text-mocha-accent hover:text-mocha-accent-strong transition-colors cursor-pointer self-start md:self-end min-h-[44px] px-3 py-2 focus-visible:outline-2 focus-visible:outline-mocha-accent rounded"
           >
             <span>View full catalog</span>
             <svg
@@ -274,13 +274,13 @@ export function Categories() {
           {categories.map((cat) => (
             <div
               key={cat.id}
-              className={`group relative flex flex-col justify-between p-6 rounded-[22px] bg-gradient-to-br from-[#313244] to-[#1E1E2E] border border-[#585B70]/40 shadow-[0_12px_30px_rgba(0,0,0,0.18)] transition-all duration-300 ${cat.borderHover} hover:shadow-[0_16px_36px_rgba(0,0,0,0.35)] hover:-translate-y-0.5`}
+              className={`group relative flex flex-col justify-between p-5 rounded-card bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border-strong/40 shadow-[0_12px_30px_rgba(0,0,0,0.18)] transition-all duration-300 ${cat.borderHover} hover:shadow-[0_16px_36px_rgba(0,0,0,0.35)] hover:-translate-y-0.5`}
             >
               <div>
                 {/* Icon and Tag Header */}
                 <div className="flex items-start justify-between mb-5">
                   <div
-                    className="p-3 rounded-2xl bg-[#1E1E2E] border border-[#45475A] flex items-center justify-center transition-colors group-hover:border-[#585B70]"
+                    className="p-3 rounded-2xl bg-mocha-panel border border-mocha-panel-high flex items-center justify-center transition-colors group-hover:border-mocha-border-strong"
                     style={{ color: cat.accent }}
                   >
                     {cat.icon}
@@ -294,24 +294,24 @@ export function Categories() {
 
                 {/* Title & Description */}
                 <h3
-                  className={`mt-2 text-xl font-bold text-[#CDD6F4] ${cat.titleHover} transition-colors`}
+                  className={`mt-2 text-xl font-bold text-mocha-text ${cat.titleHover} transition-colors`}
                 >
                   {cat.name}
                 </h3>
-                <p className="mt-2 text-sm text-[#BAC2DE] leading-relaxed">
+                <p className="mt-2 text-sm text-mocha-text-muted leading-relaxed">
                   {cat.description}
                 </p>
               </div>
 
-              {/* Card Footer: Count & Browse Affordance */}
-              <div className="mt-6 pt-4 border-t border-[#313244]/80 flex items-center justify-between">
-                <span className="font-mono text-xs font-semibold text-[#A6ADC8]">
+              {/* Card Footer: Count & Browse Affordance (min 44x44px touch target) */}
+              <div className="mt-6 pt-4 border-t border-mocha-border/80 flex items-center justify-between">
+                <span className="font-mono text-xs font-semibold text-mocha-text-subtle">
                   {cat.count}
                 </span>
                 <button
                   type="button"
                   onClick={() => openPreview(`Browse ${cat.name}`)}
-                  className={`inline-flex items-center gap-1.5 text-xs font-semibold ${cat.browseHover} transition-colors py-1.5 px-2.5 rounded-lg hover:bg-[#313244] focus-visible:outline-2 focus-visible:outline-[#89B4FA]`}
+                  className={`inline-flex items-center justify-center gap-1.5 text-xs font-semibold ${cat.browseHover} transition-colors min-h-[44px] min-w-[44px] px-3.5 py-2 rounded-lg hover:bg-mocha-panel-raised focus-visible:outline-2 focus-visible:outline-mocha-accent cursor-pointer`}
                   aria-label={`Browse ${cat.name} catalog`}
                 >
                   <span>Browse</span>

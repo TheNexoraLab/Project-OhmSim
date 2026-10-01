@@ -80,8 +80,18 @@ Footer
 ## 4. Temporary Navigation & Preview Dialogs
 
 - Implemented in `app/_components/preview-dialog.tsx`.
-- All unavailable application routes (Log In, View full catalog, Category browsing, Open BOM Tool, Contact, Privacy, Terms) trigger an accessible modal dialog (`role="dialog"`, `aria-modal="true"`).
-- Keyboard handling: Escape key dismissal, focus trapping, and focus restoration to the triggering control.
+- All unavailable application routes (Log In, View full catalog, Category browsing, Open BOM Tool, Contact, Privacy, Terms) trigger an accessible modal dialog (`role="dialog"`, `aria-modal="true"`, `aria-labelledby="preview-dialog-title"`, `aria-describedby="preview-dialog-description"`).
+- **Accessibility Enhancements (PR #5 Review Findings):**
+  - **Strict Focus Trap:** Tab and Shift+Tab key navigation is strictly kept inside the open modal, cycling across focusable elements inside the dialog without leaking into background content.
+  - **Background Inerting:** Sets `inert` and `aria-hidden="true"` on `#main-content`, `header`, and `footer` while the modal is open, completely preventing background click and keyboard interactions.
+  - **Body Scroll Locking:** Sets `overflow: hidden` on `document.body` while the dialog is open and restores original overflow style on dismiss.
+  - **Focus Restoration:**
+    - Restores focus to the original triggering button on close if it is still mounted in the DOM.
+    - If the dialog was opened from the mobile navigation drawer (which unmounts upon trigger), focus gracefully restores to the persistent `#mobile-menu-toggle` button.
+  - **Escape Dismissal:** Escape key closes the dialog cleanly.
+  - **Touch Target:** Dialog close button has a full 44×44px interactive target (`w-11 h-11`).
+  - **Neutral Privacy Copy:** Removed unverified compliance claims and applied the neutral specification:
+    > *"Privacy information is not available in this landing-page preview."*
 
 ---
 
@@ -108,6 +118,9 @@ Footer
   - Region 3 Delivery: Teal `#94E2D5` (icon badge, outer border hover only)
   - Verified Authentic: Green `#A6E3A1` (icon badge, outer border hover only)
   - Live Inventory: Yellow `#F9E2AF` (icon badge, outer border hover only)
+- **Design Token Consolidation & Canonical Spacing:**
+  - Replaced repeated raw hex codes across components with existing semantic tokens (`bg-mocha-panel`, `border-mocha-border`, `text-mocha-text`, `text-mocha-subtext1`, `rounded-card`, `rounded-hero`, etc.).
+  - Category card padding adjusted to canonical handoff specification: **20px** (`p-5`).
 - **Scope Verification & Absence of Unapproved Additions:**
   - Navbar: Strictly 4 navigation links, brand logo, Log In button, and responsive drawer. No search input exists in the codebase.
   - BOM Tool Section: Strictly eyebrow, heading, secondary-accent supporting heading, copy, and 48px CTA. No step indicators or file upload exist in the codebase.
@@ -115,7 +128,7 @@ Footer
 
 ---
 
-## 6. Actual Validation Results
+## 6. Actual Validation Results & Browser Verification
 
 All checks passed in the developer environment:
 
@@ -126,29 +139,47 @@ All checks passed in the developer environment:
 3. **TypeScript (`node node_modules/typescript/bin/tsc --noEmit`):**
    - Completed successfully with exit code 0; 0 type errors.
 4. **Production Build (`npm run build`):**
-   - Completed successfully with exit code 0 via Turbopack; prerendered `/` and `/_not-found` as static content.
+   - Completed successfully with exit code 0 via Turbopack; compiled in 1622ms and prerendered `/` and `/_not-found` as static content.
 5. **Git Diff Check (`git diff --check`):**
    - Clean whitespace, zero carriage return errors or git formatting warnings.
 6. **Browser Regression Suite (`tests/ui/landing-page.browser.mjs`):**
-   - Verified on Microsoft Edge via Playwright.
-   - Tested 6 viewport widths: 320px, 390px, 768px, 1024px, 1440px, 1920px.
-   - **Zero horizontal overflow** across all 6 viewports.
-   - Verified collapsible navigation triggers at `< 1024px` and desktop navigation at `>= 1024px`.
-   - Verified mobile menu toggle, Escape key dismissal, and `aria-expanded` state tracking.
-   - Verified preview dialog modal accessibility, title rendering, and Escape key dismissal.
-   - **Zero console errors and zero unhandled page errors**.
-   - Review screenshots captured and committed to `docs/design/landing-page/screenshots/`:
-     - Desktop (1440px): [desktop-1440px.png](screenshots/desktop-1440px.png)
-     - Mobile (390px): [mobile-390px.png](screenshots/mobile-390px.png)
-     - Mobile Menu Open (390px): [mobile-menu-open.png](screenshots/mobile-menu-open.png)
+   - Automated end-to-end verification via Playwright executing **31 checks**:
+     - Tested 6 viewport widths: 320px, 390px, 768px, 1024px, 1440px, 1920px.
+     - **Zero horizontal overflow** across all 6 viewports.
+     - Verified collapsible navigation triggers at `< 1024px` and desktop navigation at `>= 1024px`.
+     - Verified mobile menu toggle, Escape key dismissal, and `aria-expanded` state tracking.
+     - Verified preview dialog focus trap (Tab and Shift+Tab contained within dialog).
+     - Verified preview dialog Escape key dismissal.
+     - Verified focus restoration to desktop trigger button after dialog dismissal.
+     - Verified focus restoration to persistent `#mobile-menu-toggle` when dialog was opened from mobile drawer.
+     - Verified neutral privacy copy rendered accurately.
+     - Verified **touch targets >= 44×44px** across all interactive elements:
+       - Footer Privacy link: `73×44px`
+       - Footer Terms link: `65×44px`
+       - Footer Contact link: `76×44px`
+       - Category Browse MCU: `91×44px`
+       - Category Browse SNS: `91×44px`
+       - Category Browse PWR: `91×44px`
+       - Category Browse PAS: `91×44px`
+       - Category View Full Catalog: `158×44px`
+       - Mobile Menu Toggle: `44×44px`
+       - Navbar Desktop Log In: `77×44px` (with pseudo-element expanded touch target)
+       - Dialog Close Button: `44×44px`
+     - **Zero console errors and zero unhandled page errors**.
+7. **Screenshots Captured & Committed (`docs/design/landing-page/screenshots/`):**
+   - Desktop Full Page: [desktop-fullpage.png](screenshots/desktop-fullpage.png)
+   - Mobile Full Page: [mobile-fullpage.png](screenshots/mobile-fullpage.png)
+   - Desktop Viewport (1440px): [desktop-1440px.png](screenshots/desktop-1440px.png)
+   - Mobile Viewport (390px): [mobile-390px.png](screenshots/mobile-390px.png)
+   - Mobile Menu Open (390px): [mobile-menu-open.png](screenshots/mobile-menu-open.png)
+   - Dialog Open: [dialog-open.png](screenshots/dialog-open.png)
 
 ---
 
-## 7. Historical PM Prototype Notes (Pre-Implementation Reference)
+## 7. Remaining Limitations
 
-*The notes below represent the Project Manager's prior local prototype review from September 30, 2026, preserved for historical audit trails:*
-
-- *Initial verification of Inter/JetBrains Mono font concepts.*
-- *Initial validation of 48px CTA height vs older Make 46px.*
-- *Initial recommendation of collapsible navbar below 1024px.*
-- *BOM panel 64px/48px desktop padding confirmation.*
+- **Preview Only for Unimplemented Functional Routes:**
+  - Route handlers, authentication backend, user account profiles, search indexing, dynamic catalog pagination, cart sessions, and live BOM parser pipelines are intentionally out of scope for this landing page slice and trigger the accessible Preview Dialog.
+- **Static Assets:**
+  - Category and trust icons are embedded vector SVGs matching reference geometry.
+  - The OhmSim brand mark is the approved static 3:1 PNG asset.

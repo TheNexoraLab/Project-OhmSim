@@ -10,7 +10,7 @@ import { Footer } from "./_components/footer";
 export default function LandingPage() {
   return (
     <PreviewDialogProvider>
-      <div className="min-h-screen flex flex-col bg-[#11111B] text-[#CDD6F4] selection:bg-[#89B4FA]/30 selection:text-[#CDD6F4]">
+      <div className="min-h-screen flex flex-col bg-mocha-bg text-mocha-text selection:bg-mocha-accent/30 selection:text-mocha-text">
         {/* Landing Navbar */}
         <LandingNavbar />
 

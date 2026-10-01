@@ -60,13 +60,13 @@ export function LandingNavbar() {
   return (
     <header
       ref={navRef}
-      className="sticky top-0 z-40 w-full h-16 bg-[#181825]/85 backdrop-blur-[20px] border-b border-[#313244]/80 transition-colors"
+      className="sticky top-0 z-40 w-full h-16 bg-mocha-bg-secondary/85 backdrop-blur-[20px] border-b border-mocha-border/80 transition-colors"
     >
       <div className="max-w-[1280px] h-full mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand Lockup */}
         <a
           href="#main-content"
-          className="flex items-center rounded-lg py-1 px-1.5 -ml-1.5 focus-visible:outline-2 focus-visible:outline-[#89B4FA]"
+          className="flex items-center rounded-lg py-1 px-1.5 -ml-1.5 min-h-[44px] focus-visible:outline-2 focus-visible:outline-mocha-accent"
           aria-label="OhmSim Home"
         >
           <div className="relative h-9 w-[108px] sm:w-[120px] sm:h-10 flex items-center">
@@ -83,14 +83,14 @@ export function LandingNavbar() {
 
         {/* Desktop Navigation (>= 1024px) */}
         <nav
-          className="hidden lg:flex items-center gap-8"
+          className="hidden lg:flex items-center gap-6"
           aria-label="Primary navigation"
         >
           {navLinks.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              className="text-sm font-medium text-[#BAC2DE] hover:text-[#CDD6F4] transition-colors py-1 focus-visible:outline-2 focus-visible:outline-[#89B4FA] rounded"
+              className="text-sm font-medium text-mocha-text-muted hover:text-mocha-text transition-colors min-h-[44px] px-3 inline-flex items-center justify-center focus-visible:outline-2 focus-visible:outline-mocha-accent rounded"
             >
               {link.label}
             </a>
@@ -98,7 +98,7 @@ export function LandingNavbar() {
           <button
             type="button"
             onClick={() => openPreview("Contact")}
-            className="text-sm font-medium text-[#BAC2DE] hover:text-[#CDD6F4] transition-colors py-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#89B4FA] rounded"
+            className="text-sm font-medium text-mocha-text-muted hover:text-mocha-text transition-colors min-h-[44px] px-3 inline-flex items-center justify-center cursor-pointer focus-visible:outline-2 focus-visible:outline-mocha-accent rounded"
           >
             Contact
           </button>
@@ -107,10 +107,12 @@ export function LandingNavbar() {
         {/* Desktop Action Right */}
         <div className="hidden lg:flex items-center">
           <Button
+            id="desktop-login-button"
             variant="raised"
             size="small"
             onClick={() => openPreview("Log In")}
             aria-label="Log in to OhmSim"
+            className="relative after:absolute after:-inset-y-1 after:-inset-x-1 after:min-h-[44px] after:min-w-[44px] after:content-['']"
           >
             Log In
           </Button>
@@ -119,13 +121,14 @@ export function LandingNavbar() {
         {/* Mobile / Tablet Menu Trigger (< 1024px) */}
         <div className="flex items-center lg:hidden">
           <button
+            id="mobile-menu-toggle"
             ref={menuButtonRef}
             type="button"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-nav-panel"
             aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-            className="flex items-center justify-center w-11 h-11 rounded-xl text-[#CDD6F4] hover:bg-[#313244] border border-[#45475A] transition-colors focus-visible:outline-2 focus-visible:outline-[#89B4FA]"
+            className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl text-mocha-text hover:bg-mocha-panel-raised border border-mocha-panel-high transition-colors focus-visible:outline-2 focus-visible:outline-mocha-accent cursor-pointer"
           >
             {mobileMenuOpen ? (
               <svg
@@ -158,7 +161,7 @@ export function LandingNavbar() {
       {mobileMenuOpen && (
         <div
           id="mobile-nav-panel"
-          className="lg:hidden w-full bg-[#1E1E2E] border-b border-[#45475A] shadow-[0_8px_24px_rgba(0,0,0,0.35)] px-4 py-6 animate-in slide-in-from-top-2 duration-200"
+          className="lg:hidden w-full bg-mocha-panel border-b border-mocha-panel-high shadow-[0_8px_24px_rgba(0,0,0,0.35)] px-4 py-6 animate-in slide-in-from-top-2 duration-200"
         >
           <nav className="flex flex-col gap-3" aria-label="Mobile primary navigation">
             {navLinks.map((link) => (
@@ -166,7 +169,7 @@ export function LandingNavbar() {
                 key={link.label}
                 href={link.href}
                 onClick={handleLinkClick}
-                className="flex items-center h-11 px-3 text-sm font-medium text-[#CDD6F4] hover:bg-[#313244] rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-[#89B4FA]"
+                className="flex items-center h-11 min-h-[44px] px-3 text-sm font-medium text-mocha-text hover:bg-mocha-panel-raised rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-mocha-accent"
               >
                 {link.label}
               </a>
@@ -177,11 +180,11 @@ export function LandingNavbar() {
                 setMobileMenuOpen(false);
                 openPreview("Contact");
               }}
-              className="flex items-center text-left h-11 px-3 text-sm font-medium text-[#CDD6F4] hover:bg-[#313244] rounded-lg transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-[#89B4FA]"
+              className="flex items-center text-left h-11 min-h-[44px] px-3 text-sm font-medium text-mocha-text hover:bg-mocha-panel-raised rounded-lg transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-mocha-accent"
             >
               Contact
             </button>
-            <div className="pt-3 border-t border-[#313244]">
+            <div className="pt-3 border-t border-mocha-border">
               <Button
                 variant="raised"
                 size="default"
@@ -189,7 +192,7 @@ export function LandingNavbar() {
                   setMobileMenuOpen(false);
                   openPreview("Log In");
                 }}
-                className="w-full"
+                className="w-full min-h-[44px]"
               >
                 Log In
               </Button>

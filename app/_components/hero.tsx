@@ -25,9 +25,9 @@ export function Hero() {
       <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-[896px] mx-auto flex flex-col items-center">
           {/* Eyebrow */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1E1E2E] border border-[#45475A] shadow-sm mb-6">
-            <span className="w-2 h-2 rounded-full bg-[#89B4FA] animate-pulse" />
-            <span className="font-mono text-[11px] sm:text-xs font-bold tracking-[0.12em] text-[#CDD6F4] uppercase">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-mocha-panel border border-mocha-panel-high shadow-sm mb-6">
+            <span className="w-2 h-2 rounded-full bg-mocha-accent animate-pulse" />
+            <span className="font-mono text-[11px] sm:text-xs font-bold tracking-[0.12em] text-mocha-text uppercase">
               v2.4.1 — 16,510 active SKUs
             </span>
           </div>
@@ -35,16 +35,16 @@ export function Hero() {
           {/* Headline */}
           <h1
             id="hero-heading"
-            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#CDD6F4] leading-[1.1] sm:leading-[1.08]"
+            className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-mocha-text leading-[1.1] sm:leading-[1.08]"
           >
             Specialized{" "}
-            <span className="text-[#89B4FA]">Electronics</span>
+            <span className="text-mocha-accent">Electronics</span>
             <br className="hidden sm:inline" /> &{" "}
-            <span className="text-[#94E2D5]">Component Sourcing</span>
+            <span className="text-mocha-accent-secondary">Component Sourcing</span>
           </h1>
 
           {/* Subheadline */}
-          <p className="mt-6 text-base sm:text-lg text-[#BAC2DE] leading-relaxed max-w-2xl">
+          <p className="mt-6 text-base sm:text-lg text-mocha-text-muted leading-relaxed max-w-2xl">
             From MCUs to discrete passives — OhmSim stocks the long tail of
             embedded hardware with verified provenance, live inventory, and
             BOM-aware pricing.
@@ -86,28 +86,28 @@ export function Hero() {
           </div>
 
           {/* Hero Statistics */}
-          <div className="mt-12 sm:mt-16 w-full max-w-2xl grid grid-cols-3 gap-2 sm:gap-4 p-4 sm:p-6 rounded-[22px] bg-[#1E1E2E]/80 border border-[#313244] shadow-[0_8px_24px_rgba(0,0,0,0.25)] backdrop-blur-sm">
+          <div className="mt-12 sm:mt-16 w-full max-w-2xl grid grid-cols-3 gap-2 sm:gap-4 p-4 sm:p-6 rounded-card bg-mocha-panel/80 border border-mocha-border shadow-[0_8px_24px_rgba(0,0,0,0.25)] backdrop-blur-sm">
             <div className="flex flex-col items-center justify-center py-2 px-1">
-              <span className="font-mono text-2xl sm:text-3xl font-extrabold text-[#CDD6F4] tracking-tight">
+              <span className="font-mono text-2xl sm:text-3xl font-extrabold text-mocha-text tracking-tight">
                 16.5K+
               </span>
-              <span className="mt-1 text-xs sm:text-sm text-[#A6ADC8] font-medium">
+              <span className="mt-1 text-xs sm:text-sm text-mocha-text-subtle font-medium">
                 Active SKUs
               </span>
             </div>
-            <div className="flex flex-col items-center justify-center py-2 px-1 border-x border-[#313244]">
-              <span className="font-mono text-2xl sm:text-3xl font-extrabold text-[#89B4FA] tracking-tight">
+            <div className="flex flex-col items-center justify-center py-2 px-1 border-x border-mocha-border">
+              <span className="font-mono text-2xl sm:text-3xl font-extrabold text-mocha-accent tracking-tight">
                 340+
               </span>
-              <span className="mt-1 text-xs sm:text-sm text-[#A6ADC8] font-medium">
+              <span className="mt-1 text-xs sm:text-sm text-mocha-text-subtle font-medium">
                 Brands
               </span>
             </div>
             <div className="flex flex-col items-center justify-center py-2 px-1">
-              <span className="font-mono text-2xl sm:text-3xl font-extrabold text-[#94E2D5] tracking-tight">
+              <span className="font-mono text-2xl sm:text-3xl font-extrabold text-mocha-accent-secondary tracking-tight">
                 24h
               </span>
-              <span className="mt-1 text-xs sm:text-sm text-[#A6ADC8] font-medium">
+              <span className="mt-1 text-xs sm:text-sm text-mocha-text-subtle font-medium">
                 Order Cut-off
               </span>
             </div>

@@ -180,11 +180,65 @@ async function run() {
       await page.screenshot({ path: screenshotPath });
     }
 
-    // 4. Mobile Navigation Interactivity
-    console.log("\n4. Testing mobile menu interaction...");
+    // 4. Touch Target Verification (>= 44x44px effective touch targets)
+    console.log("\n4. Testing touch target dimensions (>= 44x44px)...");
+    await page.setViewportSize({ width: 1440, height: 900 });
+
+    const touchTargetSelectors = [
+      { name: "Footer Privacy link", selector: "footer button:has-text('Privacy')" },
+      { name: "Footer Terms link", selector: "footer button:has-text('Terms')" },
+      { name: "Footer Contact link", selector: "footer button:has-text('Contact')" },
+      { name: "Category Browse MCU", selector: "button[aria-label='Browse Microcontrollers catalog']" },
+      { name: "Category Browse SNS", selector: "button[aria-label='Browse Sensors catalog']" },
+      { name: "Category Browse PWR", selector: "button[aria-label='Browse Power ICs catalog']" },
+      { name: "Category Browse PAS", selector: "button[aria-label='Browse Passives catalog']" },
+      { name: "Category View Full Catalog", selector: "button:has-text('View full catalog')" },
+      { name: "Mobile Menu Toggle", selector: "#mobile-menu-toggle" },
+      { name: "Navbar Desktop Log In", selector: "#desktop-login-button" },
+    ];
+
+    for (const item of touchTargetSelectors) {
+      if (item.selector === "#mobile-menu-toggle") {
+        await page.setViewportSize({ width: 390, height: 844 });
+      } else {
+        await page.setViewportSize({ width: 1440, height: 900 });
+      }
+      const el = await page.$(item.selector);
+      if (el) {
+        const metrics = await el.evaluate((node) => {
+          const rect = node.getBoundingClientRect();
+          const after = window.getComputedStyle(node, "::after");
+          let top = rect.top;
+          let bottom = rect.bottom;
+          let left = rect.left;
+          let right = rect.right;
+          if (after && after.content !== "none" && after.position === "absolute") {
+            const topOffset = parseFloat(after.top) || 0;
+            const bottomOffset = parseFloat(after.bottom) || 0;
+            const leftOffset = parseFloat(after.left) || 0;
+            const rightOffset = parseFloat(after.right) || 0;
+            top += Math.min(0, topOffset);
+            bottom += Math.max(0, -bottomOffset);
+            left += Math.min(0, leftOffset);
+            right += Math.max(0, -rightOffset);
+          }
+          return {
+            width: Math.max(rect.width, right - left),
+            height: Math.max(rect.height, bottom - top),
+          };
+        });
+        assert(
+          metrics.width >= 44 && metrics.height >= 44,
+          `${item.name} has >= 44x44px target (got ${Math.round(metrics.width)}x${Math.round(metrics.height)}px)`
+        );
+      }
+    }
+
+    // 5. Mobile Navigation Interactivity & Screenshot
+    console.log("\n5. Testing mobile menu interaction...");
     await page.setViewportSize({ width: 390, height: 844 });
-    const menuBtn = await page.$("header button[aria-label*='navigation menu']");
-    assert(Boolean(menuBtn), "Mobile menu trigger button found");
+    const menuBtn = await page.$("#mobile-menu-toggle");
+    assert(Boolean(menuBtn), "Mobile menu trigger button (#mobile-menu-toggle) found");
 
     if (menuBtn) {
       await menuBtn.click();
@@ -211,19 +265,34 @@ async function run() {
       );
     }
 
-    // 5. Preview Dialog & Focus Management
-    console.log("\n5. Testing preview dialog interaction...");
+    // 6. Preview Dialog Focus Trap, Escape Dismissal & Desktop Focus Restoration
+    console.log("\n6. Testing preview dialog focus trap, Escape dismissal & desktop focus restoration...");
     await page.setViewportSize({ width: 1440, height: 900 });
 
     const openBomBtn = await page.$("button[aria-label='Open BOM Tool preview']");
     assert(Boolean(openBomBtn), "BOM Tool CTA trigger button found");
 
     if (openBomBtn) {
+      await openBomBtn.focus();
       await openBomBtn.click();
       await page.waitForTimeout(200);
 
       const dialog = await page.$("div[role='dialog']");
       assert(Boolean(dialog), "Preview dialog is opened with role='dialog'");
+
+      // Capture dialog screenshot
+      const dialogScreenshotPath = path.join(SCREENSHOT_DIR, "dialog-open.png");
+      await page.screenshot({ path: dialogScreenshotPath });
+
+      // Check dialog close button touch target
+      const closeBtn = await page.$("button[aria-label='Close dialog']");
+      if (closeBtn) {
+        const closeBox = await closeBtn.boundingBox();
+        assert(
+          closeBox && closeBox.width >= 44 && closeBox.height >= 44,
+          `Dialog close button is >= 44x44px (got ${Math.round(closeBox?.width)}x${Math.round(closeBox?.height)}px)`
+        );
+      }
 
       const dialogTitle = await page.textContent("#preview-dialog-title");
       assert(
@@ -231,16 +300,126 @@ async function run() {
         `Dialog title is accessible: "${dialogTitle}"`
       );
 
+      // Verify Tab stays inside dialog
+      await page.keyboard.press("Tab");
+      const active1 = await page.evaluate(() => {
+        const d = document.querySelector("div[role='dialog']");
+        return d ? d.contains(document.activeElement) : false;
+      });
+      assert(active1, "Focus stays inside dialog on Tab");
+
+      await page.keyboard.press("Tab");
+      const active2 = await page.evaluate(() => {
+        const d = document.querySelector("div[role='dialog']");
+        return d ? d.contains(document.activeElement) : false;
+      });
+      assert(active2, "Focus stays inside dialog on second Tab");
+
+      // Verify Shift+Tab stays inside dialog
+      await page.keyboard.down("Shift");
+      await page.keyboard.press("Tab");
+      await page.keyboard.up("Shift");
+      const activeShiftTab = await page.evaluate(() => {
+        const d = document.querySelector("div[role='dialog']");
+        return d ? d.contains(document.activeElement) : false;
+      });
+      assert(activeShiftTab, "Focus stays inside dialog on Shift+Tab");
+
       // Dismiss dialog with Escape key
       await page.keyboard.press("Escape");
-      await page.waitForTimeout(200);
+      await page.waitForTimeout(250);
 
       const dialogAfterClose = await page.$("div[role='dialog']");
       assert(dialogAfterClose === null, "Preview dialog closes on Escape key");
+
+      // Verify desktop trigger regains focus
+      const isBomFocused = await page.evaluate(() => {
+        const el = document.querySelector("button[aria-label='Open BOM Tool preview']");
+        return document.activeElement === el;
+      });
+      assert(isBomFocused, "Desktop trigger button regains focus after dialog close");
     }
 
-    // 6. Console and Runtime Errors
-    console.log("\n6. Checking console and runtime errors...");
+    // 7. Mobile-Menu Dialog -> Focus Returns to Persistent Menu Toggle
+    console.log("\n7. Testing mobile-menu dialog focus restoration to menu toggle...");
+    await page.setViewportSize({ width: 390, height: 844 });
+    const mobileToggle = await page.$("#mobile-menu-toggle");
+    assert(Boolean(mobileToggle), "Mobile menu toggle button found");
+
+    if (mobileToggle) {
+      await mobileToggle.click();
+      await page.waitForTimeout(200);
+
+      const mobileContactBtn = await page.$("#mobile-nav-panel button:has-text('Contact')");
+      assert(Boolean(mobileContactBtn), "Mobile Contact button found in panel");
+
+      if (mobileContactBtn) {
+        await mobileContactBtn.click();
+        await page.waitForTimeout(250);
+
+        const dialog = await page.$("div[role='dialog']");
+        assert(Boolean(dialog), "Dialog opened from mobile menu");
+
+        // Dismiss dialog with Escape
+        await page.keyboard.press("Escape");
+        await page.waitForTimeout(250);
+
+        const isToggleFocused = await page.evaluate(() => {
+          const toggle = document.getElementById("mobile-menu-toggle");
+          return document.activeElement === toggle;
+        });
+        assert(isToggleFocused, "Mobile menu toggle regains focus when menu drawer trigger was removed");
+      }
+    }
+
+    // 8. Neutral Privacy Description Verification
+    console.log("\n8. Verifying neutral privacy description...");
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const privacyBtn = await page.$("footer button:has-text('Privacy')");
+    if (privacyBtn) {
+      await privacyBtn.click();
+      await page.waitForTimeout(200);
+
+      const privacyText = await page.textContent("#preview-dialog-description");
+      assert(
+        privacyText && privacyText.includes("Privacy information is not available in this landing-page preview."),
+        `Privacy dialog uses approved neutral wording: "${privacyText}"`
+      );
+
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(200);
+    }
+
+    // 9. Capture Full-Page Screenshots (cleanly scrolled to top)
+    console.log("\n9. Capturing full-page desktop and mobile screenshots...");
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.evaluate(() => {
+      window.scrollTo(0, 0);
+      const header = document.querySelector("header");
+      if (header) header.style.position = "relative";
+    });
+    await page.waitForTimeout(200);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, "desktop-fullpage.png"), fullPage: true });
+    await page.evaluate(() => {
+      const header = document.querySelector("header");
+      if (header) header.style.position = "";
+    });
+
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.evaluate(() => {
+      window.scrollTo(0, 0);
+      const header = document.querySelector("header");
+      if (header) header.style.position = "relative";
+    });
+    await page.waitForTimeout(200);
+    await page.screenshot({ path: path.join(SCREENSHOT_DIR, "mobile-fullpage.png"), fullPage: true });
+    await page.evaluate(() => {
+      const header = document.querySelector("header");
+      if (header) header.style.position = "";
+    });
+
+    // 10. Console and Runtime Errors
+    console.log("\n10. Checking console and runtime errors...");
     assert(consoleErrors.length === 0, `Zero console errors (got: ${consoleErrors.join(", ") || "none"})`);
     assert(pageErrors.length === 0, `Zero unhandled page errors (got: ${pageErrors.join(", ") || "none"})`);
 

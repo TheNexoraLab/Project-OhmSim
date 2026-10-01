@@ -16,7 +16,7 @@ export function BomSection() {
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         <div
           id="how-to-use"
-          className="relative overflow-hidden rounded-[24px] bg-gradient-to-br from-[#313244] to-[#1E1E2E] border border-[#585B70] shadow-[0_8px_24px_rgba(0,0,0,0.28)] py-10 px-6 sm:py-12 sm:px-8 lg:py-16 lg:px-12 text-center"
+          className="relative overflow-hidden rounded-hero bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border-strong shadow-[0_8px_24px_rgba(0,0,0,0.28)] py-10 px-6 sm:py-12 sm:px-8 lg:py-16 lg:px-12 text-center"
         >
           {/* Faint 24px Technical Grid Background */}
           <div
@@ -26,33 +26,33 @@ export function BomSection() {
 
           {/* Restrained Top Radial Glow */}
           <div
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-[420px] h-[180px] bg-gradient-to-b from-[#89B4FA]/20 to-transparent rounded-full blur-[80px] pointer-events-none"
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-[420px] h-[180px] bg-gradient-to-b from-mocha-accent/20 to-transparent rounded-full blur-[80px] pointer-events-none"
             aria-hidden="true"
           />
 
           <div className="relative max-w-3xl mx-auto flex flex-col items-center">
             {/* Eyebrow */}
-            <span className="font-mono text-xs font-bold tracking-[0.12em] text-[#89B4FA] uppercase bg-[#89B4FA]/10 px-3 py-1 rounded-full border border-[#89B4FA]/30 mb-4">
+            <span className="font-mono text-xs font-bold tracking-[0.12em] text-mocha-accent uppercase bg-mocha-accent/10 px-3 py-1 rounded-full border border-mocha-accent/30 mb-4">
               BOM TOOL — BETA
             </span>
 
             {/* Heading */}
             <h2
               id="bom-heading"
-              className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[#CDD6F4] uppercase"
+              className="text-3xl sm:text-4xl font-extrabold tracking-tight text-mocha-text uppercase"
             >
               BILL OF MATERIALS
             </h2>
 
             {/* Supporting Heading */}
-            <p className="mt-3 text-xl sm:text-2xl font-bold text-[#94E2D5] leading-snug">
+            <p className="mt-3 text-xl sm:text-2xl font-bold text-mocha-accent-secondary leading-snug">
               Organize your components,
               <br />
               plan your next project.
             </p>
 
             {/* Body Copy */}
-            <p className="mt-5 text-sm sm:text-base text-[#BAC2DE] leading-relaxed max-w-2xl">
+            <p className="mt-5 text-sm sm:text-base text-mocha-text-muted leading-relaxed max-w-2xl">
               Create a BOM project, add components from our catalog, adjust
               quantities, and review estimated costs and stock availability.
               Transfer your selected components to the shopping cart when you&apos;re

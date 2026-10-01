@@ -166,14 +166,14 @@ export function TrustSection() {
     >
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Subtle Horizontal Divider */}
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-[#45475A]/60 to-transparent mb-10" />
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-mocha-panel-high/60 to-transparent mb-10" />
 
         {/* 2-column on compact screens, 4-column on large screens */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {trustItems.map((item) => (
             <div
               key={item.id}
-              className={`p-4 sm:p-5 rounded-[18px] bg-[#1E1E2E] border border-[#313244] shadow-[0_4px_16px_rgba(0,0,0,0.18)] transition-colors duration-200 ${item.hoverBorder}`}
+              className={`p-4 sm:p-5 rounded-panel bg-mocha-panel border border-mocha-border shadow-[0_4px_16px_rgba(0,0,0,0.18)] transition-colors duration-200 ${item.hoverBorder}`}
             >
               <div className="flex items-center gap-3">
                 <div
@@ -182,10 +182,10 @@ export function TrustSection() {
                   {item.icon}
                 </div>
                 <div>
-                  <h3 className="text-sm sm:text-base font-bold text-[#CDD6F4] leading-snug">
+                  <h3 className="text-sm sm:text-base font-bold text-mocha-text leading-snug">
                     {item.title}
                   </h3>
-                  <p className="mt-0.5 font-mono text-xs text-[#A6ADC8]">
+                  <p className="mt-0.5 font-mono text-xs text-mocha-text-subtle">
                     {item.detail}
                   </p>
                 </div>

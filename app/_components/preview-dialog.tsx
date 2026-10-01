@@ -1,6 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+} from "react";
 import { Button } from "@/components/ui/button";
 
 interface PreviewDialogState {
@@ -15,17 +22,25 @@ interface PreviewDialogContextType {
   closePreview: () => void;
 }
 
-const PreviewDialogContext = createContext<PreviewDialogContextType | undefined>(undefined);
+const PreviewDialogContext = createContext<PreviewDialogContextType | undefined>(
+  undefined
+);
 
 export function usePreviewDialog() {
   const context = useContext(PreviewDialogContext);
   if (!context) {
-    throw new Error("usePreviewDialog must be used within a PreviewDialogProvider");
+    throw new Error(
+      "usePreviewDialog must be used within a PreviewDialogProvider"
+    );
   }
   return context;
 }
 
-export function PreviewDialogProvider({ children }: { children: React.ReactNode }) {
+export function PreviewDialogProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [state, setState] = useState<PreviewDialogState>({
     isOpen: false,
     title: "",
@@ -34,11 +49,12 @@ export function PreviewDialogProvider({ children }: { children: React.ReactNode 
   });
 
   const lastActiveElementRef = useRef<HTMLElement | null>(null);
+  const dialogContainerRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const openPreview = useCallback((feature: string, customDescription?: string) => {
     if (typeof document !== "undefined") {
-      lastActiveElementRef.current = document.activeElement as HTMLElement | null;
+      lastActiveElementRef.current = (document.activeElement as HTMLElement) || null;
     }
 
     const defaultDescriptions: Record<string, string> = {
@@ -48,11 +64,11 @@ export function PreviewDialogProvider({ children }: { children: React.ReactNode 
         "The full parametric catalog with advanced filtering and datasheet downloads will be available in the Buyer module.",
       "Open BOM Tool":
         "The interactive Bill of Materials project manager is currently in development. You can review the BOM workflow below.",
-      "Contact":
+      Contact:
         "Customer support and direct admin messaging will connect registered users with technicians via our real-time support system.",
-      "Privacy":
-        "Our comprehensive data privacy policy complies with region-specific standards and will be published upon commercial launch.",
-      "Terms":
+      Privacy:
+        "Privacy information is not available in this landing-page preview.",
+      Terms:
         "Terms of service, warranty documentation, and return policies will accompany the operational release.",
     };
 
@@ -69,15 +85,56 @@ export function PreviewDialogProvider({ children }: { children: React.ReactNode 
 
   const closePreview = useCallback(() => {
     setState((prev) => ({ ...prev, isOpen: false }));
-    // Restore focus
+
+    // Restore focus to original trigger or persistent mobile menu toggle
     setTimeout(() => {
-      if (lastActiveElementRef.current && typeof lastActiveElementRef.current.focus === "function") {
-        lastActiveElementRef.current.focus();
+      const trigger = lastActiveElementRef.current;
+      if (trigger && document.body.contains(trigger) && typeof trigger.focus === "function") {
+        trigger.focus();
+      } else {
+        // If trigger was unmounted (e.g. inside mobile nav drawer when closed), focus menu toggle
+        const menuToggle =
+          document.getElementById("mobile-menu-toggle") ||
+          document.querySelector<HTMLElement>("header button[aria-label*='navigation menu']");
+        if (menuToggle && typeof menuToggle.focus === "function") {
+          menuToggle.focus();
+        }
       }
     }, 50);
   }, []);
 
-  // Handle escape key
+  // Prevent background scrolling and interaction when modal is open
+  useEffect(() => {
+    if (!state.isOpen) return;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const backgroundElements = [
+      document.getElementById("main-content"),
+      document.querySelector("header"),
+      document.querySelector("footer"),
+    ].filter(Boolean) as HTMLElement[];
+
+    backgroundElements.forEach((el) => {
+      el.setAttribute("aria-hidden", "true");
+      if ("inert" in el) {
+        (el as unknown as { inert: boolean }).inert = true;
+      }
+    });
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      backgroundElements.forEach((el) => {
+        el.removeAttribute("aria-hidden");
+        if ("inert" in el) {
+          (el as unknown as { inert: boolean }).inert = false;
+        }
+      });
+    };
+  }, [state.isOpen]);
+
+  // Focus trap: keep Tab and Shift+Tab inside the dialog container, and Escape closes it
   useEffect(() => {
     if (!state.isOpen) return;
 
@@ -85,6 +142,53 @@ export function PreviewDialogProvider({ children }: { children: React.ReactNode 
       if (e.key === "Escape") {
         e.preventDefault();
         closePreview();
+        return;
+      }
+
+      if (e.key === "Tab") {
+        const dialogNode = dialogContainerRef.current;
+        if (!dialogNode) return;
+
+        const focusableSelectors = [
+          'button:not([disabled])',
+          '[href]:not([disabled])',
+          'input:not([disabled])',
+          'select:not([disabled])',
+          'textarea:not([disabled])',
+          '[tabindex]:not([tabindex="-1"])',
+        ].join(", ");
+
+        const focusableElements = Array.from(
+          dialogNode.querySelectorAll<HTMLElement>(focusableSelectors)
+        ).filter(
+          (el) => el.offsetParent !== null || el.offsetWidth > 0 || el.offsetHeight > 0
+        );
+
+        if (focusableElements.length === 0) {
+          e.preventDefault();
+          return;
+        }
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (
+            document.activeElement === firstElement ||
+            !dialogNode.contains(document.activeElement)
+          ) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (
+            document.activeElement === lastElement ||
+            !dialogNode.contains(document.activeElement)
+          ) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
       }
     };
 
@@ -92,7 +196,7 @@ export function PreviewDialogProvider({ children }: { children: React.ReactNode 
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [state.isOpen, closePreview]);
 
-  // Focus trap / focus close button on open
+  // Focus the close button or first interactive element upon open
   useEffect(() => {
     if (state.isOpen) {
       setTimeout(() => {
@@ -117,16 +221,20 @@ export function PreviewDialogProvider({ children }: { children: React.ReactNode 
             }
           }}
         >
-          <div className="relative w-full max-w-md bg-[#1E1E2E] border border-[#585B70] rounded-[22px] p-6 shadow-[0_12px_30px_rgba(0,0,0,0.4)] text-left focus:outline-none">
-            <div className="flex items-center justify-between pb-3 border-b border-[#313244]">
-              <span className="font-mono text-[11px] font-bold tracking-wider text-[#89B4FA] uppercase bg-[#89B4FA]/10 px-2.5 py-1 rounded-md">
+          <div
+            ref={dialogContainerRef}
+            className="relative w-full max-w-md bg-mocha-panel border border-mocha-border-strong rounded-card p-6 shadow-[0_12px_30px_rgba(0,0,0,0.4)] text-left focus:outline-none"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-3 border-b border-mocha-border">
+              <span className="font-mono text-[11px] font-bold tracking-wider text-mocha-accent uppercase bg-mocha-accent/10 px-2.5 py-1 rounded-md">
                 LANDING PREVIEW
               </span>
               <button
                 type="button"
                 onClick={closePreview}
                 aria-label="Close dialog"
-                className="p-1.5 text-[#A6ADC8] hover:text-[#CDD6F4] hover:bg-[#313244] rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-[#89B4FA]"
+                className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center text-mocha-text-subtle hover:text-mocha-text hover:bg-mocha-panel-raised rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-mocha-accent cursor-pointer"
               >
                 <svg
                   className="w-5 h-5"
@@ -136,7 +244,11 @@ export function PreviewDialogProvider({ children }: { children: React.ReactNode 
                   strokeWidth="2"
                   aria-hidden="true"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -144,13 +256,13 @@ export function PreviewDialogProvider({ children }: { children: React.ReactNode 
             <div className="mt-4">
               <h2
                 id="preview-dialog-title"
-                className="text-lg font-bold text-[#CDD6F4] leading-snug"
+                className="text-lg font-bold text-mocha-text leading-snug"
               >
                 {state.title}
               </h2>
               <p
                 id="preview-dialog-description"
-                className="mt-2.5 text-sm text-[#BAC2DE] leading-relaxed"
+                className="mt-2.5 text-sm text-mocha-text-muted leading-relaxed"
               >
                 {state.description}
               </p>
@@ -162,7 +274,7 @@ export function PreviewDialogProvider({ children }: { children: React.ReactNode 
                 variant="accent"
                 size="default"
                 onClick={closePreview}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto min-h-[44px] min-w-[44px]"
               >
                 Understood
               </Button>

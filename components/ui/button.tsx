@@ -25,25 +25,25 @@ export function getButtonClasses(
   className = ""
 ): string {
   const baseClasses =
-    "relative inline-flex items-center justify-center font-medium transition-all duration-200 select-none cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-[#89B4FA] disabled:opacity-50 disabled:pointer-events-none";
+    "relative inline-flex items-center justify-center font-medium transition-all duration-200 select-none cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-mocha-accent disabled:opacity-50 disabled:pointer-events-none";
 
   const sizeClasses: Record<ButtonSize, string> = {
-    compact: "h-7 px-3 text-xs rounded-lg",
+    compact: "h-7 px-3 text-xs rounded-small min-h-[44px] min-w-[44px]",
     small:
-      "h-9 px-4 text-xs font-semibold rounded-xl min-h-[44px] min-w-[44px] sm:min-h-[36px] sm:min-w-[auto]",
-    default: "h-11 px-5 text-sm font-medium rounded-xl min-h-[44px]",
-    large: "h-12 px-6 text-base font-semibold rounded-xl min-h-[48px]",
+      "h-9 px-4 text-xs font-semibold rounded-control min-h-[36px] min-w-[44px] relative after:absolute after:-inset-y-1 after:-inset-x-0 after:min-h-[44px] after:content-['']",
+    default: "h-11 px-5 text-sm font-medium rounded-control min-h-[44px] min-w-[44px]",
+    large: "h-12 px-6 text-base font-semibold rounded-control min-h-[48px] min-w-[44px]",
   };
 
   const variantClasses: Record<ButtonVariant, string> = {
     raised:
-      "bg-gradient-to-b from-[#313244] to-[#1E1E2E] text-[#CDD6F4] border border-[#45475A] shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:border-[#89B4FA] hover:text-[#CDD6F4] hover:shadow-[0_6px_16px_rgba(137,180,250,0.15)] active:translate-y-[1px]",
+      "bg-gradient-to-b from-mocha-panel-raised to-mocha-panel text-mocha-text border border-mocha-panel-high shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:border-mocha-accent hover:text-mocha-text hover:shadow-[0_6px_16px_rgba(137,180,250,0.15)] active:translate-y-[1px]",
     surface:
-      "bg-[#1E1E2E] text-[#CDD6F4] border border-[#313244] hover:bg-[#313244] hover:border-[#45475A] active:translate-y-[1px]",
+      "bg-mocha-panel text-mocha-text border border-mocha-border hover:bg-mocha-panel-raised hover:border-mocha-panel-high active:translate-y-[1px]",
     outline:
-      "bg-transparent text-[#CDD6F4] border border-[#585B70] hover:border-[#89B4FA] hover:text-[#89B4FA] active:translate-y-[1px]",
+      "bg-transparent text-mocha-text border border-mocha-border-strong hover:border-mocha-accent hover:text-mocha-accent active:translate-y-[1px]",
     accent:
-      "bg-gradient-to-r from-[#89B4FA] to-[#94E2D5] text-[#11111B] font-bold border-none shadow-[0_4px_16px_rgba(137,180,250,0.3)] hover:brightness-110 hover:shadow-[0_6px_20px_rgba(137,180,250,0.45)] active:translate-y-[1px]",
+      "bg-gradient-to-r from-mocha-accent to-mocha-accent-secondary text-mocha-bg font-bold border-none shadow-[0_4px_16px_rgba(137,180,250,0.3)] hover:brightness-110 hover:shadow-[0_6px_20px_rgba(137,180,250,0.45)] active:translate-y-[1px]",
   };
 
   return `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`.trim();
