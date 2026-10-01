@@ -37,13 +37,13 @@ export function getButtonClasses(
 
   const variantClasses: Record<ButtonVariant, string> = {
     raised:
-      "bg-gradient-to-b from-mocha-panel-raised to-mocha-panel text-mocha-text border border-mocha-panel-high shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:border-mocha-accent hover:text-mocha-text hover:shadow-[0_6px_16px_rgba(137,180,250,0.15)] active:translate-y-[1px]",
+      "bg-gradient-to-b from-mocha-panel-raised to-mocha-panel text-mocha-text border border-mocha-panel-high shadow-[0_4px_12px_rgba(0,0,0,0.2)] hover:border-mocha-accent hover:text-mocha-text active:translate-y-[1px]",
     surface:
       "bg-mocha-panel text-mocha-text border border-mocha-border hover:bg-mocha-panel-raised hover:border-mocha-panel-high active:translate-y-[1px]",
     outline:
       "bg-transparent text-mocha-text border border-mocha-border-strong hover:border-mocha-accent hover:text-mocha-accent active:translate-y-[1px]",
     accent:
-      "bg-gradient-to-r from-mocha-accent to-mocha-accent-secondary text-mocha-bg font-bold border-none shadow-[0_4px_16px_rgba(137,180,250,0.3)] hover:brightness-110 hover:shadow-[0_6px_20px_rgba(137,180,250,0.45)] active:translate-y-[1px]",
+      "bg-gradient-to-r from-mocha-accent to-mocha-accent-secondary text-mocha-bg font-bold border-none hover:brightness-110 active:translate-y-[1px]",
   };
 
   return `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${className}`.trim();
