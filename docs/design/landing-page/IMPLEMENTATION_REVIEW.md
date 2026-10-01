@@ -5,7 +5,7 @@
 - **Feature Branch:** `feature/public-landing-page`
 - **Integration Target:** `development`
 - **Scope:** Public Landing Page at `/` and Landing-Critical Shared Visual Foundation.
-- **Authority Order:** Follows explicit Project Manager instructions, the approved Master Prototype Design System, Master Prototype Components, and `LANDING_PAGE_HANDOFF.md`.
+- **Authority Order:** Follows explicit Project Manager instructions, the approved Master Prototype Design System, Master Prototype Components, `LANDING_PAGE_HANDOFF.md`, and the published design reference snapshots.
 - **Exclusions:** No Buyer, Admin, authentication, database, Prisma, or backend features were introduced.
 
 ---
@@ -55,15 +55,17 @@ Footer
    - Eyebrow: `v2.4.1 — 16,510 active SKUs` in JetBrains Mono.
    - Headline: `Specialized Electronics & Component Sourcing` with primary and secondary accent highlights.
    - Subheadline: Exact approved copy.
-   - CTAs: Canonical **Large 48px** `Explore Catalog` (`#categories`) and `Launch BOM Tool` (`#bom-tool`).
+   - CTAs: Canonical **Large 48px** `Explore Catalog` (`#categories`) and `Launch BOM Tool` (`#bom-tool` with reference document icon).
    - Stats: Metric cards displaying `16.5K+ Active SKUs`, `340+ Brands`, `24h Order Cut-off`.
    - Decorations: 32px technical grid pattern and restrained radial glows (pointer-events none, aria-hidden).
 3. **Categories (`app/_components/categories.tsx`):**
    - Four canonical categories: Microcontrollers (`MCU`), Sensors (`SNS`), Power ICs (`PWR`), Passives (`PAS`) with approved copy and counts.
+   - Exact approved SVG geometries and viewBoxes (`0 0 48 48`) from `MAKE_SOURCE_REFERENCE.txt`, rendered with semantic category accent colors.
    - Responsive layout: 1 column (<768px), 2 columns (768–1023px), 4 columns (>=1024px).
    - Card interactions: Category accent border on hover, category tags, and Browse preview affordance.
 4. **Trust / Information Highlights (`app/_components/trust-section.tsx`):**
    - In-Store Pickup (Ready in 2 hours), Region 3 Delivery (3–5 business days), Verified Authentic (No counterfeit parts), Live Inventory (Real-time stock levels).
+   - Exact approved SVG geometries and viewBoxes (`0 0 24 24`) from `MAKE_SOURCE_REFERENCE.txt`.
    - Layout: 2 columns on compact viewports, 4 columns on desktop.
    - Interaction: **Hover changes only the outer border treatment**; no movement or scale distortion.
 5. **BOM Promotional CTA (`app/_components/bom-section.tsx`):**
@@ -83,14 +85,19 @@ Footer
 
 ---
 
-## 5. Asset Sources & Reference Disclosures
+## 5. Asset Sources & Reference Integration
 
+- **Design References (Cherry-Picked):**
+  - Integrated commit `2f36dc963c4ece3331ffffb05a8ba35462dbfec9` into `feature/public-landing-page`, supplying:
+    - `docs/design/landing-page/reference/DESIGN_TOKENS_REFERENCE.css`
+    - `docs/design/landing-page/reference/MAKE_SOURCE_REFERENCE.txt`
+    - `docs/design/landing-page/reference/MAKE_STYLES_REFERENCE.css`
 - **Approved Logo (`public/logos/ohmsim-logo.png`):**
   - Sourced directly from `origin/main` commit `02b6c77b7983598c2b28b9ef059211c4fb87b9c3` (`docs: supply approved OhmSim logo for frontend handoff`).
-  - Extracted to `public/logos/ohmsim-logo.png` (436,457 bytes, 2172 x 724 px, 3:1 aspect ratio). Original artwork, colors, and transparency are preserved unchanged.
-- **Category & Trust SVGs Disclosure:**
-  - The eight SVG icons in `public/icons/` (`microcontrollers.svg`, `sensors.svg`, `power-ics.svg`, `passives.svg`, `pickup.svg`, `delivery.svg`, `authentic.svg`, `inventory.svg`) are functional domain vector implementations created because the reference files (`docs/design/landing-page/reference/`) were not present in the repository commit history.
-  - **Asset Request:** The PM is requested to supply the canonical Figma-exported SVG geometries so they can replace these initial vector assets if exact raw vector paths are desired.
+  - Stored at `public/logos/ohmsim-logo.png` (436,457 bytes, 2172 x 724 px, 3:1 aspect ratio). Original artwork, colors, and transparency are preserved unchanged.
+- **Approved Category & Trust SVG Geometries:**
+  - Sourced directly from `MAKE_SOURCE_REFERENCE.txt`.
+  - Replaced temporary geometries in `public/icons/` (`microcontrollers.svg`, `sensors.svg`, `power-ics.svg`, `passives.svg`, `pickup.svg`, `delivery.svg`, `authentic.svg`, `inventory.svg`) with the exact approved reference vector shapes and viewBoxes.
 
 ---
 
@@ -116,7 +123,7 @@ All checks passed in the developer environment:
    - Verified mobile menu toggle, Escape key dismissal, and `aria-expanded` state tracking.
    - Verified preview dialog modal accessibility, title rendering, and Escape key dismissal.
    - **Zero console errors and zero unhandled page errors**.
-   - Screenshots captured and saved to temporary directory.
+   - Review screenshots captured and saved to temporary directory.
 
 ---
 

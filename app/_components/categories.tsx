@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { usePreviewDialog } from "./preview-dialog";
 
 interface CategoryItem {
@@ -13,7 +12,7 @@ interface CategoryItem {
   accent: string;
   borderHover: string;
   accentBg: string;
-  iconSrc: string;
+  icon: React.ReactNode;
 }
 
 const categories: CategoryItem[] = [
@@ -26,7 +25,61 @@ const categories: CategoryItem[] = [
     accent: "#89B4FA",
     borderHover: "hover:border-[#89B4FA]",
     accentBg: "bg-[#89B4FA]/10 text-[#89B4FA]",
-    iconSrc: "/icons/microcontrollers.svg",
+    icon: (
+      <svg
+        viewBox="0 0 48 48"
+        fill="none"
+        className="w-10 h-10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <rect
+          x="10"
+          y="10"
+          width="28"
+          height="28"
+          rx="3"
+          fill="currentColor"
+          fillOpacity="0.1"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        />
+        <rect
+          x="16"
+          y="16"
+          width="16"
+          height="16"
+          rx="1"
+          fill="currentColor"
+          fillOpacity="0.2"
+        />
+        <rect
+          x="18"
+          y="18"
+          width="12"
+          height="12"
+          rx="1"
+          fill="currentColor"
+          fillOpacity="0.15"
+          stroke="currentColor"
+          strokeWidth="1"
+          strokeDasharray="2 1"
+        />
+        <line x1="4" y1="18" x2="10" y2="18" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="4" y1="24" x2="10" y2="24" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="4" y1="30" x2="10" y2="30" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="38" y1="18" x2="44" y2="18" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="38" y1="24" x2="44" y2="24" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="38" y1="30" x2="44" y2="30" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="18" y1="4" x2="18" y2="10" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="24" y1="4" x2="24" y2="10" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="30" y1="4" x2="30" y2="10" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="18" y1="38" x2="18" y2="44" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="24" y1="38" x2="24" y2="44" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="30" y1="38" x2="30" y2="44" stroke="currentColor" strokeWidth="1.8" />
+      </svg>
+    ),
   },
   {
     id: "sensors",
@@ -37,7 +90,48 @@ const categories: CategoryItem[] = [
     accent: "#94E2D5",
     borderHover: "hover:border-[#94E2D5]",
     accentBg: "bg-[#94E2D5]/10 text-[#94E2D5]",
-    iconSrc: "/icons/sensors.svg",
+    icon: (
+      <svg
+        viewBox="0 0 48 48"
+        fill="none"
+        className="w-10 h-10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <circle
+          cx="24"
+          cy="24"
+          r="6"
+          fill="currentColor"
+          fillOpacity="0.25"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        />
+        <circle
+          cx="24"
+          cy="24"
+          r="12"
+          fill="currentColor"
+          fillOpacity="0.08"
+          stroke="currentColor"
+          strokeWidth="1"
+        />
+        <circle
+          cx="24"
+          cy="24"
+          r="18"
+          stroke="currentColor"
+          strokeWidth="0.75"
+          opacity="0.25"
+        />
+        <circle cx="24" cy="24" r="2.5" fill="currentColor" />
+        <line x1="24" y1="6" x2="24" y2="12" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="24" y1="36" x2="24" y2="42" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="6" y1="24" x2="12" y2="24" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="36" y1="24" x2="42" y2="24" stroke="currentColor" strokeWidth="1.8" />
+      </svg>
+    ),
   },
   {
     id: "power-ics",
@@ -48,7 +142,35 @@ const categories: CategoryItem[] = [
     accent: "#F9E2AF",
     borderHover: "hover:border-[#F9E2AF]",
     accentBg: "bg-[#F9E2AF]/10 text-[#F9E2AF]",
-    iconSrc: "/icons/power-ics.svg",
+    icon: (
+      <svg
+        viewBox="0 0 48 48"
+        fill="none"
+        className="w-10 h-10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <circle
+          cx="24"
+          cy="24"
+          r="20"
+          fill="currentColor"
+          fillOpacity="0.08"
+          stroke="currentColor"
+          strokeWidth="0.75"
+          opacity="0.4"
+        />
+        <path
+          d="M26 6L14 26h10l-2 16 14-20H26L26 6z"
+          fill="currentColor"
+          fillOpacity="0.25"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+      </svg>
+    ),
   },
   {
     id: "passives",
@@ -59,7 +181,36 @@ const categories: CategoryItem[] = [
     accent: "#A6E3A1",
     borderHover: "hover:border-[#A6E3A1]",
     accentBg: "bg-[#A6E3A1]/10 text-[#A6E3A1]",
-    iconSrc: "/icons/passives.svg",
+    icon: (
+      <svg
+        viewBox="0 0 48 48"
+        fill="none"
+        className="w-10 h-10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        <rect
+          x="16"
+          y="20"
+          width="16"
+          height="8"
+          rx="1"
+          fill="currentColor"
+          fillOpacity="0.22"
+          stroke="currentColor"
+          strokeWidth="1.8"
+        />
+        <line x1="4" y1="24" x2="16" y2="24" stroke="currentColor" strokeWidth="1.8" />
+        <line x1="32" y1="24" x2="44" y2="24" stroke="currentColor" strokeWidth="1.8" />
+        <path
+          d="M8 16 Q12 12 16 16 Q20 20 24 16 Q28 12 32 16 Q36 20 40 16"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          opacity="0.5"
+        />
+      </svg>
+    ),
   },
 ];
 
@@ -117,28 +268,22 @@ export function Categories() {
             >
               <div>
                 {/* Icon and Tag Header */}
-                <div className="flex items-center justify-between">
-                  <div className="w-16 h-16 rounded-2xl bg-[#1E1E2E] border border-[#45475A] flex items-center justify-center p-3 text-[#CDD6F4] group-hover:border-[#585B70] transition-colors">
-                    <div className="relative w-8 h-8">
-                      <Image
-                        src={cat.iconSrc}
-                        alt=""
-                        width={32}
-                        height={32}
-                        className="w-full h-full object-contain"
-                        aria-hidden="true"
-                      />
-                    </div>
+                <div className="flex items-start justify-between mb-5">
+                  <div
+                    className="p-3 rounded-2xl bg-[#1E1E2E] border border-[#45475A] flex items-center justify-center transition-colors group-hover:border-[#585B70]"
+                    style={{ color: cat.accent }}
+                  >
+                    {cat.icon}
                   </div>
                   <span
-                    className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded-md ${cat.accentBg}`}
+                    className={`font-mono text-[10px] font-bold px-2 py-0.5 rounded-full ${cat.accentBg}`}
                   >
                     {cat.tag}
                   </span>
                 </div>
 
                 {/* Title & Description */}
-                <h3 className="mt-5 text-xl font-bold text-[#CDD6F4] group-hover:text-white transition-colors">
+                <h3 className="mt-2 text-xl font-bold text-[#CDD6F4] group-hover:text-white transition-colors">
                   {cat.name}
                 </h3>
                 <p className="mt-2 text-sm text-[#BAC2DE] leading-relaxed">

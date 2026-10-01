@@ -64,9 +64,24 @@ export function Hero() {
               variant="outline"
               size="large"
               href="#bom-tool"
-              className="w-full sm:w-auto min-w-[200px]"
+              className="w-full sm:w-auto min-w-[200px] flex items-center justify-center gap-2"
             >
-              Launch BOM Tool
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                className="w-4 h-4"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="3" y="3" width="14" height="14" rx="2" />
+                <line x1="7" y1="7" x2="13" y2="7" />
+                <line x1="7" y1="10" x2="13" y2="10" />
+                <line x1="7" y1="13" x2="10" y2="13" />
+              </svg>
+              <span>Launch BOM Tool</span>
             </ButtonLink>
           </div>
 
