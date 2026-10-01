@@ -137,7 +137,10 @@ All checks passed in the developer environment:
    - Verified mobile menu toggle, Escape key dismissal, and `aria-expanded` state tracking.
    - Verified preview dialog modal accessibility, title rendering, and Escape key dismissal.
    - **Zero console errors and zero unhandled page errors**.
-   - Review screenshots captured and saved to temporary directory.
+   - Review screenshots captured and committed to `docs/design/landing-page/screenshots/`:
+     - Desktop (1440px): [desktop-1440px.png](screenshots/desktop-1440px.png)
+     - Mobile (390px): [mobile-390px.png](screenshots/mobile-390px.png)
+     - Mobile Menu Open (390px): [mobile-menu-open.png](screenshots/mobile-menu-open.png)
 
 ---
 
