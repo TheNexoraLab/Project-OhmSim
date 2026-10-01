@@ -1,0 +1,104 @@
+/*
+ * REFERENCE ONLY — DO NOT INSTALL OR APPLY THIS FILE AS THE PRODUCTION GLOBAL THEME.
+ *
+ * Source snapshot: approved Landing Page Figma Make / src/index.css.
+ * The Master Prototype is authoritative for canonical production typography and
+ * shared component/token rules. In particular, canonical UI typography is Inter.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import 'tailwindcss';
+
+:root {
+  color-scheme: dark;
+  --bg: #11111B;
+  --bg2: #181825;
+  --panel: #1E1E2E;
+  --panel2: #313244;
+  --panel3: #45475A;
+  --panel-inset: #181825;
+  --line: #45475A;
+  --line2: #585B70;
+  --text: #CDD6F4;
+  --muted: #BAC2DE;
+  --muted2: #A6ADC8;
+  --accent: #89B4FA;
+  --accent-strong: #74C7EC;
+  --secondary: #94E2D5;
+  --success: #A6E3A1;
+  --warning: #F9E2AF;
+  --danger: #F38BA8;
+  --mauve: #CBA6F7;
+  --peach: #FAB387;
+  --sky: #89DCEB;
+  --lavender: #B4BEFE;
+  --accent-soft: rgba(137, 180, 250, 0.14);
+  --success-soft: rgba(166, 227, 161, 0.14);
+  --warning-soft: rgba(249, 226, 175, 0.16);
+  --danger-soft: rgba(243, 139, 168, 0.14);
+  --secondary-soft: rgba(148, 226, 213, 0.14);
+  --mauve-soft: rgba(203, 166, 247, 0.14);
+  --font-ui: "Bahnschrift", "DIN Alternate", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+  --radius-sm: 8px;
+  --radius-control: 12px;
+  --radius-panel: 18px;
+  --radius-card: 22px;
+  --radius-hero: 24px;
+  --radius-pill: 999px;
+  --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.18);
+  --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.28);
+  --shadow-focus: 0 0 0 3px rgba(137, 180, 250, 0.24);
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --duration-slow: 250ms;
+  --ease-ui: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, var(--bg2), var(--bg));
+  min-height: 100vh;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--line2); }
+
+.font-mono { font-family: var(--font-mono); }
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+  }
+  .animate-pulse-slow { animation: none; }
+}

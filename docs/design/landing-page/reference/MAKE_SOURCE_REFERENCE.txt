@@ -1,0 +1,812 @@
+/*
+ * REFERENCE ONLY — DO NOT COPY THIS FILE WHOLESALE INTO THE OHMSIM NEXT.JS APP.
+ *
+ * Source snapshot: approved Landing Page Figma Make.
+ * The original Make app is React/Vite and contains generated/legacy details.
+ * Production implementation must follow the Master Prototype, docs/OHMSIM_AGENT_SYNC.md,
+ * live repository architecture, and the Shared Frontend Foundation.
+ *
+ * Known stale/generated details inside this reference include:
+ * - Bahnschrift/Outfit typography instead of canonical Inter
+ * - some pre-Mocha hard-coded decorative RGB values
+ * - 46px CTA heights that do not map directly to canonical shared Button sizes
+ */
+
+import { useState } from "react";
+
+// ─── Design tokens (Catppuccin Mocha — UI_CORE_TOKENS-1.css) ─────────────────
+const T = {
+  bg:           "#11111B",
+  bg2:          "#181825",
+  panel:        "#1E1E2E",
+  panel2:       "#313244",
+  panel3:       "#45475A",
+  panelInset:   "#181825",
+  line:         "#45475A",
+  line2:        "#585B70",
+  text:         "#CDD6F4",
+  muted:        "#BAC2DE",
+  muted2:       "#A6ADC8",
+  accent:       "#89B4FA",
+  accentStrong: "#74C7EC",
+  secondary:    "#94E2D5",
+  success:      "#A6E3A1",
+  warning:      "#F9E2AF",
+  danger:       "#F38BA8",
+  mauve:        "#CBA6F7",
+  peach:        "#FAB387",
+  sky:          "#89DCEB",
+  lavender:     "#B4BEFE",
+  accentSoft:   "rgba(137,180,250,0.14)",
+  successSoft:  "rgba(166,227,161,0.14)",
+  warningSoft:  "rgba(249,226,175,0.16)",
+  dangerSoft:   "rgba(243,139,168,0.14)",
+  secondarySoft:"rgba(148,226,213,0.14)",
+  mauveSoft:    "rgba(203,166,247,0.14)",
+  gradPage:     "linear-gradient(180deg,#181825,#11111B)",
+  gradCard:     "linear-gradient(145deg,#313244,#1E1E2E)",
+  gradAccent:   "linear-gradient(135deg,#89B4FA,#94E2D5)",
+  gradButton:   "linear-gradient(180deg,rgba(49,50,68,0.96),rgba(30,30,46,1))",
+  shadowCard:   "0 12px 30px rgba(0,0,0,0.18)",
+  shadowPanel:  "0 8px 24px rgba(0,0,0,0.28)",
+};
+
+const NAV_LINKS = ["Catalog", "BOM Tool", "How to Use", "Contact"];
+
+const CATEGORIES = [
+  {
+    id: "mcu",
+    label: "Microcontrollers",
+    tag: "MCU",
+    description: "ARM Cortex, RISC-V, AVR & PIC families from leading fabs",
+    count: "2,840+ SKUs",
+    accent: T.accent,
+    accentSoft: T.accentSoft,
+    border: T.line2,
+    borderHover: T.accent,
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" className="w-10 h-10" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="10" y="10" width="28" height="28" rx="3" fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="1.8"/>
+        <rect x="16" y="16" width="16" height="16" rx="1" fill="currentColor" fillOpacity="0.2"/>
+        <rect x="18" y="18" width="12" height="12" rx="1" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="1" strokeDasharray="2 1"/>
+        <line x1="4"  y1="18" x2="10" y2="18" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="4"  y1="24" x2="10" y2="24" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="4"  y1="30" x2="10" y2="30" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="38" y1="18" x2="44" y2="18" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="38" y1="24" x2="44" y2="24" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="38" y1="30" x2="44" y2="30" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="18" y1="4"  x2="18" y2="10" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="24" y1="4"  x2="24" y2="10" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="30" y1="4"  x2="30" y2="10" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="18" y1="38" x2="18" y2="44" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="24" y1="38" x2="24" y2="44" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="30" y1="38" x2="30" y2="44" stroke="currentColor" strokeWidth="1.8"/>
+      </svg>
+    ),
+  },
+  {
+    id: "sensors",
+    label: "Sensors",
+    tag: "SNS",
+    description: "Temperature, IMU, proximity, environmental & imaging modules",
+    count: "1,560+ SKUs",
+    accent: T.secondary,
+    accentSoft: T.secondarySoft,
+    border: T.line2,
+    borderHover: T.secondary,
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" className="w-10 h-10" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="24" cy="24" r="6"  fill="currentColor" fillOpacity="0.25" stroke="currentColor" strokeWidth="1.8"/>
+        <circle cx="24" cy="24" r="12" fill="currentColor" fillOpacity="0.08" stroke="currentColor" strokeWidth="1"/>
+        <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="0.75" opacity="0.25"/>
+        <circle cx="24" cy="24" r="2.5" fill="currentColor"/>
+        <line x1="24" y1="6"  x2="24" y2="12" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="24" y1="36" x2="24" y2="42" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="6"  y1="24" x2="12" y2="24" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="36" y1="24" x2="42" y2="24" stroke="currentColor" strokeWidth="1.8"/>
+      </svg>
+    ),
+  },
+  {
+    id: "power",
+    label: "Power ICs",
+    tag: "PWR",
+    description: "LDOs, buck/boost converters, PMICs and gate drivers",
+    count: "3,210+ SKUs",
+    accent: T.warning,
+    accentSoft: T.warningSoft,
+    border: T.line2,
+    borderHover: T.warning,
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" className="w-10 h-10" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="24" cy="24" r="20" fill="currentColor" fillOpacity="0.08" stroke="currentColor" strokeWidth="0.75" opacity="0.4"/>
+        <path d="M26 6L14 26h10l-2 16 14-20H26L26 6z" fill="currentColor" fillOpacity="0.25" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+  {
+    id: "passives",
+    label: "Passives",
+    tag: "PAS",
+    description: "Resistors, capacitors, inductors, crystals & ferrite beads",
+    count: "8,900+ SKUs",
+    accent: T.success,
+    accentSoft: T.successSoft,
+    border: T.line2,
+    borderHover: T.success,
+    icon: (
+      <svg viewBox="0 0 48 48" fill="none" className="w-10 h-10" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="16" y="20" width="16" height="8" rx="1" fill="currentColor" fillOpacity="0.22" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="4"  y1="24" x2="16" y2="24" stroke="currentColor" strokeWidth="1.8"/>
+        <line x1="32" y1="24" x2="44" y2="24" stroke="currentColor" strokeWidth="1.8"/>
+        <path d="M8 16 Q12 12 16 16 Q20 20 24 16 Q28 12 32 16 Q36 20 40 16" stroke="currentColor" strokeWidth="1.2" opacity="0.5"/>
+      </svg>
+    ),
+  },
+];
+
+const TRUST_BADGES = [
+  {
+    id: "pickup",
+    label: "In-Store Pickup",
+    detail: "Ready in 2 hours",
+    accent: T.accent,
+    accentSoft: T.accentSoft,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" fill="currentColor" fillOpacity="0.18" stroke="currentColor" strokeWidth="1.8"/>
+        <polyline points="9 22 9 12 15 12 15 22" fill="currentColor" fillOpacity="0.35" stroke="currentColor" strokeWidth="1.8"/>
+      </svg>
+    ),
+  },
+  {
+    id: "delivery",
+    label: "Region 3 Delivery",
+    detail: "3–5 business days",
+    accent: T.secondary,
+    accentSoft: T.secondarySoft,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="1" y="3" width="15" height="13" rx="1" fill="currentColor" fillOpacity="0.18" stroke="currentColor" strokeWidth="1.8"/>
+        <path d="M16 8h4l3 3v5h-7V8z" fill="currentColor" fillOpacity="0.28" stroke="currentColor" strokeWidth="1.8"/>
+        <circle cx="5.5"  cy="18.5" r="2.5" fill="currentColor" fillOpacity="0.5" stroke="currentColor" strokeWidth="1.8"/>
+        <circle cx="18.5" cy="18.5" r="2.5" fill="currentColor" fillOpacity="0.5" stroke="currentColor" strokeWidth="1.8"/>
+      </svg>
+    ),
+  },
+  {
+    id: "verified",
+    label: "Verified Authentic",
+    detail: "No counterfeit parts",
+    accent: T.success,
+    accentSoft: T.successSoft,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.8"/>
+        <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="2.2"/>
+      </svg>
+    ),
+  },
+  {
+    id: "stock",
+    label: "Live Inventory",
+    detail: "Real-time stock levels",
+    accent: T.warning,
+    accentSoft: T.warningSoft,
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="currentColor" strokeWidth="2.2"/>
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke="currentColor" strokeWidth="6" strokeOpacity="0.15"/>
+      </svg>
+    ),
+  },
+];
+
+// ─── Logo ─────────────────────────────────────────────────────────────────────
+function OhmSimLogo() {
+  return (
+    <div className="flex items-center gap-2 flex-shrink-0">
+      <svg viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-10 w-auto">
+        <defs>
+          <linearGradient id="speedGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#74C7EC"/>
+            <stop offset="100%" stopColor="#94E2D5"/>
+          </linearGradient>
+        </defs>
+        <line x1="2"  y1="25" x2="18" y2="25" stroke="url(#speedGrad)" strokeWidth="4" strokeLinecap="round"/>
+        <line x1="2"  y1="33" x2="22" y2="33" stroke="url(#speedGrad)" strokeWidth="4" strokeLinecap="round"/>
+        <line x1="2"  y1="41" x2="14" y2="41" stroke="url(#speedGrad)" strokeWidth="4" strokeLinecap="round"/>
+        <path d="M22 15 L30 15 L39 47" stroke="#CDD6F4" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M33 22 L72 22 L67 44 L36 44 Z" stroke="#CDD6F4" strokeWidth="4" strokeLinejoin="round"/>
+        <circle cx="43" cy="53" r="4.5" stroke="#CDD6F4" strokeWidth="3.5"/>
+        <circle cx="61" cy="53" r="4.5" stroke="#CDD6F4" strokeWidth="3.5"/>
+        <path d="M55 26 L49 35 L54 35 L50 44 L58 33 L53 33 Z" fill="#F9E2AF"/>
+      </svg>
+
+      <div className="flex items-center font-extrabold text-[1.55rem] leading-none tracking-tight" style={{ fontFamily: "var(--font-ui)" }}>
+        <span className="relative inline-flex items-center justify-center mr-[1px]">
+          <svg viewBox="0 0 32 36" fill="none" className="h-[1.55rem] w-auto">
+            <circle cx="16" cy="18" r="14" stroke="#CDD6F4" strokeWidth="3.5"/>
+            <path d="M17.5 9 L12.5 18 L16.5 18 L14 27 L21 16 L17 16 Z" fill="#F9E2AF"/>
+          </svg>
+        </span>
+        <span style={{ color: "#CDD6F4" }}>hm</span>
+        <span style={{ color: "#89B4FA" }}>Sim</span>
+      </div>
+    </div>
+  );
+}
+
+// ─── Navbar ───────────────────────────────────────────────────────────────────
+function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 md:px-8 h-16"
+      style={{
+        background: "rgba(11,17,26,0.82)",
+        backdropFilter: "blur(20px)",
+        borderBottom: `1px solid ${T.line}`,
+      }}
+    >
+      <OhmSimLogo />
+
+      <div className="hidden md:flex items-center gap-8">
+        {NAV_LINKS.map((link) => (
+          <a
+            key={link}
+            href="#"
+            className="text-sm font-medium transition-colors"
+            style={{ color: T.muted, fontFamily: "var(--font-ui)", transitionDuration: "var(--duration-fast)" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = T.text)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = T.muted)}
+          >
+            {link}
+          </a>
+        ))}
+      </div>
+
+      <div className="hidden md:flex items-center">
+        <button
+          style={{
+            minHeight: "36px",
+            paddingInline: "18px",
+            paddingBlock: "0",
+            borderRadius: "var(--radius-control)",
+            background: T.gradButton,
+            border: `1px solid ${T.accentStrong}`,
+            color: T.accent,
+            fontSize: "12px",
+            fontWeight: 800,
+            fontFamily: "var(--font-ui)",
+            cursor: "pointer",
+            transition: `all var(--duration-fast) var(--ease-ui)`,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = T.accent;
+            e.currentTarget.style.color = T.bg;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = T.gradButton;
+            e.currentTarget.style.color = T.accent;
+          }}
+        >
+          Log In
+        </button>
+      </div>
+
+      <button
+        className="md:hidden p-2 rounded-lg"
+        style={{ color: T.muted }}
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="Toggle menu"
+      >
+        <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+          {menuOpen
+            ? <path d="M6 18L18 6M6 6l12 12"/>
+            : <path d="M4 6h16M4 12h16M4 18h16"/>}
+        </svg>
+      </button>
+
+      {menuOpen && (
+        <div
+          className="absolute top-16 left-0 right-0 md:hidden flex flex-col gap-1 p-4"
+          style={{ background: T.panel2, borderBottom: `1px solid ${T.line}` }}
+        >
+          {NAV_LINKS.map((link) => (
+            <a key={link} href="#" className="text-sm font-medium px-3 py-2.5 rounded-lg" style={{ color: T.muted, fontFamily: "var(--font-ui)" }}>{link}</a>
+          ))}
+          <div className="mt-2">
+            <button className="w-full text-sm font-bold px-3 py-2.5 rounded-lg text-left" style={{ background: T.accentSoft, color: T.accent, border: `1px solid ${T.accentStrong}`, fontFamily: "var(--font-ui)" }}>Log In</button>
+          </div>
+        </div>
+      )}
+    </nav>
+  );
+}
+
+// ─── Hero background ──────────────────────────────────────────────────────────
+function HeroBackground() {
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Grid lines */}
+      <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+            <path d="M 32 0 L 0 0 0 32" fill="none" stroke={T.line} strokeWidth="0.5" opacity="0.6"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid)"/>
+      </svg>
+      {/* Accent glow — blue center-top */}
+      <div
+        className="absolute -top-20 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full"
+        style={{ background: `radial-gradient(ellipse at center, rgba(92,163,255,0.10) 0%, transparent 70%)`, filter: "blur(60px)" }}
+      />
+      {/* Secondary glow — cyan mid-right */}
+      <div
+        className="absolute top-1/3 right-0 w-[400px] h-[400px] rounded-full"
+        style={{ background: `radial-gradient(ellipse at center, rgba(99,216,230,0.07) 0%, transparent 70%)`, filter: "blur(50px)" }}
+      />
+      {/* Circuit lines */}
+      <svg className="absolute inset-0 w-full h-full opacity-[0.08]" viewBox="0 0 1200 600" fill="none" preserveAspectRatio="xMidYMid slice">
+        <path d="M0 300 H200 L250 250 H450 L500 300 H700 L750 350 H950 L1000 300 H1200" stroke={T.accent} strokeWidth="1"/>
+        <path d="M0 200 H150 L200 150 H350 L400 200 H600" stroke={T.secondary} strokeWidth="1"/>
+        <path d="M600 400 H800 L850 450 H1050 L1100 400 H1200" stroke={T.accent} strokeWidth="1"/>
+        <circle cx="250" cy="250" r="4" fill={T.accent} fillOpacity="0.6"/>
+        <circle cx="500" cy="300" r="4" fill={T.secondary} fillOpacity="0.6"/>
+        <circle cx="750" cy="350" r="4" fill={T.accent} fillOpacity="0.6"/>
+        <circle cx="1000" cy="300" r="4" fill={T.secondary} fillOpacity="0.6"/>
+      </svg>
+    </div>
+  );
+}
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+function Hero() {
+  return (
+    <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 pt-24 pb-20 overflow-hidden">
+      <HeroBackground />
+      <div className="relative z-10 max-w-4xl mx-auto">
+
+        {/* Eyebrow badge */}
+        <div
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-8 font-mono text-[11px] font-bold uppercase tracking-[0.12em]"
+          style={{
+            background: T.accentSoft,
+            border: `1px solid rgba(92,163,255,0.3)`,
+            color: T.accent,
+          }}
+        >
+          <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse-slow"/>
+          v2.4.1 — 16,510 active SKUs
+        </div>
+
+        {/* Headline */}
+        <h1
+          className="font-extrabold leading-[1.05] mb-6"
+          style={{
+            fontSize: "clamp(36px, 5vw, 64px)",
+            letterSpacing: "-0.04em",
+            color: T.text,
+            fontFamily: "'Outfit', var(--font-ui)",
+          }}
+        >
+          Specialized{" "}
+          <span style={{ color: T.accent }}>Electronics</span>
+          <br />
+          &amp;{" "}
+          <span style={{ color: T.secondary }}>Component Sourcing</span>
+        </h1>
+
+        {/* Subheadline */}
+        <p
+          className="text-base md:text-lg leading-relaxed max-w-xl mx-auto mb-10"
+          style={{ color: T.muted, fontSize: "14px", lineHeight: 1.5 }}
+        >
+          From MCUs to discrete passives — OhmSim stocks the long tail of embedded hardware with verified provenance, live inventory, and BOM-aware pricing.
+        </p>
+
+        {/* CTAs */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button
+            style={{
+              minHeight: "46px",
+              paddingInline: "24px",
+              borderRadius: "var(--radius-control)",
+              background: T.gradButton,
+              border: `1px solid ${T.accentStrong}`,
+              color: T.accent,
+              fontSize: "12px",
+              fontWeight: 800,
+              fontFamily: "var(--font-ui)",
+              cursor: "pointer",
+              transition: `all var(--duration-normal) var(--ease-ui)`,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = T.accent;
+              e.currentTarget.style.color = T.bg;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = T.gradButton;
+              e.currentTarget.style.color = T.accent;
+            }}
+          >
+            Explore Catalog
+          </button>
+
+          <button
+            className="flex items-center justify-center gap-2"
+            style={{
+              minHeight: "46px",
+              paddingInline: "24px",
+              borderRadius: "var(--radius-control)",
+              background: "transparent",
+              border: `1px solid ${T.line2}`,
+              color: T.muted,
+              fontSize: "12px",
+              fontWeight: 800,
+              fontFamily: "var(--font-ui)",
+              cursor: "pointer",
+              transition: `all var(--duration-normal) var(--ease-ui)`,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = T.secondary;
+              e.currentTarget.style.color = T.secondary;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = T.line2;
+              e.currentTarget.style.color = T.muted;
+            }}
+          >
+            <svg viewBox="0 0 20 20" fill="none" className="w-4 h-4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="14" height="14" rx="2"/>
+              <line x1="7" y1="7" x2="13" y2="7"/>
+              <line x1="7" y1="10" x2="13" y2="10"/>
+              <line x1="7" y1="13" x2="10" y2="13"/>
+            </svg>
+            Launch BOM Tool
+          </button>
+        </div>
+
+        {/* Stats */}
+        <div className="mt-16 grid grid-cols-3 gap-4 max-w-lg mx-auto">
+          {[
+            { value: "16.5K+", label: "Active SKUs" },
+            { value: "340+",   label: "Brands" },
+            { value: "24h",    label: "Order Cut-off" },
+          ].map((stat) => (
+            <div
+              key={stat.label}
+              className="flex flex-col items-center gap-1 p-4"
+              style={{
+                background: T.gradCard,
+                border: `1px solid ${T.line}`,
+                borderRadius: "var(--radius-card)",
+                boxShadow: T.shadowCard,
+              }}
+            >
+              <span
+                className="font-mono font-bold text-2xl"
+                style={{ color: T.accent, letterSpacing: "-0.04em", fontFamily: "var(--font-mono)" }}
+              >
+                {stat.value}
+              </span>
+              <span className="font-mono text-[11px]" style={{ color: T.muted2, fontFamily: "var(--font-mono)" }}>
+                {stat.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Category card ────────────────────────────────────────────────────────────
+function CategoryCard({ cat }: { cat: typeof CATEGORIES[0] }) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <div
+      className="relative cursor-pointer overflow-hidden transition-all"
+      style={{
+        padding: "20px",
+        borderRadius: "var(--radius-card)",
+        background: T.gradCard,
+        border: `1px solid ${hovered ? cat.borderHover : T.line}`,
+        boxShadow: hovered ? T.shadowPanel : T.shadowCard,
+        transform: hovered ? "translateY(-3px)" : "translateY(0)",
+        transitionDuration: "var(--duration-normal)",
+        transitionTimingFunction: "var(--ease-ui)",
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div className="flex items-start justify-between mb-5">
+        <div
+          className="p-3 rounded-lg transition-all"
+          style={{
+            background: hovered ? cat.accentSoft : `rgba(255,255,255,0.04)`,
+            border: `1px solid ${hovered ? cat.borderHover : T.line}`,
+            color: hovered ? cat.accent : T.muted,
+            transitionDuration: "var(--duration-normal)",
+          }}
+        >
+          {cat.icon}
+        </div>
+        <span
+          className="font-mono text-[10px] font-bold uppercase tracking-widest px-2 py-0.5"
+          style={{
+            background: cat.accentSoft,
+            border: `1px solid ${cat.borderHover}`,
+            color: cat.accent,
+            borderRadius: "var(--radius-pill)",
+          }}
+        >
+          {cat.tag}
+        </span>
+      </div>
+
+      <h3
+        className="font-bold text-xl mb-2 transition-colors"
+        style={{
+          color: hovered ? cat.accent : T.text,
+          fontFamily: "var(--font-ui)",
+          transitionDuration: "var(--duration-fast)",
+        }}
+      >
+        {cat.label}
+      </h3>
+
+      <p className="text-sm leading-relaxed mb-5" style={{ color: T.muted, lineHeight: 1.5 }}>
+        {cat.description}
+      </p>
+
+      <div className="flex items-center justify-between">
+        <span className="font-mono text-[11px]" style={{ color: T.muted2, fontFamily: "var(--font-mono)" }}>
+          {cat.count}
+        </span>
+        <div
+          className="flex items-center gap-1 text-xs font-bold transition-all"
+          style={{
+            color: hovered ? cat.accent : T.muted,
+            fontFamily: "var(--font-ui)",
+            transitionDuration: "var(--duration-fast)",
+          }}
+        >
+          Browse
+          <svg
+            viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5"
+            style={{ transform: hovered ? "translateX(3px)" : "translateX(0)", transition: "transform var(--duration-fast) var(--ease-ui)" }}
+            stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+          >
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Categories section ───────────────────────────────────────────────────────
+function Categories() {
+  return (
+    <section className="relative px-6 md:px-8 py-24 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div>
+          <div
+            className="inline-flex items-center gap-2 px-2.5 py-1 font-mono text-[11px] font-bold uppercase tracking-[0.12em] mb-4"
+            style={{
+              background: T.accentSoft,
+              border: `1px solid rgba(92,163,255,0.25)`,
+              color: T.accent,
+              borderRadius: "var(--radius-pill)",
+            }}
+          >
+            COMPONENT CATALOG
+          </div>
+          <h2
+            className="font-extrabold leading-tight"
+            style={{ fontSize: "28px", letterSpacing: "-0.025em", color: T.text, fontFamily: "var(--font-ui)", lineHeight: 1.2 }}
+          >
+            Browse by Category
+          </h2>
+          <p className="text-sm mt-2" style={{ color: T.muted }}>
+            Precision-stocked for embedded systems, power electronics, and IoT development.
+          </p>
+        </div>
+        <a
+          href="#"
+          className="flex items-center gap-1.5 text-sm font-bold whitespace-nowrap transition-colors"
+          style={{ color: T.accent, fontFamily: "var(--font-ui)", transitionDuration: "var(--duration-fast)" }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = T.secondary)}
+          onMouseLeave={(e) => (e.currentTarget.style.color = T.accent)}
+        >
+          View full catalog
+          <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 8h10M9 4l4 4-4 4"/>
+          </svg>
+        </a>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {CATEGORIES.map((cat) => <CategoryCard key={cat.id} cat={cat} />)}
+      </div>
+    </section>
+  );
+}
+
+// ─── Trust badges ─────────────────────────────────────────────────────────────
+function TrustBadges() {
+  return (
+    <section className="px-6 md:px-8 py-16 max-w-7xl mx-auto">
+      <div className="h-px mb-16" style={{ background: `linear-gradient(90deg, transparent, ${T.line2}, transparent)` }}/>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {TRUST_BADGES.map((badge) => (
+          <div
+            key={badge.id}
+            className="flex flex-col items-start gap-3 transition-all"
+            style={{
+              padding: "20px",
+              borderRadius: "var(--radius-card)",
+              background: T.gradCard,
+              border: `1px solid ${T.line}`,
+              boxShadow: T.shadowCard,
+              transitionDuration: "var(--duration-normal)",
+              transitionTimingFunction: "var(--ease-ui)",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLDivElement).style.borderColor = badge.accent;
+            }}
+            onMouseLeave={(e) => {
+              (e.currentTarget as HTMLDivElement).style.borderColor = T.line;
+            }}
+          >
+            <div
+              className="p-2.5 rounded-lg"
+              style={{ background: badge.accentSoft, color: badge.accent, borderRadius: "var(--radius-sm)" }}
+            >
+              {badge.icon}
+            </div>
+            <div>
+              <div className="font-bold text-sm" style={{ color: T.text, fontFamily: "var(--font-ui)" }}>{badge.label}</div>
+              <div className="font-mono text-[11px] mt-0.5" style={{ color: T.muted, fontFamily: "var(--font-mono)" }}>{badge.detail}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// ─── BOM CTA ──────────────────────────────────────────────────────────────────
+function BomCta() {
+  return (
+    <section className="px-6 md:px-8 py-20 max-w-7xl mx-auto">
+      <div
+        className="relative overflow-hidden text-center"
+        style={{
+          padding: "56px 40px",
+          borderRadius: "var(--radius-hero)",
+          background: T.gradCard,
+          border: `1px solid ${T.line2}`,
+          boxShadow: T.shadowPanel,
+        }}
+      >
+        {/* Grid pattern */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.06 }}>
+          <defs>
+            <pattern id="ctagrid" width="24" height="24" patternUnits="userSpaceOnUse">
+              <path d="M 24 0 L 0 0 0 24" fill="none" stroke={T.accent} strokeWidth="0.5"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#ctagrid)"/>
+        </svg>
+        {/* Glow */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: `radial-gradient(ellipse at 50% 0%, rgba(92,163,255,0.08) 0%, transparent 65%)` }}
+        />
+
+        <div className="relative z-10">
+          <div
+            className="inline-flex items-center gap-2 px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-[0.12em] mb-6"
+            style={{
+              background: T.accentSoft,
+              border: `1px solid rgba(92,163,255,0.3)`,
+              color: T.accent,
+              borderRadius: "var(--radius-pill)",
+            }}
+          >
+            BOM TOOL — BETA
+          </div>
+          <h2
+            className="font-extrabold mb-2"
+            style={{ fontSize: "28px", letterSpacing: "-0.025em", color: T.text, fontFamily: "var(--font-ui)", lineHeight: 1.2 }}
+          >
+            BILL OF MATERIALS
+          </h2>
+          <p
+            className="font-bold text-lg md:text-xl mb-4"
+            style={{ color: T.secondary, fontFamily: "var(--font-ui)" }}
+          >
+            Organize your components,<br />plan your next project.
+          </p>
+          <p className="text-sm mb-8 max-w-lg mx-auto" style={{ color: T.muted, lineHeight: 1.5 }}>
+            Create a BOM project, add components from our catalog, adjust quantities, and review estimated costs and stock availability. Transfer your selected components to the shopping cart when you&apos;re ready to order.
+          </p>
+          <button
+            style={{
+              minHeight: "46px",
+              paddingInline: "28px",
+              borderRadius: "var(--radius-control)",
+              background: T.gradButton,
+              border: `1px solid ${T.accentStrong}`,
+              color: T.accent,
+              fontSize: "12px",
+              fontWeight: 800,
+              fontFamily: "var(--font-ui)",
+              cursor: "pointer",
+              transition: `all var(--duration-normal) var(--ease-ui)`,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = T.accent;
+              e.currentTarget.style.color = T.bg;
+              e.currentTarget.style.transform = "translateY(-1px) scale(0.99)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = T.gradButton;
+              e.currentTarget.style.color = T.accent;
+              e.currentTarget.style.transform = "translateY(0) scale(1)";
+            }}
+          >
+            Open BOM Tool →
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+function Footer() {
+  return (
+    <footer className="px-6 md:px-8 py-10 mt-4" style={{ borderTop: `1px solid ${T.line}` }}>
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <OhmSimLogo />
+        <p className="font-mono text-[11px]" style={{ color: T.muted2, fontFamily: "var(--font-mono)" }}>
+          © 2026 OhmSim by NEXORA Labs. All rights reserved.
+        </p>
+        <div className="flex items-center gap-5">
+          {["Privacy", "Terms", "Contact"].map((l) => (
+            <a
+              key={l} href="#"
+              className="font-mono text-[11px] transition-colors"
+              style={{ color: T.muted, fontFamily: "var(--font-mono)", transitionDuration: "var(--duration-fast)" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = T.accent)}
+              onMouseLeave={(e) => (e.currentTarget.style.color = T.muted)}
+            >
+              {l}
+            </a>
+          ))}
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// ─── App ──────────────────────────────────────────────────────────────────────
+export default function App() {
+  return (
+    <div className="min-h-screen" style={{ background: T.gradPage }}>
+      <Navbar />
+      <Hero />
+      <Categories />
+      <TrustBadges />
+      <BomCta />
+      <Footer />
+    </div>
+  );
+}
