@@ -45,7 +45,7 @@ export function BomSection() {
             </h2>
 
             {/* Supporting Heading */}
-            <p className="mt-3 text-xl sm:text-2xl font-bold text-[#CDD6F4] leading-snug">
+            <p className="mt-3 text-xl sm:text-2xl font-bold text-[#94E2D5] leading-snug">
               Organize your components,
               <br />
               plan your next project.

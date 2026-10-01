@@ -196,6 +196,10 @@ async function run() {
       const panel = await page.$("#mobile-nav-panel");
       assert(Boolean(panel), "Mobile navigation panel (#mobile-nav-panel) is rendered");
 
+      // Capture mobile menu open screenshot
+      const mobileMenuScreenshotPath = path.join(SCREENSHOT_DIR, "mobile-menu-open.png");
+      await page.screenshot({ path: mobileMenuScreenshotPath });
+
       // Test Escape key dismissal
       await page.keyboard.press("Escape");
       await page.waitForTimeout(200);

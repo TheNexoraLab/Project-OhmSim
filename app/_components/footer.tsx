@@ -44,21 +44,21 @@ export function Footer() {
           <button
             type="button"
             onClick={() => openPreview("Privacy")}
-            className="text-xs sm:text-sm text-[#A6ADC8] hover:text-[#CDD6F4] transition-colors py-1 focus-visible:outline-2 focus-visible:outline-[#89B4FA] rounded cursor-pointer"
+            className="text-xs sm:text-sm text-[#A6ADC8] hover:text-[#89B4FA] transition-colors py-1 focus-visible:outline-2 focus-visible:outline-[#89B4FA] rounded cursor-pointer"
           >
             Privacy
           </button>
           <button
             type="button"
             onClick={() => openPreview("Terms")}
-            className="text-xs sm:text-sm text-[#A6ADC8] hover:text-[#CDD6F4] transition-colors py-1 focus-visible:outline-2 focus-visible:outline-[#89B4FA] rounded cursor-pointer"
+            className="text-xs sm:text-sm text-[#A6ADC8] hover:text-[#89B4FA] transition-colors py-1 focus-visible:outline-2 focus-visible:outline-[#89B4FA] rounded cursor-pointer"
           >
             Terms
           </button>
           <button
             type="button"
             onClick={() => openPreview("Contact")}
-            className="text-xs sm:text-sm text-[#A6ADC8] hover:text-[#CDD6F4] transition-colors py-1 focus-visible:outline-2 focus-visible:outline-[#89B4FA] rounded cursor-pointer"
+            className="text-xs sm:text-sm text-[#A6ADC8] hover:text-[#89B4FA] transition-colors py-1 focus-visible:outline-2 focus-visible:outline-[#89B4FA] rounded cursor-pointer"
           >
             Contact
           </button>

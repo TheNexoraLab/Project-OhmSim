@@ -12,6 +12,8 @@ interface CategoryItem {
   accent: string;
   borderHover: string;
   accentBg: string;
+  titleHover: string;
+  browseHover: string;
   icon: React.ReactNode;
 }
 
@@ -25,6 +27,8 @@ const categories: CategoryItem[] = [
     accent: "#89B4FA",
     borderHover: "hover:border-[#89B4FA]",
     accentBg: "bg-[#89B4FA]/10 text-[#89B4FA]",
+    titleHover: "group-hover:text-[#89B4FA]",
+    browseHover: "text-[#89B4FA] group-hover:text-[#89B4FA]",
     icon: (
       <svg
         viewBox="0 0 48 48"
@@ -90,6 +94,8 @@ const categories: CategoryItem[] = [
     accent: "#94E2D5",
     borderHover: "hover:border-[#94E2D5]",
     accentBg: "bg-[#94E2D5]/10 text-[#94E2D5]",
+    titleHover: "group-hover:text-[#94E2D5]",
+    browseHover: "text-[#94E2D5] group-hover:text-[#94E2D5]",
     icon: (
       <svg
         viewBox="0 0 48 48"
@@ -142,6 +148,8 @@ const categories: CategoryItem[] = [
     accent: "#F9E2AF",
     borderHover: "hover:border-[#F9E2AF]",
     accentBg: "bg-[#F9E2AF]/10 text-[#F9E2AF]",
+    titleHover: "group-hover:text-[#F9E2AF]",
+    browseHover: "text-[#F9E2AF] group-hover:text-[#F9E2AF]",
     icon: (
       <svg
         viewBox="0 0 48 48"
@@ -181,6 +189,8 @@ const categories: CategoryItem[] = [
     accent: "#A6E3A1",
     borderHover: "hover:border-[#A6E3A1]",
     accentBg: "bg-[#A6E3A1]/10 text-[#A6E3A1]",
+    titleHover: "group-hover:text-[#A6E3A1]",
+    browseHover: "text-[#A6E3A1] group-hover:text-[#A6E3A1]",
     icon: (
       <svg
         viewBox="0 0 48 48"
@@ -283,7 +293,9 @@ export function Categories() {
                 </div>
 
                 {/* Title & Description */}
-                <h3 className="mt-2 text-xl font-bold text-[#CDD6F4] group-hover:text-white transition-colors">
+                <h3
+                  className={`mt-2 text-xl font-bold text-[#CDD6F4] ${cat.titleHover} transition-colors`}
+                >
                   {cat.name}
                 </h3>
                 <p className="mt-2 text-sm text-[#BAC2DE] leading-relaxed">
@@ -299,7 +311,7 @@ export function Categories() {
                 <button
                   type="button"
                   onClick={() => openPreview(`Browse ${cat.name}`)}
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#89B4FA] group-hover:text-white transition-colors py-1.5 px-2.5 rounded-lg hover:bg-[#313244] focus-visible:outline-2 focus-visible:outline-[#89B4FA]"
+                  className={`inline-flex items-center gap-1.5 text-xs font-semibold ${cat.browseHover} transition-colors py-1.5 px-2.5 rounded-lg hover:bg-[#313244] focus-visible:outline-2 focus-visible:outline-[#89B4FA]`}
                   aria-label={`Browse ${cat.name} catalog`}
                 >
                   <span>Browse</span>

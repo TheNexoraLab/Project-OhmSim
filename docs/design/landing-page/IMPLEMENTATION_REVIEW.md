@@ -98,6 +98,20 @@ Footer
 - **Approved Category & Trust SVG Geometries:**
   - Sourced directly from `MAKE_SOURCE_REFERENCE.txt`.
   - Replaced temporary geometries in `public/icons/` (`microcontrollers.svg`, `sensors.svg`, `power-ics.svg`, `passives.svg`, `pickup.svg`, `delivery.svg`, `authentic.svg`, `inventory.svg`) with the exact approved reference vector shapes and viewBoxes.
+  - Saturated all root SVGs in `public/icons/` with approved semantic accent colors (`style="color: <accent>"`).
+- **Canonical Accent Mapping Compliance:**
+  - Microcontrollers: Blue `#89B4FA` (icon, tag, title hover, browse hover, card border hover)
+  - Sensors: Teal `#94E2D5` (icon, tag, title hover, browse hover, card border hover)
+  - Power ICs: Yellow `#F9E2AF` (icon, tag, title hover, browse hover, card border hover)
+  - Passives: Green `#A6E3A1` (icon, tag, title hover, browse hover, card border hover)
+  - In-Store Pickup: Blue `#89B4FA` (icon badge, outer border hover only)
+  - Region 3 Delivery: Teal `#94E2D5` (icon badge, outer border hover only)
+  - Verified Authentic: Green `#A6E3A1` (icon badge, outer border hover only)
+  - Live Inventory: Yellow `#F9E2AF` (icon badge, outer border hover only)
+- **Scope Verification & Absence of Unapproved Additions:**
+  - Navbar: Strictly 4 navigation links, brand logo, Log In button, and responsive drawer. No search input exists in the codebase.
+  - BOM Tool Section: Strictly eyebrow, heading, secondary-accent supporting heading, copy, and 48px CTA. No step indicators or file upload exist in the codebase.
+  - Footer: Strictly brand lockup, copyright line, and 3 links (Privacy, Terms, Contact). No extra sections or status indicators exist in the codebase.
 
 ---
 
