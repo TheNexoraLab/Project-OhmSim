@@ -10,9 +10,9 @@
 }
 .shell::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--mocha-accent) 6%, transparent), transparent 50%), radial-gradient(circle at 80% 70%, color-mix(in srgb, var(--mocha-accent-secondary) 5%, transparent), transparent 50%); }
 .circuits { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
-.circuitPulse { fill: none; stroke: var(--mocha-accent); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 8 112; opacity: 0; animation: circuitFlow 4s linear 1 both; }
-.pulseDelayed { animation-delay: .3s; }
-.pulseTeal { stroke: var(--mocha-accent-secondary); animation-delay: .6s; }
+.circuitPulse { fill: none; stroke: var(--mocha-accent); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 8 112; opacity: 0; animation: circuitFlow 6.7s linear infinite; animation-delay: -1.2s; }
+.pulseDelayed { animation-duration: 9.3s; animation-delay: -5.1s; animation-direction: reverse; }
+.pulseTeal { stroke: var(--mocha-accent-secondary); animation-duration: 7.9s; animation-delay: -3.4s; }
 @keyframes circuitFlow {
   0% { stroke-dashoffset: 12; opacity: 0; }
   12%, 82% { opacity: .45; }

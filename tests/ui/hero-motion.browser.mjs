@@ -19,9 +19,14 @@ try {
   await page.waitForTimeout(250);
   assert.notEqual(await pulse.evaluate(el => getComputedStyle(el).strokeDashoffset), initial);
   assert.equal(await hero.getByRole("button", { name: /background motion/ }).count(), 0);
-  assert.ok(await pulse.evaluate(el => getComputedStyle(el).animationIterationCount === "1" && parseFloat(getComputedStyle(el).animationDuration) <= 5));
-  await page.waitForTimeout(5000);
-  assert.ok(await hero.locator("[data-hero-pulse]").evaluateAll(paths => paths.every(el => getComputedStyle(el).opacity === "0")));
+  assert.ok(await hero.locator("[data-hero-pulse]").evaluateAll(paths => {
+    const styles = paths.map(el => getComputedStyle(el));
+    return styles.every(style => style.animationIterationCount === "infinite") && new Set(styles.map(style => style.animationDuration)).size === paths.length && new Set(styles.map(style => style.animationDelay)).size === paths.length && new Set(styles.map(style => style.animationDirection)).size === 2;
+  }));
+  await page.waitForTimeout(7000);
+  const later = await pulse.evaluate(el => getComputedStyle(el).strokeDashoffset);
+  await page.waitForTimeout(250);
+  assert.notEqual(await pulse.evaluate(el => getComputedStyle(el).strokeDashoffset), later);
   for (const width of [320, 390, 768, 1024, 1440, 1920]) {
     await page.setViewportSize({ width, height: 1000 });
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
@@ -32,5 +37,5 @@ try {
   await page.emulateMedia({ reducedMotion: "reduce" });
   assert.ok(await hero.locator("[data-hero-pulse]").evaluateAll(paths => paths.every(el => getComputedStyle(el).animationName === "none" && getComputedStyle(el).display === "none")));
   assert.deepEqual(errors, []);
-  console.log(`PASS: circuit motion, finite duration, no motion control, reduced motion, six viewports and no runtime errors. Screenshots: ${screenshots}`);
+  console.log(`PASS: continuous circuit motion, independent timings, mixed directions, no motion control, reduced motion, six viewports and no runtime errors. Screenshots: ${screenshots}`);
 } finally { await browser.close(); }

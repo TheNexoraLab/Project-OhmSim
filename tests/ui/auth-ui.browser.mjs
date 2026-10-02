@@ -129,7 +129,10 @@ try {
   const offsetBefore = await pulse.evaluate(el => getComputedStyle(el).strokeDashoffset);
   await page.waitForTimeout(200);
   check(await pulse.evaluate(el => getComputedStyle(el).strokeDashoffset) !== offsetBefore, "Circuit pulse moves along its path");
-  check(await pulse.evaluate(el => getComputedStyle(el).animationIterationCount === "1" && parseFloat(getComputedStyle(el).animationDuration) <= 5), "Circuit motion is a short non-looping entrance");
+  check(await page.locator("[data-circuit-pulse]").evaluateAll(paths => {
+    const styles = paths.map(el => getComputedStyle(el));
+    return styles.every(style => style.animationIterationCount === "infinite") && new Set(styles.map(style => style.animationDuration)).size === paths.length && new Set(styles.map(style => style.animationDelay)).size === paths.length && new Set(styles.map(style => style.animationDirection)).size === 2;
+  }), "Circuit pulses loop with independent speeds, timing and mixed directions");
   check(await page.getByRole("button", { name: /background motion/ }).count() === 0, "No background motion control is displayed");
   await page.emulateMedia({ reducedMotion: "reduce" });
   check(await page.getByRole("button", { name: "Show password", exact: true }).evaluate(el => parseFloat(getComputedStyle(el).transitionDuration) < .001), "Reduced-motion global treatment applies");

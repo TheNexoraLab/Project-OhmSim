@@ -110,7 +110,7 @@ PM then approved permanent Sign In and Create Account instructions, rendered usi
 
 ### Circuit motion follow-up
 
-Per PM request, three subtle blue/teal pulses travel along the existing decorative circuit paths. Following the request to remove the visible motion control, this is a short entrance animation: four seconds per path with small staggered delays, completing within five seconds. It does not loop. Static trace geometry remains unchanged. Reduced-motion preference hides pulses, leaving the static background. No animation dependency, timer loop, backend or global style change. The browser suite covers movement, finite duration, absence of the removed control and reduced-motion behavior.
+Per PM request, three subtle blue/teal pulses travel continuously along the existing decorative circuit paths, using independent 6.7/9.3/7.9-second durations, distinct negative phase offsets and mixed forward/reverse directions. Visible motion controls remain removed per PM request. Static trace geometry remains unchanged. Reduced-motion preference hides pulses, leaving the static background. No animation dependency, JavaScript timer loop, backend or global style change. The browser suite covers movement, independent infinite loops, absence of the removed control and reduced-motion behavior. See the landing hero motion review for the remaining pause-control accessibility consideration.
 
 - Backend authentication, Better Auth, sessions, registration backend, credential verification, reset links, and email delivery: **DEFERRED**.
 - Backend integration owner: **Developer 3**, after frontend completion. No backend work or coordination was initiated.
