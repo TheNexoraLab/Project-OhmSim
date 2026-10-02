@@ -47,7 +47,7 @@
 
 - ACCOUNT RECOVERY, source description, email, SEND RESET LINK, and Back to Sign In.
 - Valid submission displays the reference "Reset link sent!" and "Check your inbox at <email>" presentation, together with the explicit notice "Prototype state only — no email was sent."
-- All views visibly identify the frontend preview and ask for sample details.
+- Per PM review, the developer-only introductory preview/sample-details notice is removed from all three views. The approved headings, wordmark, fields, and recovery instructions remain without replacement filler. Submission feedback still accurately discloses the deferred backend behavior.
 
 ### Interaction and accessibility
 
@@ -99,6 +99,10 @@ Review images are under `screenshots/`. The existing Next.js warning about an un
 ### No-autofill follow-up
 
 After the PM reported saved-browser credentials appearing, removed personal-data autocomplete hints and the current-password hint. Lint, TypeScript, whitespace checks, and all 66 Auth browser assertions passed against the development preview on port 3000. The additional assertions verify initially empty inputs and the new autocomplete attributes; a clean test profile cannot verify every saved-password manager's behavior.
+
+### Introductory copy follow-up
+
+Removed the developer-only preview notice per PM request, preserving the approved form copy without filler. Lint, TypeScript, whitespace checks, and all 84 browser assertions passed on port 3000, including absence of the notice in every view at six viewport widths. Review screenshots were refreshed from this development preview.
 
 ## Explicit deferrals and limitations
 

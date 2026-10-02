@@ -91,6 +91,7 @@ try {
         await page.getByRole("button", { name: "Forgot Password?" }).click();
       }
       await page.evaluate(() => document.fonts.ready);
+      check(await page.getByText("Frontend preview only. No authentication or email delivery. Use sample details.", { exact: true }).count() === 0, `${view} omits the developer-only introductory notice at ${width}px`);
       check(await page.evaluate(() => [...document.querySelectorAll("input")].every(el => { const r = el.getBoundingClientRect(); return r.width > 40 && r.left >= 0 && r.right <= innerWidth; }) && document.documentElement.scrollWidth <= innerWidth), `${view} inputs usable with no horizontal overflow at ${width}px`);
       check(await page.locator("input").evaluateAll(elements => elements.every(el => el.labels?.length)), `${view} fields have labels at ${width}px`);
       await page.waitForFunction(() => [...document.images].every(img => img.complete && img.naturalWidth > 0));

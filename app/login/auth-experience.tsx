@@ -129,7 +129,6 @@ export function AuthExperience() {
             </Link>
             {view === "forgot" && <p className={styles.description}>Enter your email and we&apos;ll send you a reset link.</p>}
           </div>
-          <p className={styles.previewNote}>Frontend preview only. No authentication or email delivery. Use sample details.</p>
           {resetEmail ? <Surface className={styles.resetSuccess} role="status">
             <span className={styles.resetIcon}><AuthIcon name="check" /></span>
             <p><strong>Reset link sent!</strong></p>
