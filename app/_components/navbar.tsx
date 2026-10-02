@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { getButtonClasses } from "@/components/ui/button";
 import { usePreviewDialog } from "./preview-dialog";
 
 export function LandingNavbar() {
@@ -106,16 +107,14 @@ export function LandingNavbar() {
 
         {/* Desktop Action Right */}
         <div className="hidden lg:flex items-center">
-          <Button
+          <Link
             id="desktop-login-button"
-            variant="raised"
-            size="small"
-            onClick={() => openPreview("Log In")}
+            href="/login"
             aria-label="Log in to OhmSim"
-            className="relative after:absolute after:-inset-y-1 after:-inset-x-1 after:min-h-[44px] after:min-w-[44px] after:content-['']"
+            className={getButtonClasses("raised", "small", "relative after:absolute after:-inset-y-1 after:-inset-x-1 after:min-h-[44px] after:min-w-[44px] after:content-['']")}
           >
             Log In
-          </Button>
+          </Link>
         </div>
 
         {/* Mobile / Tablet Menu Trigger (< 1024px) */}
@@ -185,17 +184,13 @@ export function LandingNavbar() {
               Contact
             </button>
             <div className="pt-3 border-t border-mocha-border">
-              <Button
-                variant="raised"
-                size="default"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  openPreview("Log In");
-                }}
-                className="w-full min-h-[44px]"
+              <Link
+                href="/login"
+                onClick={handleLinkClick}
+                className={getButtonClasses("raised", "default", "w-full min-h-[44px]")}
               >
                 Log In
-              </Button>
+              </Link>
             </div>
           </nav>
         </div>

@@ -2,11 +2,13 @@
 
 import React from "react";
 import { ButtonLink } from "@/components/ui/button";
+import styles from "./hero-motion.module.css";
 
 export function Hero() {
   return (
     <section
       aria-labelledby="hero-heading"
+      data-hero-motion="true"
       className="relative pt-12 pb-16 md:pt-20 md:pb-24 overflow-hidden"
     >
       {/* Decorative Technical Grid Background */}
@@ -21,12 +23,32 @@ export function Hero() {
         aria-hidden="true"
       />
 
+      {/* Edge-only circuit traces keep the headline and controls clear. */}
+      <div className={styles.circuits} aria-hidden="true">
+        <svg className={styles.left} viewBox="0 0 240 600" preserveAspectRatio="none">
+          <g className={styles.trace}>
+            <path d="M0 80H110V180H175V240M0 360H65V430H130V530" />
+            <circle cx="175" cy="240" r="3" /><circle cx="130" cy="530" r="3" />
+          </g>
+          <path className={styles.pulse} data-hero-pulse="true" pathLength="100" d="M0 80H110V180H175V240" />
+          <path className={`${styles.pulse} ${styles.delayed}`} data-hero-pulse="true" pathLength="100" d="M0 360H65V430H130V530" />
+        </svg>
+        <svg className={styles.right} viewBox="0 0 240 600" preserveAspectRatio="none">
+          <g className={styles.trace}>
+            <path d="M240 100H140V170H75V260M240 390H180V460H110V550" />
+            <circle cx="75" cy="260" r="3" /><circle cx="110" cy="550" r="3" />
+          </g>
+          <path className={`${styles.pulse} ${styles.teal}`} data-hero-pulse="true" pathLength="100" d="M240 100H140V170H75V260" />
+          <path className={`${styles.pulse} ${styles.last}`} data-hero-pulse="true" pathLength="100" d="M240 390H180V460H110V550" />
+        </svg>
+      </div>
+
       {/* Hero Content Container */}
       <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-[896px] mx-auto flex flex-col items-center">
           {/* Eyebrow */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-mocha-panel border border-mocha-panel-high shadow-sm mb-6">
-            <span className="w-2 h-2 rounded-full bg-mocha-accent animate-pulse" />
+            <span className={`w-2 h-2 rounded-full bg-mocha-accent animate-pulse ${styles.statusDot}`} />
             <span className="font-mono text-[11px] sm:text-xs font-bold tracking-[0.12em] text-mocha-text uppercase">
               v2.4.1 — 16,510 active SKUs
             </span>
