@@ -129,10 +129,8 @@ try {
   const offsetBefore = await pulse.evaluate(el => getComputedStyle(el).strokeDashoffset);
   await page.waitForTimeout(200);
   check(await pulse.evaluate(el => getComputedStyle(el).strokeDashoffset) !== offsetBefore, "Circuit pulse moves along its path");
-  await page.getByRole("button", { name: "Pause background motion" }).click();
-  check(await pulse.evaluate(el => getComputedStyle(el).animationPlayState) === "paused", "Circuit animation can be paused");
-  await page.getByRole("button", { name: "Resume background motion" }).click();
-  check(await pulse.evaluate(el => getComputedStyle(el).animationPlayState) === "running", "Circuit animation resumes");
+  check(await pulse.evaluate(el => getComputedStyle(el).animationIterationCount === "1" && parseFloat(getComputedStyle(el).animationDuration) <= 5), "Circuit motion is a short non-looping entrance");
+  check(await page.getByRole("button", { name: /background motion/ }).count() === 0, "No background motion control is displayed");
   await page.emulateMedia({ reducedMotion: "reduce" });
   check(await page.getByRole("button", { name: "Show password", exact: true }).evaluate(el => parseFloat(getComputedStyle(el).transitionDuration) < .001), "Reduced-motion global treatment applies");
   check(errors.length === 0, `No browser/runtime errors: ${errors.join("; ")}`);

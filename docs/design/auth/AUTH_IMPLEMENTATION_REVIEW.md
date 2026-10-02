@@ -110,7 +110,7 @@ PM then approved permanent Sign In and Create Account instructions, rendered usi
 
 ### Circuit motion follow-up
 
-Per PM request, three subtle blue/teal pulses now travel along the existing decorative circuit paths on a staggered six-second CSS loop. Static trace geometry remains unchanged. A keyboard-accessible Pause/Resume background motion control is provided; reduced-motion preference hides the pulses and motion control, leaving the static background. No animation dependency, timer loop, backend or global style change. Lint, TypeScript, whitespace checks and all 106 Auth browser assertions passed, including movement, pause/resume and reduced-motion checks. Desktop/mobile screenshots were refreshed.
+Per PM request, three subtle blue/teal pulses travel along the existing decorative circuit paths. Following the request to remove the visible motion control, this is a short entrance animation: four seconds per path with small staggered delays, completing within five seconds. It does not loop. Static trace geometry remains unchanged. Reduced-motion preference hides pulses, leaving the static background. No animation dependency, timer loop, backend or global style change. The browser suite covers movement, finite duration, absence of the removed control and reduced-motion behavior.
 
 - Backend authentication, Better Auth, sessions, registration backend, credential verification, reset links, and email delivery: **DEFERRED**.
 - Backend integration owner: **Developer 3**, after frontend completion. No backend work or coordination was initiated.

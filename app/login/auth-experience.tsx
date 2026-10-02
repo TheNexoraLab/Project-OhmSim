@@ -67,7 +67,6 @@ function AuthField({ name, label, placeholder = label, type = "text", value, onC
 }
 
 export function AuthExperience() {
-  const [motionPaused, setMotionPaused] = useState(false);
   const [view, setView] = useState<View>("signin");
   const [values, setValues] = useState<Fields>(emptyFields);
   const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({});
@@ -115,7 +114,7 @@ export function AuthExperience() {
 
   return (
     <main id="main-content" tabIndex={-1} className={styles.shell}>
-      <svg className={styles.circuits} data-paused={motionPaused} aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <svg className={styles.circuits} aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
         <g opacity=".12" stroke="var(--mocha-accent)" strokeWidth="1" fill="none">
           <path d="M0 80H120V180M0 260H64V360" /><circle cx="120" cy="80" r="3" /><circle cx="120" cy="180" r="3" /><circle cx="64" cy="360" r="3" />
           <circle cx="200" cy="50" r="2" /><circle cx="350" cy="190" r="1.5" /><circle cx="700" cy="310" r="1.5" />
@@ -130,7 +129,6 @@ export function AuthExperience() {
       </svg>
       <aside className={styles.artwork} aria-label="OhmSim artwork">
         <Image src="/auth/ohmsim-emblem.png" alt="OhmSim lightning emblem" width={1536} height={1024} className={styles.emblem} priority />
-        <button type="button" className={styles.motionToggle} onClick={() => setMotionPaused(current => !current)}>{motionPaused ? "Resume background motion" : "Pause background motion"}</button>
       </aside>
       <section className={styles.formPane} aria-labelledby="auth-heading">
         <div className={styles.content}>
