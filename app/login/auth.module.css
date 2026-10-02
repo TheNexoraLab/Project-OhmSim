@@ -9,7 +9,22 @@
   background-size: 40px 40px;
 }
 .shell::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(circle at 20% 30%, color-mix(in srgb, var(--mocha-accent) 6%, transparent), transparent 50%), radial-gradient(circle at 80% 70%, color-mix(in srgb, var(--mocha-accent-secondary) 5%, transparent), transparent 50%); }
-.circuits { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .12; pointer-events: none; z-index: -1; }
+.circuits { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+.circuitPulse { fill: none; stroke: var(--mocha-accent); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 8 112; opacity: 0; animation: circuitFlow 6s linear infinite; }
+.pulseDelayed { animation-delay: -2s; }
+.pulseTeal { stroke: var(--mocha-accent-secondary); animation-delay: -4s; }
+.circuits[data-paused="true"] .circuitPulse { animation-play-state: paused; }
+@keyframes circuitFlow {
+  0% { stroke-dashoffset: 12; opacity: 0; }
+  12%, 82% { opacity: .45; }
+  100% { stroke-dashoffset: -100; opacity: 0; }
+}
+.motionToggle { position: absolute; bottom: 16px; padding: 10px 12px; min-height: 44px; border-radius: var(--radius-small); color: var(--mocha-text-subtle); font-size: 11px; cursor: pointer; }
+.motionToggle:hover { color: var(--mocha-accent); }
+@media (prefers-reduced-motion: reduce) {
+  .circuitPulse { animation: none !important; display: none; }
+  .motionToggle { display: none; }
+}
 .artwork { position: relative; flex: 0 0 42%; display: flex; align-items: center; justify-content: center; }
 .artwork::after { content: ""; position: absolute; right: 0; top: 10%; bottom: 10%; width: 1px; background: linear-gradient(180deg, transparent, var(--mocha-accent-secondary) 35%, var(--mocha-accent) 65%, transparent); opacity: .35; }
 .emblem { width: 52%; max-width: 210px; height: auto; object-fit: contain; }
@@ -55,7 +70,8 @@
 .email { font-family: var(--font-jetbrains-mono), monospace; overflow-wrap: anywhere; }
 @media (max-width: 767px) {
   .shell { flex-direction: column; }
-  .artwork { flex: none; padding: 24px 0 0; }
+  .artwork { flex: none; flex-direction: column; padding: 24px 0 0; }
+  .motionToggle { position: static; }
   .artwork::after { display: none; }
   .emblem { width: 100px; }
   .formPane { padding: 24px max(20px, env(safe-area-inset-right)) max(32px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); align-items: center; justify-content: flex-start; }

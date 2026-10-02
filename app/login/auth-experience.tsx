@@ -67,6 +67,7 @@ function AuthField({ name, label, placeholder = label, type = "text", value, onC
 }
 
 export function AuthExperience() {
+  const [motionPaused, setMotionPaused] = useState(false);
   const [view, setView] = useState<View>("signin");
   const [values, setValues] = useState<Fields>(emptyFields);
   const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({});
@@ -114,16 +115,22 @@ export function AuthExperience() {
 
   return (
     <main id="main-content" tabIndex={-1} className={styles.shell}>
-      <svg className={styles.circuits} aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
-        <g stroke="var(--mocha-accent)" strokeWidth="1" fill="none">
+      <svg className={styles.circuits} data-paused={motionPaused} aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <g opacity=".12" stroke="var(--mocha-accent)" strokeWidth="1" fill="none">
           <path d="M0 80H120V180M0 260H64V360" /><circle cx="120" cy="80" r="3" /><circle cx="120" cy="180" r="3" /><circle cx="64" cy="360" r="3" />
           <circle cx="200" cy="50" r="2" /><circle cx="350" cy="190" r="1.5" /><circle cx="700" cy="310" r="1.5" />
         </g>
-        <g fill="var(--mocha-accent-secondary)"><circle cx="520" cy="95" r="2" opacity=".65" /><circle cx="860" cy="160" r="2" opacity=".55" /></g>
-        <svg x="80%" width="20%" height="240" viewBox="0 0 200 240" preserveAspectRatio="none"><path d="M200 100H90V220" stroke="var(--mocha-accent-secondary)" fill="none" /><circle cx="90" cy="100" r="3" fill="none" stroke="var(--mocha-accent-secondary)" /></svg>
+        <g opacity=".12" fill="var(--mocha-accent-secondary)"><circle cx="520" cy="95" r="2" opacity=".65" /><circle cx="860" cy="160" r="2" opacity=".55" /></g>
+        <path className={styles.circuitPulse} data-circuit-pulse="true" pathLength="100" d="M0 80H120V180" />
+        <path className={`${styles.circuitPulse} ${styles.pulseDelayed}`} data-circuit-pulse="true" pathLength="100" d="M0 260H64V360" />
+        <svg x="80%" width="20%" height="240" viewBox="0 0 200 240" preserveAspectRatio="none">
+          <g opacity=".12"><path d="M200 100H90V220" stroke="var(--mocha-accent-secondary)" fill="none" /><circle cx="90" cy="100" r="3" fill="none" stroke="var(--mocha-accent-secondary)" /></g>
+          <path className={`${styles.circuitPulse} ${styles.pulseTeal}`} data-circuit-pulse="true" pathLength="100" d="M200 100H90V220" />
+        </svg>
       </svg>
       <aside className={styles.artwork} aria-label="OhmSim artwork">
         <Image src="/auth/ohmsim-emblem.png" alt="OhmSim lightning emblem" width={1536} height={1024} className={styles.emblem} priority />
+        <button type="button" className={styles.motionToggle} onClick={() => setMotionPaused(current => !current)}>{motionPaused ? "Resume background motion" : "Pause background motion"}</button>
       </aside>
       <section className={styles.formPane} aria-labelledby="auth-heading">
         <div className={styles.content}>

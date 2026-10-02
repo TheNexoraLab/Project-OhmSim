@@ -123,6 +123,17 @@ try {
   check(await page.getByLabel("Password", { exact: true }).evaluate(el => el === document.activeElement), "Logical email-to-password Tab order");
   check(await page.getByLabel("Password", { exact: true }).evaluate(el => getComputedStyle(el.parentElement).outlineStyle !== "none"), "Input wrapper shows focus outline");
   await page.emulateMedia({ reducedMotion: "reduce" });
+  check(await page.locator("[data-circuit-pulse]").evaluateAll(paths => paths.every(el => getComputedStyle(el).animationName === "none" && getComputedStyle(el).display === "none")), "Reduced motion disables circuit pulses");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  const pulse = page.locator("[data-circuit-pulse]").first();
+  const offsetBefore = await pulse.evaluate(el => getComputedStyle(el).strokeDashoffset);
+  await page.waitForTimeout(200);
+  check(await pulse.evaluate(el => getComputedStyle(el).strokeDashoffset) !== offsetBefore, "Circuit pulse moves along its path");
+  await page.getByRole("button", { name: "Pause background motion" }).click();
+  check(await pulse.evaluate(el => getComputedStyle(el).animationPlayState) === "paused", "Circuit animation can be paused");
+  await page.getByRole("button", { name: "Resume background motion" }).click();
+  check(await pulse.evaluate(el => getComputedStyle(el).animationPlayState) === "running", "Circuit animation resumes");
+  await page.emulateMedia({ reducedMotion: "reduce" });
   check(await page.getByRole("button", { name: "Show password", exact: true }).evaluate(el => parseFloat(getComputedStyle(el).transitionDuration) < .001), "Reduced-motion global treatment applies");
   check(errors.length === 0, `No browser/runtime errors: ${errors.join("; ")}`);
   console.log(`${checks} checks passed. Screenshots: ${screenshots}`);
