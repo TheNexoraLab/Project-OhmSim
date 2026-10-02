@@ -13,6 +13,11 @@ type FieldName = "fullName" | "email" | "contactNumber" | "password" | "confirmP
 type Fields = Record<FieldName, string>;
 const emptyFields: Fields = { fullName: "", email: "", contactNumber: "", password: "", confirmPassword: "" };
 const headings: Record<View, string> = { signin: "WELCOME BACK", register: "NEW TO OHMSIM", forgot: "ACCOUNT RECOVERY" };
+const descriptions: Record<View, string> = {
+  signin: "Sign in to your OhmSim account.",
+  register: "Create your account to get started with OhmSim.",
+  forgot: "Enter your email and we'll send you a reset link.",
+};
 const emailValid = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 
 function validation(view: View, values: Fields): Partial<Record<FieldName, string>> {
@@ -127,7 +132,7 @@ export function AuthExperience() {
             <Link href="/" aria-label="OhmSim — back to landing page" className={styles.brand}>
               <Image src="/logos/ohmsim-logo.png" alt="OhmSim" width={2172} height={724} className={view === "signin" ? styles.wordmarkLarge : styles.wordmark} priority />
             </Link>
-            {view === "forgot" && <p className={styles.description}>Enter your email and we&apos;ll send you a reset link.</p>}
+            <p className={styles.description}>{descriptions[view]}</p>
           </div>
           {resetEmail ? <Surface className={styles.resetSuccess} role="status">
             <span className={styles.resetIcon}><AuthIcon name="check" /></span>

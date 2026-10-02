@@ -91,6 +91,8 @@ try {
         await page.getByRole("button", { name: "Forgot Password?" }).click();
       }
       await page.evaluate(() => document.fonts.ready);
+      const instructions = { signin: "Sign in to your OhmSim account.", register: "Create your account to get started with OhmSim.", forgot: "Enter your email and we'll send you a reset link." };
+      check(await page.getByText(instructions[view], { exact: true }).isVisible(), `${view} shows approved instructions at ${width}px`);
       check(await page.getByText("Frontend preview only. No authentication or email delivery. Use sample details.", { exact: true }).count() === 0, `${view} omits the developer-only introductory notice at ${width}px`);
       check(await page.evaluate(() => [...document.querySelectorAll("input")].every(el => { const r = el.getBoundingClientRect(); return r.width > 40 && r.left >= 0 && r.right <= innerWidth; }) && document.documentElement.scrollWidth <= innerWidth), `${view} inputs usable with no horizontal overflow at ${width}px`);
       check(await page.locator("input").evaluateAll(elements => elements.every(el => el.labels?.length)), `${view} fields have labels at ${width}px`);

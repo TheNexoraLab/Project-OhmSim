@@ -47,7 +47,7 @@
 
 - ACCOUNT RECOVERY, source description, email, SEND RESET LINK, and Back to Sign In.
 - Valid submission displays the reference "Reset link sent!" and "Check your inbox at <email>" presentation, together with the explicit notice "Prototype state only — no email was sent."
-- Per PM review, the developer-only introductory preview/sample-details notice is removed from all three views. The approved headings, wordmark, fields, and recovery instructions remain without replacement filler. Submission feedback still accurately discloses the deferred backend behavior.
+- Per PM review, the developer-only introductory preview/sample-details notice is removed from all three views. PM subsequently approved user-facing instructions: "Sign in to your OhmSim account." and "Create your account to get started with OhmSim." The existing recovery instruction remains unchanged. Submission feedback still accurately discloses the deferred backend behavior.
 
 ### Interaction and accessibility
 
@@ -103,6 +103,8 @@ After the PM reported saved-browser credentials appearing, removed personal-data
 ### Introductory copy follow-up
 
 Removed the developer-only preview notice per PM request, preserving the approved form copy without filler. Lint, TypeScript, whitespace checks, and all 84 browser assertions passed on port 3000, including absence of the notice in every view at six viewport widths. Review screenshots were refreshed from this development preview.
+
+PM then approved permanent Sign In and Create Account instructions, rendered using the existing description treatment above the fields. Recovery copy is unchanged. Lint, TypeScript, whitespace checks, and all 102 browser assertions passed, including visibility of the approved instructions across all tested sizes. Screenshots were refreshed again.
 
 ## Explicit deferrals and limitations
 
