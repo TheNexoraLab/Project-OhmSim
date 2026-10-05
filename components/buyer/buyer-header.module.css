@@ -1,0 +1,38 @@
+/* Compact header surfaces without shrinking their keyboard/pointer targets. */
+.navLink,
+.exitLink {
+  position: relative;
+  isolation: isolate;
+  background: none;
+  border: none;
+}
+
+.navLink::before,
+.exitLink::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 8px 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+  pointer-events: none;
+  transition: background-color 150ms, border-color 150ms;
+}
+
+.navLink[aria-current="page"]::before {
+  background: color-mix(in srgb, var(--mocha-accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--mocha-accent) 25%, transparent);
+}
+
+.navLink:not([aria-current="page"]):hover::before {
+  background: color-mix(in srgb, var(--mocha-accent) 5%, transparent);
+}
+
+.exitLink::before {
+  background: var(--gradient-button);
+  border-color: var(--mocha-border-strong);
+}
+
+.exitLink:hover::before {
+  border-color: var(--mocha-danger);
+}

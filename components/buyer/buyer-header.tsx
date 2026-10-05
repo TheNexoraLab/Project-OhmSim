@@ -7,6 +7,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCart } from "@/hooks/use-cart";
 import { useBom } from "@/hooks/use-bom";
 import { toast } from "@/components/ui/toast";
+import styles from "./buyer-header.module.css";
+import { CartFeedbackIcon } from "./cart-feedback";
 
 export function BuyerHeader() {
   const pathname = usePathname();
@@ -107,7 +109,7 @@ export function BuyerHeader() {
       <Link
         href="/home"
         aria-label="OhmSim Home"
-        className="flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-mocha-accent rounded-lg p-1 min-h-[44px]"
+        className="flex flex-col items-start justify-center shrink-0 focus-visible:outline-2 focus-visible:outline-mocha-accent rounded-lg min-h-[44px]"
       >
         <Image
           src="/logos/ohmsim-logo.png"
@@ -117,12 +119,15 @@ export function BuyerHeader() {
           priority
           className="h-8 w-auto object-contain"
         />
+        <span className="text-[7px] uppercase tracking-[0.15em] leading-none mt-0.5 pl-0.5 text-mocha-accent/80">
+          by NEXORA Labs
+        </span>
       </Link>
 
       <div className="w-px h-6 mx-1 shrink-0 bg-mocha-border" />
 
       {/* Main Navigation Bar */}
-      <nav className="flex items-center gap-1" aria-label="Buyer Primary Navigation">
+      <nav className="flex items-center gap-0.5" aria-label="Buyer Primary Navigation">
         {navLinks.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/home" && pathname.startsWith(item.href));
           const isImplemented = item.href === "/home" || item.href === "/products";
@@ -138,7 +143,7 @@ export function BuyerHeader() {
                   toast(`${item.label} is scheduled for ${item.phase}`, "info");
                 }
               }}
-              className={`relative flex items-center gap-1.5 px-2.5 lg:px-3 py-2 rounded-xl text-[11px] font-bold min-h-[40px] transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
+              className={`${styles.navLink} relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-small text-[10px] font-bold min-h-[44px] transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
                 isActive
                   ? "bg-mocha-accent/15 text-mocha-accent border border-mocha-accent/25"
                   : "text-mocha-text-muted hover:text-mocha-text hover:bg-mocha-accent/5 border border-transparent"
@@ -162,7 +167,7 @@ export function BuyerHeader() {
       <div className="flex flex-1 items-center gap-2 min-w-0">
         <form
           onSubmit={handleSearchSubmit}
-          className="flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 flex-1 min-w-0 max-w-[160px] lg:max-w-xs bg-mocha-bg border border-mocha-border rounded-xl focus-within:border-mocha-border-strong transition-colors min-h-[40px]"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 flex-1 min-w-0 max-w-[160px] lg:max-w-xs bg-mocha-bg border border-mocha-border rounded-small focus-within:border-mocha-border-strong transition-colors min-h-[40px]"
         >
           <label htmlFor="buyer-desktop-search" className="sr-only">
             Search components or SKU
@@ -176,7 +181,7 @@ export function BuyerHeader() {
             placeholder="Search components, SKU..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-transparent text-[12px] text-mocha-text placeholder-mocha-text-subtle outline-none min-w-0"
+            className="flex-1 bg-transparent text-[11px] text-mocha-text placeholder-mocha-text-subtle outline-none min-w-0"
           />
           {searchQuery && (
             <button
@@ -236,13 +241,15 @@ export function BuyerHeader() {
           aria-label="View shopping cart"
           className="relative min-w-[44px] min-h-[44px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
+          <CartFeedbackIcon target="desktop">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
             <circle cx="9" cy="21" r="1" />
             <circle cx="20" cy="21" r="1" />
             <path strokeLinecap="round" strokeLinejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
           </svg>
+          </CartFeedbackIcon>
           {cartTotal > 0 && (
-            <span className="absolute top-2 right-2 w-3.5 h-3.5 rounded-full text-[7.5px] font-extrabold text-mocha-bg bg-mocha-accent flex items-center justify-center shadow-sm pointer-events-none">
+            <span data-cart-count={cartTotal} className="absolute top-2 right-2 w-3.5 h-3.5 rounded-full text-[7.5px] font-extrabold text-mocha-bg bg-mocha-accent flex items-center justify-center shadow-sm pointer-events-none">
               {cartTotal}
             </span>
           )}
@@ -252,7 +259,7 @@ export function BuyerHeader() {
 
         <Link
           href="/"
-          className="min-h-[40px] flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-semibold bg-gradient-to-b from-mocha-panel-raised to-mocha-panel border border-mocha-border-strong text-mocha-text-muted hover:border-mocha-danger hover:text-mocha-danger transition-all focus-visible:outline-2 focus-visible:outline-mocha-danger"
+          className={`${styles.exitLink} min-h-[44px] flex items-center gap-1.5 px-3 py-1.5 rounded-small text-[10px] font-semibold text-mocha-text-muted hover:text-mocha-danger transition-all focus-visible:outline-2 focus-visible:outline-mocha-danger`}
         >
           <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />

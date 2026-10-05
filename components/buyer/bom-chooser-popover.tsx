@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect, useCallback } from "react";
+import React, { useRef, useEffect, useLayoutEffect, useCallback } from "react";
 import type { BomProject } from "@/types/product";
 
 interface BomChooserPopoverProps {
@@ -39,29 +39,33 @@ export function BomChooserPopover({
   );
 
   // Dynamic collision detection: clamps popover within viewport bounds [8px, viewportWidth - 8px]
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isOpen) return;
 
     const clampWithinViewport = () => {
-      if (!popoverRef.current) return;
-      const rect = popoverRef.current.getBoundingClientRect();
+      const popover = popoverRef.current;
+      if (!popover) return;
+      // Measure the unshifted anchor each time. Measuring our previous correction
+      // and then clearing it caused resize events to alternate in/out of bounds.
+      popover.style.translate = "none";
+      const rect = popover.getBoundingClientRect();
       const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
-
-      if (rect.left < 8) {
-        const shiftRight = 8 - rect.left;
-        popoverRef.current.style.transform = `translateX(${shiftRight}px)`;
-      } else if (rect.right > viewportWidth - 8) {
-        const shiftLeft = (viewportWidth - 8) - rect.right;
-        popoverRef.current.style.transform = `translateX(${shiftLeft}px)`;
-      } else {
-        popoverRef.current.style.transform = "";
-      }
+      const targetLeft = Math.max(8, Math.min(rect.left, viewportWidth - 8 - rect.width));
+      popover.style.translate = `${targetLeft - rect.left}px 0`;
     };
 
     clampWithinViewport();
+    const observer = new ResizeObserver(clampWithinViewport);
+    if (popoverRef.current) {
+      observer.observe(popoverRef.current);
+      if (popoverRef.current.parentElement) observer.observe(popoverRef.current.parentElement);
+    }
     window.addEventListener("resize", clampWithinViewport);
-    return () => window.removeEventListener("resize", clampWithinViewport);
-  }, [isOpen]);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", clampWithinViewport);
+    };
+  }, [isOpen, align, placement]);
 
   // Outside pointer detection & Escape listener
   useEffect(() => {
@@ -142,6 +146,7 @@ export function BomChooserPopover({
       role="dialog"
       aria-label="Add to BOM Project"
       tabIndex={-1}
+      style={{ transitionProperty: "opacity" }}
       className={`absolute z-50 w-56 min-w-[190px] max-w-[calc(100vw-24px)] bg-mocha-panel border border-mocha-border-strong rounded-xl shadow-2xl overflow-hidden py-1.5 animate-in fade-in zoom-in-95 duration-150 ${placementStyles} ${className}`}
     >
       <div className="px-3 py-1.5 border-b border-mocha-border flex items-center justify-between">

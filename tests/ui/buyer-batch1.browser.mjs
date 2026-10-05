@@ -2,7 +2,8 @@
  * OhmSim Buyer Application — Batch 1 Browser & Interaction Test Suite
  *
  * Rigorous test suite validating:
- * R1: Central cart state & stock boundaries (DHT22 ID 6 stock 8, NE555 ID 8 stock 500, synthetic stock-zero fixture)
+ * R1: Production UI stock limits/persistence; companion buyer-providers.browser.mjs
+ *     exercises the actual React providers with isolated service fixtures.
  * R2: Usable mobile keyword search, SKU search, no-results state, and search clear
  * R3: URL query synchronization (q=, direct URL, back/forward, clear, reload)
  * R4: Stacked mobile filter panel layout without horizontal competition and short-height viewports
@@ -17,7 +18,7 @@ import path from "node:path";
 import fs from "node:fs";
 
 const BUYER_URL = process.env.BUYER_URL || "http://localhost:3105";
-const SCREENSHOT_DIR = path.resolve("docs/design/buyer/screenshots");
+const SCREENSHOT_DIR = path.resolve(process.env.SCREENSHOT_DIR || "docs/design/buyer/screenshots");
 
 const VIEWPORTS = [
   { width: 320, height: 640, name: "mobile-small" },
@@ -80,6 +81,32 @@ async function run() {
   }
 
   const chromium = loadPlaywright();
+  async function assertPopoverOptions(popover, width) {
+    const options = await popover.getByRole("button").all();
+    assert(options.length === 3, "Exactly three project choices are present");
+    for (const [index, option] of options.entries()) {
+      await option.scrollIntoViewIfNeeded();
+      const hit = await option.evaluate(element => {
+        const rect = element.getBoundingClientRect();
+        const target = document.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
+        return {left: rect.left, right: rect.right, height: rect.height,
+          hittable: Boolean(target && element.contains(target))};
+      });
+      assert(hit.left >= 0 && hit.right <= width && hit.height >= 44 && hit.hittable,
+        `Project ${index + 1} is unclipped and receives pointer input at ${width}px`);
+    }
+  }
+  async function projectCounts(popover) {
+    return Promise.all((await popover.getByRole("button").all()).map(async button => {
+      const text = (await button.textContent()).replace(/\s+/g, " ").trim();
+      const match = text.match(/(\d+) items$/);
+      if (!match) throw new Error(`Missing project quantity: ${text}`);
+      return Number(match[1]);
+    }));
+  }
+  async function isFocused(locator) {
+    return locator.evaluate(element => element === document.activeElement);
+  }
   const browser = await chromium.launch({
     headless: true,
     channel: process.platform === "win32" ? "msedge" : undefined,
@@ -152,6 +179,59 @@ async function run() {
       `Rendered exactly 4 featured products with IDs [1, 2, 3, 4] (got [${uniqueFeaturedIds.join(", ")}])`
     );
 
+    // Home composition: full-width desktop content and compact surfaces, not
+    // a constrained catalog layout. Measure real children, not just overflow.
+    for (const width of [768, 1440, 1920]) {
+      await page.setViewportSize({ width, height: 900 });
+      const composition = await page.locator("[data-buyer-home]").evaluate(home => {
+        const heading = home.querySelector("h1");
+        const cards = [...home.querySelectorAll("[data-home-featured] > div")];
+        const actions = cards.flatMap(card => [...card.querySelectorAll("a, button")]
+          .filter(action => ["View Details", "Add to Cart", "+ BOM"].includes(action.textContent.trim())));
+        return {
+          left: heading.getBoundingClientRect().left,
+          background: getComputedStyle(home).backgroundImage,
+          headingSize: getComputedStyle(heading).fontSize,
+          metricSize: getComputedStyle(home.querySelector("#metric-products-available p")).fontSize,
+          cards: cards.map(card => {
+            const rect = card.getBoundingClientRect();
+            return {left: rect.left, right: rect.right, width: rect.width};
+          }),
+          actions: actions.map(action => ({
+            height: action.getBoundingClientRect().height,
+            width: action.getBoundingClientRect().width,
+            fontSize: getComputedStyle(action).fontSize,
+            surfaceTop: getComputedStyle(action, "::before").top,
+            surfaceBottom: getComputedStyle(action, "::before").bottom,
+            textFits: action.scrollWidth <= action.clientWidth,
+          })),
+          extraStockCount: cards.some(card => /\d+ in stock/.test(card.textContent)),
+        };
+      });
+      assert(composition.left === 24 && composition.cards.every(card => card.left >= 24 && card.right <= width - 24),
+        `Home uses 24px desktop padding with unclipped cards at ${width}px`);
+      assert(Math.abs(Math.max(...composition.cards.map(card => card.right)) - (width - 24)) <= 1,
+        `Home featured grid fills available width without the old 1280px cap at ${width}px`);
+      assert(composition.headingSize === "20px" && composition.metricSize === "24px" && composition.background.includes("linear-gradient"),
+        `Home preserves the reference heading/metric hierarchy and canonical page gradient at ${width}px`);
+      assert(composition.actions.length === 12 && composition.actions.every(action =>
+        action.height >= 44 && action.width >= 44 && action.fontSize === "9px" &&
+        action.surfaceTop === "8px" && action.surfaceBottom === "8px" && action.textFits),
+        `All Home action labels fit, with compact surfaces and >=44px real targets at ${width}px`);
+      assert(!composition.extraStockCount, `Home uses image stock badges without extra numeric stock text at ${width}px`);
+      const headerControls = await page.locator("header").first().evaluate(header =>
+        [...header.querySelectorAll("a, form")].filter(control => control.getClientRects().length > 0)
+          .map(control => {
+            const rect = control.getBoundingClientRect();
+            return {left: rect.left, right: rect.right};
+          }));
+      assert(headerControls.length > 0 && headerControls.every(control => control.left >= 0 && control.right <= width),
+        `Desktop header's visible links and search are within the ${width}px viewport`);
+    }
+    assert(await page.locator("header").getByText("by NEXORA Labs", { exact: true }).isVisible(),
+      "Desktop header includes the reference brand caption");
+    await page.setViewportSize({ width: 1440, height: 900 });
+
     // =============================================================
     // 2. Catalog & Parametric Search: Exact Filtering, Sorting & URL Sync
     // =============================================================
@@ -212,6 +292,7 @@ async function run() {
     // Restore category to "All"
     await page.locator("button:has-text('All')").first().click();
     await page.waitForTimeout(150);
+    assert(!(await page.evaluate(() => "__ohmSimCart" in window)), "Production Buyer app exposes no cart testing bridge");
 
     // =============================================================
     // 3. Desktop Header Search & URL Synchronization (V2-3)
@@ -370,6 +451,23 @@ async function run() {
     // 5. BOM Chooser Popover: Viewport Bounds, Keyboard, Selection & Focus (V2-2)
     // =============================================================
     console.log("\n5. Testing BOM Chooser Popover Bounds & Interactions at 320px & 390px (V2-2)...");
+    for (const width of [320, 390]) {
+      await page.setViewportSize({width, height: 480});
+      await page.goto(`${BUYER_URL}/products`, {waitUntil: "domcontentloaded"});
+      await mobileFilterToggle.click();
+      const panel = page.locator("#mobile-parametric-filter-controls");
+      await panel.waitFor({state: "visible"});
+      const controls = await panel.locator("button, [role='slider']").all();
+      assert(controls.length > 0, `Open ${width}px filters contain actual controls`);
+      for (const control of controls) {
+        await control.scrollIntoViewIfNeeded();
+        const box = await control.boundingBox();
+        assert(box && box.x >= 0 && box.x + box.width <= width,
+          `Open filter child is horizontally within ${width}px viewport`);
+      }
+      await mobileFilterToggle.click();
+      assert(!(await panel.isVisible()), `Filters close at ${width}px in a short window`);
+    }
 
     // 5a. Small mobile viewport (320px width) — test Column 1 card popover bounds
     await page.setViewportSize({ width: 320, height: 640 });
@@ -394,19 +492,25 @@ async function run() {
       `Popover right edge is within 320px screen boundary (right = ${(popoverBox320 ? popoverBox320.x + popoverBox320.width : 0).toFixed(2)}px <= 322px)`
     );
 
-    // Hit-test all 3 project options inside popover
-    const projectOptions = await popoverCol1.locator("button").all();
-    assert(projectOptions.length === 3, `Popover contains exactly 3 BOM project options (got ${projectOptions.length})`);
-    for (let i = 0; i < projectOptions.length; i++) {
-      const optBox = await projectOptions[i].boundingBox();
-      assert(optBox !== null && optBox.width > 0 && optBox.height >= 40, `Project option ${i + 1} has valid hittable bounds (${optBox?.width}x${optBox?.height})`);
+    await assertPopoverOptions(popoverCol1, 320);
+    for (const width of [321, 390, 375, 320]) {
+      await page.setViewportSize({width, height: 640});
+      await page.waitForFunction(() => {
+        const rect = document.querySelector('[role="dialog"][aria-label="Add to BOM Project"]').getBoundingClientRect();
+        return rect.left >= 7.5 && rect.right <= innerWidth - 7.5;
+      });
+      await assertPopoverOptions(popoverCol1, width);
     }
 
     // Test Outside Click dismissal without stealing focus
     console.log("  Testing outside click dismissal without stealing focus...");
-    await page.mouse.click(160, 20); // Click on top header area outside popover
+    await page.locator("#mobile-catalog-search").click();
     await page.waitForTimeout(200);
     assert(!(await popoverCol1.isVisible()), "Outside click successfully closed BOM popover");
+    assert(await isFocused(page.locator("#mobile-catalog-search")), "Outside click leaves focus on the clicked search control");
+    await col1BomBtn.click();
+    await col1BomBtn.click();
+    assert(!(await popoverCol1.isVisible()), "Clicking the same trigger twice closes without reopening");
 
     // 5b. Column 2 card popover bounds at 390px
     await page.setViewportSize({ width: 390, height: 844 });
@@ -426,6 +530,7 @@ async function run() {
     );
 
     // Capture mobile open popover screenshot (V2-2 requirement)
+    await assertPopoverOptions(popoverCol2, 390);
     await page.screenshot({
       path: path.join(SCREENSHOT_DIR, "catalog-mobile-390-popover-open.png"),
       fullPage: false,
@@ -445,7 +550,7 @@ async function run() {
     await page.keyboard.press("Escape");
     await page.waitForTimeout(200);
     assert(!(await popoverCol2.isVisible()), "Escape key closed popover");
-    const isCol2TriggerFocused = await page.evaluate(() => document.activeElement?.textContent?.includes("+ BOM"));
+    const isCol2TriggerFocused = await isFocused(col2BomBtn);
     assert(isCol2TriggerFocused, "Focus restored to Column 2 trigger button on Escape");
 
     // 5c. Test Selecting a Project: exact project item count increments, others unchanged, focus returns
@@ -453,14 +558,29 @@ async function run() {
     await col1BomBtn.click();
     await page.waitForTimeout(200);
 
-    // Target project 3: "Smart Plant Watering System"
-    const p3Btn = popoverCol1.locator("button:has-text('Smart Plant Watering System')");
-    await p3Btn.click();
+    const beforeCounts = await projectCounts(popoverCol1);
+    assert(JSON.stringify(beforeCounts) === "[5,3,4]", "Initial project quantities exactly match the source fixtures");
+    await page.keyboard.press("ArrowDown");
+    await page.keyboard.press("ArrowDown");
+    assert(await isFocused(popoverCol1.getByRole("button", {name: /Smart Plant/})), "Keyboard focuses the selected project");
+    await page.keyboard.press("Enter");
     await page.waitForTimeout(250);
 
     assert(!(await popoverCol1.isVisible()), "Selecting project closed popover");
-    const isCol1TriggerFocused = await page.evaluate(() => document.activeElement?.textContent?.includes("+ BOM"));
+    const isCol1TriggerFocused = await isFocused(col1BomBtn);
     assert(isCol1TriggerFocused, "Focus returned to trigger button after project selection");
+    await col1BomBtn.click();
+    assert(JSON.stringify(await projectCounts(popoverCol1)) === "[5,3,5]", "Only selected project b3 increments by one");
+    await page.keyboard.press("Escape");
+    await page.locator("a[href='/home']:visible").first().click();
+    await page.waitForURL("**/home");
+    const homeBom = page.locator(".grid.md\\:hidden button:has-text('+ BOM')").first();
+    await homeBom.click();
+    assert(JSON.stringify(await projectCounts(popoverCol1)) === "[5,3,5]", "BOM quantities persist into Home through client navigation");
+    await popoverCol1.getByRole("button", {name: /IoT Weather/}).click();
+    await homeBom.click();
+    assert(JSON.stringify(await projectCounts(popoverCol1)) === "[5,4,5]", "Pointer selection increments only project b2");
+    await page.keyboard.press("Escape");
 
     // 5d. Short-height viewport verification (height = 480px)
     await page.setViewportSize({ width: 1024, height: 480 });
@@ -480,98 +600,30 @@ async function run() {
     await page.keyboard.press("Escape");
     await page.waitForTimeout(150);
 
+    await page.setViewportSize({width: 1440, height: 900});
+    await page.goto(`${BUYER_URL}/products`, {waitUntil: "domcontentloaded"});
+    await deskBomBtn.click();
+    await assertPopoverOptions(shortHeightPopover, 1440);
+    await page.screenshot({path: path.join(SCREENSHOT_DIR, "bom-popover-open-1440.png"), fullPage: false});
+    for (const width of [1024, 768, 900, 1440]) {
+      await page.setViewportSize({width, height: 900});
+      await page.waitForFunction(() => {
+        const rect = document.querySelector('[role="dialog"][aria-label="Add to BOM Project"]').getBoundingClientRect();
+        return rect.left >= 7.5 && rect.right <= innerWidth - 7.5;
+      });
+      await assertPopoverOptions(shortHeightPopover, width);
+    }
+    await page.keyboard.press("Escape");
+
     // =============================================================
     // 6. Central Cart State & Production Logic Verification (V2-1)
     // =============================================================
     console.log("\n6. Testing Central Cart State & Production Hook Logic (V2-1)...");
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto(`${BUYER_URL}/products/6`, { waitUntil: "domcontentloaded" });
-    await page.waitForFunction(() => typeof window !== "undefined" && Boolean(window.__ohmSimCart));
-
-    // 6a. Direct testing of production cart hook logic via window.__ohmSimCart
-    console.log("  Exercising production hook diagnostic directly in browser context...");
-    const hookDiagnostic = await page.evaluate(() => {
-      const hook = window.__ohmSimCart;
-      if (!hook) return { error: "__ohmSimCart not exposed on window" };
-
-      // 1. Reset cart
-      hook.clearCart();
-
-      // 2. Queued addToCart('6', 1) twice in the same batch/tick
-      const add1 = hook.addToCart("6", 1);
-      const add2 = hook.addToCart("6", 1);
-      const cartAfterBatch = { ...hook.getCart() };
-
-      // 3. Reset and queue setCartQty('6', 7) then addToCart('6', 1) in the same batch
-      hook.clearCart();
-      const set7 = hook.setCartQty("6", 7);
-      const addAfterSet = hook.addToCart("6", 1);
-      const cartAfterMixed = { ...hook.getCart() };
-
-      // 4. Overstock attempt: product 6 has stock 8; try adding 1 more to full stock
-      const overstockAdd = hook.addToCart("6", 1);
-      const cartAfterOverstock = { ...hook.getCart() };
-
-      // 5. Synthetic stock-zero fixture rejection
-      const syntheticZeroFixture = { id: "synthetic-zero", name: "Synthetic Out of Stock", stock: 0 };
-      const zeroResult = hook.addToCart(syntheticZeroFixture, 1);
-
-      // 6. Invalid quantity rejection
-      const zeroQty = hook.addToCart("6", 0);
-      const negQty = hook.addToCart("6", -3);
-      const floatQty = hook.addToCart("6", 2.5);
-
-      // 7. Invalid ID rejection
-      const nullProduct = hook.addToCart(null, 1);
-      const emptyId = hook.addToCart("", 1);
-
-      return {
-        add1,
-        add2,
-        cartAfterBatch,
-        set7,
-        addAfterSet,
-        cartAfterMixed,
-        overstockAdd,
-        cartAfterOverstock,
-        zeroResult,
-        zeroQty,
-        negQty,
-        floatQty,
-        nullProduct,
-        emptyId,
-      };
-    });
-
-    assert(!hookDiagnostic.error, `Hook harness mounted: ${hookDiagnostic.error || "OK"}`);
-    assert(
-      hookDiagnostic.add1 === true && hookDiagnostic.add2 === true && hookDiagnostic.cartAfterBatch["6"] === 2,
-      `Two queued addToCart('6', 1) in same tick yield final quantity 2 (got ${hookDiagnostic.cartAfterBatch?.["6"]})`
-    );
-    assert(
-      hookDiagnostic.set7 === true && hookDiagnostic.addAfterSet === true && hookDiagnostic.cartAfterMixed["6"] === 8,
-      `Queued setCartQty('6', 7) + addToCart('6', 1) in same tick yield final quantity 8 (got ${hookDiagnostic.cartAfterMixed?.["6"]})`
-    );
-    assert(
-      hookDiagnostic.overstockAdd === false && hookDiagnostic.cartAfterOverstock["6"] === 8,
-      `Addition past stock limit 8 is rejected and quantity remains 8 (got ${hookDiagnostic.cartAfterOverstock?.["6"]})`
-    );
-    assert(
-      hookDiagnostic.zeroResult === false,
-      "Synthetic stock-zero fixture is correctly rejected"
-    );
-    assert(
-      hookDiagnostic.zeroQty === false && hookDiagnostic.negQty === false && hookDiagnostic.floatQty === false,
-      "Invalid quantities (0, negative, float) are rejected by production cart hook"
-    );
-    assert(
-      hookDiagnostic.nullProduct === false && hookDiagnostic.emptyId === false,
-      "Invalid product identifiers (null, empty string) are rejected by production cart hook"
-    );
-
     // 6b. UI Stepper & Stock Boundary on Product Detail Page (DHT22 ID 6, stock 8)
     console.log("  Testing UI stepper and stock enforcement on /products/6...");
-    await page.evaluate(() => window.__ohmSimCart?.clearCart());
+    assert(!(await page.evaluate(() => "__ohmSimCart" in window)), "Product Details has no production testing bridge");
     await page.waitForTimeout(100);
 
     const stockText = await page.textContent("#product-stock-display");
@@ -618,7 +670,7 @@ async function run() {
     assert(await addBtn.isDisabled(), "Add to Cart button disabled when maximum stock is in cart");
 
     // Header cart badge shows 8
-    const headerCartBadge = page.locator("header a[href='/cart'] span");
+    const headerCartBadge = page.locator("header a[href='/cart'] [data-cart-count]");
     assert((await headerCartBadge.textContent())?.trim() === "8", "Header cart badge reflects 8 items");
 
     // =============================================================
@@ -641,6 +693,34 @@ async function run() {
     const homeCartItemsUpdated = await page.locator("#metric-cart-items p").first().textContent();
     assert(homeCartItemsUpdated?.trim() === "9", "Home card addition updated in-memory cart items to 9");
     assert((await headerCartBadge.textContent())?.trim() === "9", "Header badge preserved 9 items across routes");
+
+    // A fresh page load deliberately resets in-memory state. Then exercise the
+    // same low-stock product through mobile cards, Details and desktop cards.
+    await page.setViewportSize({width: 390, height: 844});
+    await page.goto(`${BUYER_URL}/products`, {waitUntil: "domcontentloaded"});
+    const dhtName = "DHT22 Temp & Humidity Sensor Module";
+    const mobileAdd = page.locator(`button[aria-label='Add ${dhtName} to cart']:visible`);
+    for (let quantity = 0; quantity < 5; quantity++) await mobileAdd.click();
+    await page.getByRole("status").filter({hasText: dhtName}).waitFor();
+    assert(await page.getByRole("status").filter({hasText: dhtName}).isVisible(),
+      "Cart addition places product feedback inside the live status region");
+    await page.locator(".grid.md\\:hidden a[href='/products/6']").first().click();
+    await page.waitForURL("**/products/6");
+    assert((await page.locator("#product-stock-display").textContent()).includes("5 in cart, 3 remaining"),
+      "Five repeated mobile card additions are preserved in Details");
+    await plusBtn.click();
+    await plusBtn.click();
+    assert((await page.locator("#product-qty-stepper span").textContent()).trim() === "3",
+      "Detail selector is bounded by remaining stock after card additions");
+    await addBtn.click();
+    assert(await addBtn.isDisabled(), "Card-plus-detail additions stop exactly at stock 8");
+    await page.getByRole("navigation", {name: "Breadcrumbs"}).getByRole("link", {name: "Products", exact: true}).click();
+    await page.waitForURL("**/products");
+    const maxCard = page.locator(`button[aria-label='Maximum stock reached for ${dhtName}']:visible`);
+    assert(await maxCard.isDisabled(), "Mobile catalog card prevents adding beyond aggregate stock");
+    await page.setViewportSize({width: 1440, height: 900});
+    assert(await maxCard.isDisabled(), "Desktop card uses the same aggregate stock boundary");
+    assert((await headerCartBadge.textContent()).trim() === "8", "Cross-entry additions preserve the exact total of eight");
 
     // =============================================================
     // 8. Accessibility: Skip Link, Touch Targets, WAI-ARIA Tabs (V2-4)
@@ -817,7 +897,7 @@ async function run() {
         console.error(`  - ${f}`);
       }
       process.exitCode = 1;
-      process.exit(1);
+      return; // finally closes the browser; the process still exits nonzero.
     }
 
     console.log("\n>>> ALL OHMSIM BUYER BATCH 1 TESTS PASSED WITH ZERO FAILURES <<<");

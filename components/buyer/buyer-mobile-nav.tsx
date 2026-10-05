@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/hooks/use-cart";
 import { toast } from "@/components/ui/toast";
+import { CartFeedbackIcon } from "./cart-feedback";
 
 export function BuyerMobileHeader() {
   return (
@@ -146,9 +147,9 @@ export function BuyerMobileBottomNav() {
             }`}
           >
             <span className="relative">
-              {tab.icon}
+              {tab.href === "/cart" ? <CartFeedbackIcon target="mobile">{tab.icon}</CartFeedbackIcon> : tab.icon}
               {tab.badge !== undefined && tab.badge > 0 && (
-                <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full text-[7px] font-extrabold text-mocha-bg bg-mocha-accent flex items-center justify-center pointer-events-none">
+                <span data-cart-count={tab.badge} className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full text-[7px] font-extrabold text-mocha-bg bg-mocha-accent flex items-center justify-center pointer-events-none">
                   {tab.badge}
                 </span>
               )}

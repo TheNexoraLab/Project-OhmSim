@@ -1,0 +1,44 @@
+/* Home's compact reference surfaces retain full 44px interaction targets.
+   Scoped to the Home variant; Catalog and related cards keep their styling. */
+.action {
+  position: relative;
+  isolation: isolate;
+  min-width: 44px;
+  min-height: 44px;
+  border: none;
+  border-radius: var(--radius-small);
+  background: none;
+  box-shadow: none;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.action::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 8px 0;
+  border: 1px solid var(--mocha-border-strong);
+  border-radius: var(--radius-small);
+  background: var(--mocha-panel-high);
+  pointer-events: none;
+  transition: border-color 150ms;
+}
+
+.cart::before {
+  background: var(--gradient-button);
+}
+
+.details:hover::before,
+.cart:not(:disabled):hover::before {
+  border-color: var(--mocha-accent);
+}
+
+.bom:hover::before,
+.bom[aria-expanded="true"]::before {
+  border-color: var(--mocha-accent-secondary);
+}
+
+.bom[aria-expanded="true"]::before {
+  background: var(--mocha-panel-raised);
+}
