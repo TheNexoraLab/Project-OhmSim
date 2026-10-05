@@ -153,76 +153,72 @@ export function CartClient() {
                   >
                     {/* Bundle Header */}
                     <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => toggleBundle(bundle.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          toggleBundle(bundle.id);
-                        }
-                      }}
-                      className="flex items-center gap-3 px-4 py-3 select-none cursor-pointer"
+                      className="flex items-center gap-3 px-4 py-3 select-none"
                       style={{
                         background: palette.bg,
                         borderBottom: isExpanded ? `1px solid ${palette.border}` : "none",
                       }}
                     >
-                      <div
-                        className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border"
-                        style={{ background: palette.bg, borderColor: palette.border, color: palette.solid }}
+                      <button
+                        type="button"
+                        onClick={() => toggleBundle(bundle.id)}
+                        aria-expanded={isExpanded}
+                        data-bundle-toggle
+                        className="flex-1 flex items-center gap-3 text-left min-w-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-mocha-accent rounded-lg"
                       >
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                          <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                          <line x1="12" y1="22.08" x2="12" y2="12" />
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border"
+                          style={{ background: palette.bg, borderColor: palette.border, color: palette.solid }}
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                            <line x1="12" y1="22.08" x2="12" y2="12" />
+                          </svg>
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <span className="text-[10px] font-bold uppercase tracking-wider block" style={{ color: palette.solid }}>
+                            BOM Project Bundle
+                          </span>
+                          <h2 className="text-sm font-bold text-mocha-text truncate">
+                            {bundle.bomName}
+                          </h2>
+                        </div>
+
+                        <div className="text-right shrink-0 mr-1">
+                          <p className="text-[11px] text-mocha-text-muted">
+                            {bundleItemCount} {bundleItemCount === 1 ? "unit" : "units"}
+                          </p>
+                          <p className="text-sm font-bold font-mono" style={{ color: palette.solid }}>
+                            {formatPrice(bundleSubtotal)}
+                          </p>
+                        </div>
+
+                        {/* Chevron */}
+                        <svg
+                          className="w-4 h-4 text-mocha-text-muted transition-transform shrink-0"
+                          style={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <span className="text-[10px] font-bold uppercase tracking-wider block" style={{ color: palette.solid }}>
-                          BOM Project Bundle
-                        </span>
-                        <h2 className="text-sm font-bold text-mocha-text truncate">
-                          {bundle.bomName}
-                        </h2>
-                      </div>
-
-                      <div className="text-right shrink-0 mr-1">
-                        <p className="text-[11px] text-mocha-text-muted">
-                          {bundleItemCount} {bundleItemCount === 1 ? "unit" : "units"}
-                        </p>
-                        <p className="text-sm font-bold font-mono" style={{ color: palette.solid }}>
-                          {formatPrice(bundleSubtotal)}
-                        </p>
-                      </div>
+                      </button>
 
                       {/* Remove Entire Bundle Button */}
                       <button
                         type="button"
                         aria-label={`Remove bundle ${bundle.bomName}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeBundleFromCart(bundle.id);
-                        }}
+                        onClick={() => removeBundleFromCart(bundle.id)}
                         className="w-7 h-7 flex items-center justify-center rounded-lg text-mocha-text-muted hover:text-mocha-danger hover:bg-mocha-danger/10 transition-colors shrink-0"
                       >
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </button>
-
-                      {/* Chevron */}
-                      <svg
-                        className="w-4 h-4 text-mocha-text-muted transition-transform shrink-0"
-                        style={{ transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)" }}
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                      </svg>
                     </div>
 
                     {/* Expanded Bundle Items */}
