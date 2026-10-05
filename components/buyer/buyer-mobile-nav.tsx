@@ -129,7 +129,7 @@ export function BuyerMobileBottomNav() {
     >
       {tabs.map((tab) => {
         const isActive = pathname === tab.href || (tab.href !== "/home" && pathname.startsWith(tab.href));
-        const isImplemented = tab.href === "/home" || tab.href === "/products";
+        const isImplemented = tab.href === "/home" || tab.href === "/products" || tab.href === "/cart";
         return (
           <Link
             key={tab.href}

@@ -130,7 +130,7 @@ export function BuyerHeader() {
       <nav className="flex items-center gap-0.5" aria-label="Buyer Primary Navigation">
         {navLinks.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/home" && pathname.startsWith(item.href));
-          const isImplemented = item.href === "/home" || item.href === "/products";
+          const isImplemented = item.href === "/home" || item.href === "/products" || item.href === "/bom";
           return (
             <Link
               key={item.href}
@@ -233,11 +233,6 @@ export function BuyerHeader() {
 
         <Link
           href="/cart"
-          prefetch={false}
-          onClick={(e) => {
-            e.preventDefault();
-            toast("Shopping Cart is scheduled for Batch 2", "info");
-          }}
           aria-label="View shopping cart"
           className="relative min-w-[44px] min-h-[44px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >

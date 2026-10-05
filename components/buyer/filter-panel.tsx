@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import Link from "next/link";
 import type { BomProject } from "@/types/product";
 import { DualSlider, SingleSlider } from "@/components/ui/slider";
-import { toast } from "@/components/ui/toast";
 
 interface FilterPanelProps {
   voltage: [number, number];
@@ -136,12 +135,7 @@ export function FilterPanel({
           {bomProjects.map((proj) => (
             <Link
               key={proj.id}
-              href="/bom"
-              prefetch={false}
-              onClick={(e) => {
-                e.preventDefault();
-                toast("BOM workspace is scheduled for Batch 2", "info");
-              }}
+              href={`/bom?id=${proj.id}`}
               className="text-left px-2.5 py-2 min-h-[44px] flex flex-col justify-center bg-mocha-panel-high border border-mocha-border hover:border-mocha-border-strong rounded-xl shadow-sm transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent block"
             >
               <p className="text-[11px] font-medium leading-tight text-mocha-text truncate">
