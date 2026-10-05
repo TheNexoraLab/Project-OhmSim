@@ -34,10 +34,10 @@ export default function BuyerHomePage() {
   ];
 
   return (
-    <div className="flex-1 max-w-[1280px] w-full mx-auto p-3 sm:p-6 flex flex-col">
+    <div data-buyer-home className="flex-1 w-full p-3 sm:p-6 flex flex-col bg-[image:var(--gradient-page)]">
       {/* Welcome Heading */}
       <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-mocha-text">
+        <h1 className="text-xl font-bold tracking-tight text-mocha-text">
           Welcome back!
         </h1>
         <p className="text-sm mt-1 text-mocha-text-muted">
@@ -46,14 +46,14 @@ export default function BuyerHomePage() {
       </div>
 
       {/* 3 Metric Cards Grid (No Carousel) */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         {stats.map((s) => (
           <div
             key={s.label}
             id={`metric-${s.label.toLowerCase().replace(/\s+/g, "-")}`}
             className="p-4 rounded-xl bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border shadow-[0_12px_30px_rgba(0,0,0,0.14)]"
           >
-            <p className={`text-2xl sm:text-3xl font-bold font-mono ${s.color}`}>
+            <p className={`text-2xl font-bold font-mono ${s.color}`}>
               {s.value}
             </p>
             <p className="text-[11px] mt-1 text-mocha-text-muted">{s.label}</p>
@@ -69,11 +69,12 @@ export default function BuyerHomePage() {
       </div>
 
       {/* Desktop Product Grid */}
-      <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+      <div data-home-featured className="hidden md:grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
         {featured.map((p, idx) => (
           <ProductCard
             key={p.id}
             product={p}
+            variant="home"
             align={idx % 4 === 0 ? "left" : "right"}
             cartCount={cart[p.id] ?? 0}
             onCart={() => addToCart(p.id)}

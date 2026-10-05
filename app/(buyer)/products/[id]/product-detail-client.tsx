@@ -13,6 +13,7 @@ import { ProductCard } from "@/components/buyer/product-card";
 import { MobileProductCard } from "@/components/buyer/mobile-product-card";
 import { BomChooserPopover } from "@/components/buyer/bom-chooser-popover";
 import { toast } from "@/components/ui/toast";
+import { useCartFeedback } from "@/components/buyer/cart-feedback";
 
 interface ProductDetailClientProps {
   product: Product;
@@ -21,6 +22,7 @@ interface ProductDetailClientProps {
 export function ProductDetailClient({ product }: ProductDetailClientProps) {
   const { cart, addToCart } = useCart();
   const { bomProjects, addToBomProject } = useBom();
+  const { flyToCart } = useCartFeedback();
 
   const bomTriggerRef = useRef<HTMLButtonElement>(null);
   const [bomOpen, setBomOpen] = useState(false);
@@ -41,14 +43,15 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
   // Obtain related products strictly via the approved service boundary
   const related = getRelatedProductsSync(product.id, product.category, 4);
 
-  const handleAddToCart = () => {
-    addToCart(product.id, qty);
-    // Reset stepper to 1 or remaining
-    setQty(1);
+  const handleAddToCart = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (addToCart(product.id, qty)) {
+      flyToCart(event.currentTarget, product.image);
+      setQty(1);
+    }
   };
 
   return (
-    <div className="flex-1 max-w-[1240px] w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
+    <div data-cart-source className="flex-1 max-w-[1240px] w-full mx-auto p-4 sm:p-6 flex flex-col gap-6">
       {/* Breadcrumb Navigation */}
       <nav aria-label="Breadcrumbs" className="flex items-center gap-2 text-[11px] text-mocha-text-muted">
         <Link href="/home" className="hover:text-mocha-accent transition-colors">

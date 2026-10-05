@@ -6,11 +6,12 @@ import Link from "next/link";
 import type { Product, BomProject } from "@/types/product";
 import { StockBadge } from "@/components/ui/badge";
 import { BomChooserPopover } from "./bom-chooser-popover";
+import { useCartFeedback } from "./cart-feedback";
 
 interface MobileProductCardProps {
   product: Product;
   cartCount?: number;
-  onCart: () => void;
+  onCart: () => boolean;
   onAddToBomProject?: (projectId: string) => void;
   bomProjects?: BomProject[];
   align?: "left" | "right" | "auto";
@@ -26,6 +27,7 @@ export function MobileProductCard({
 }: MobileProductCardProps) {
   const [bomOpen, setBomOpen] = useState(false);
   const bomTriggerRef = useRef<HTMLButtonElement>(null);
+  const { flyToCart } = useCartFeedback();
 
   const formatPrice = (price: number) => {
     return `₱${price.toLocaleString("en-PH", { minimumFractionDigits: 2 })}`;
@@ -36,7 +38,7 @@ export function MobileProductCard({
   const isCartDisabled = isOutOfStock || isMaxInCart;
 
   return (
-    <div className="relative flex flex-col bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border rounded-[22px] shadow-[0_12px_30px_rgba(0,0,0,0.14)]">
+    <div data-cart-source className="relative flex flex-col bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border rounded-[22px] shadow-[0_12px_30px_rgba(0,0,0,0.14)]">
       <Link
         href={`/products/${product.id}`}
         aria-label={`View details for ${product.name}`}
@@ -88,7 +90,9 @@ export function MobileProductCard({
         <div className="flex items-center gap-1.5 mt-2">
           <button
             type="button"
-            onClick={onCart}
+            onClick={event => {
+              if (onCart()) flyToCart(event.currentTarget, product.image);
+            }}
             disabled={isCartDisabled}
             aria-disabled={isCartDisabled}
             aria-label={

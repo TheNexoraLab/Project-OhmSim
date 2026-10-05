@@ -1,15 +1,15 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useMemo, useCallback, useRef } from "react";
-import type { Product, CartBundle } from "@/types/product";
+import React, { createContext, useContext, useState, useMemo, useCallback, useRef } from "react";
+import type { CartBundle } from "@/types/product";
 import { getProductByIdSync } from "@/services/catalog-service";
 import { toast } from "@/components/ui/toast";
 
 export interface CartContextValue {
   cart: Record<string, number>;
   cartBundles: CartBundle[];
-  addToCart: (productOrId: string | Product, qty?: number) => boolean;
-  setCartQty: (productOrId: string | Product, qty: number) => boolean;
+  addToCart: (productId: string, qty?: number) => boolean;
+  setCartQty: (productId: string, qty: number) => boolean;
   removeFromCart: (productId: string) => void;
   addBundleToCart: (
     bomId: string,
@@ -23,75 +23,19 @@ export interface CartContextValue {
   cartSubtotal: number;
   deliveryFee: number;
   totalAmount: number;
-  getRemainingStock: (productOrId: string | Product) => number;
-  canAddToCart: (productOrId: string | Product, qty?: number) => boolean;
+  getRemainingStock: (productId: string) => number;
+  canAddToCart: (productId: string, qty?: number) => boolean;
 }
 
-export function executeCartOperation(
-  action:
-    | { type: "add"; product: Product | string; qty?: number }
-    | { type: "set"; product: Product | string; qty: number }
-    | { type: "remove"; productId: string }
-    | { type: "clear" },
-  currentCart: Record<string, number>
-): { ok: boolean; nextCart: Record<string, number>; reason?: string } {
-  if (action.type === "clear") {
-    return { ok: true, nextCart: {} };
+// Runtime validation still applies to JS callers. Inventory comes only from the
+// service, never from a caller-supplied Product object or stock value.
+function getCartProduct(productId: string) {
+  if (typeof productId !== "string" || !productId.trim()) return undefined;
+  const product = getProductByIdSync(productId.trim());
+  if (!product || !Number.isSafeInteger(product.stock) || product.stock < 0) {
+    return undefined;
   }
-  if (action.type === "remove") {
-    const next = { ...currentCart };
-    delete next[action.productId];
-    return { ok: true, nextCart: next };
-  }
-
-  const product =
-    typeof action.product === "object" && action.product !== null
-      ? action.product
-      : typeof action.product === "string" && action.product.trim()
-      ? getProductByIdSync(action.product.trim())
-      : undefined;
-
-  if (!product || !product.id || typeof product.id !== "string") {
-    return { ok: false, nextCart: currentCart, reason: "invalid-id" };
-  }
-
-  if (action.type === "add") {
-    const qty = action.qty ?? 1;
-    if (!Number.isInteger(qty) || qty <= 0) {
-      return { ok: false, nextCart: currentCart, reason: "invalid-qty" };
-    }
-    if (product.stock <= 0) {
-      return { ok: false, nextCart: currentCart, reason: "out-of-stock" };
-    }
-    const current = currentCart[product.id] ?? 0;
-    const remaining = product.stock - current;
-    if (current >= product.stock || qty > remaining) {
-      return { ok: false, nextCart: currentCart, reason: "overstock" };
-    }
-    return {
-      ok: true,
-      nextCart: { ...currentCart, [product.id]: current + qty },
-    };
-  }
-
-  if (action.type === "set") {
-    const qty = action.qty;
-    if (!Number.isInteger(qty) || qty < 0) {
-      return { ok: false, nextCart: currentCart, reason: "invalid-qty" };
-    }
-    if (qty === 0) {
-      const next = { ...currentCart };
-      delete next[product.id];
-      return { ok: true, nextCart: next };
-    }
-    const capped = Math.min(qty, product.stock);
-    return {
-      ok: true,
-      nextCart: { ...currentCart, [product.id]: capped },
-    };
-  }
-
-  return { ok: false, nextCart: currentCart };
+  return product;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -100,32 +44,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<Record<string, number>>({});
   const [cartBundles, setCartBundles] = useState<CartBundle[]>([]);
 
-  // Synchronized refs tracking immediate committed in-memory state across queued calls in the same tick
+  // Actions update these refs immediately, so multiple calls in one React batch
+  // validate against the latest accepted quantities before the next render.
   const cartRef = useRef<Record<string, number>>(cart);
   const bundlesRef = useRef<CartBundle[]>(cartBundles);
 
-  useEffect(() => {
-    cartRef.current = cart;
-  }, [cart]);
-
-  useEffect(() => {
-    bundlesRef.current = cartBundles;
-  }, [cartBundles]);
-
-  const getProduct = useCallback((productOrId: string | Product): Product | undefined => {
-    if (typeof productOrId === "object" && productOrId !== null) {
-      return productOrId;
-    }
-    if (typeof productOrId === "string" && productOrId.trim()) {
-      return getProductByIdSync(productOrId.trim());
-    }
-    return undefined;
-  }, []);
-
   const getRemainingStock = useCallback(
-    (productOrId: string | Product): number => {
-      const product = getProduct(productOrId);
-      if (!product || !product.id) return 0;
+    (productId: string): number => {
+      const product = getCartProduct(productId);
+      if (!product) return 0;
 
       const inBundles = bundlesRef.current.reduce((sum, b) => {
         const item = b.items.find((i) => i.productId === product.id);
@@ -134,45 +61,45 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const currentInCart = (cartRef.current[product.id] ?? 0) + inBundles;
       return Math.max(0, product.stock - currentInCart);
     },
-    [getProduct]
+    []
   );
 
   const canAddToCart = useCallback(
-    (productOrId: string | Product, qty: number = 1): boolean => {
-      const product = getProduct(productOrId);
-      if (!product || !product.id || typeof product.id !== "string") return false;
-      if (!Number.isInteger(qty) || qty <= 0) return false;
+    (productId: string, qty: number = 1): boolean => {
+      const product = getCartProduct(productId);
+      if (!product) return false;
+      if (!Number.isSafeInteger(qty) || qty <= 0) return false;
       if (product.stock <= 0) return false;
 
-      const remaining = getRemainingStock(product);
+      const remaining = getRemainingStock(product.id);
       return qty <= remaining;
     },
-    [getProduct, getRemainingStock]
+    [getRemainingStock]
   );
 
   const addToCart = useCallback(
-    (productOrId: string | Product, qty: number = 1): boolean => {
+    (requestedId: string, qty: number = 1): boolean => {
       // 1. Validate Product
-      const product = getProduct(productOrId);
-      if (!product || !product.id || typeof product.id !== "string") {
+      const product = getCartProduct(requestedId);
+      if (!product) {
         toast("Invalid product specified", "error");
         return false;
       }
 
       // 2. Validate Positive Integer Quantity
-      if (!Number.isInteger(qty) || qty <= 0) {
+      if (!Number.isSafeInteger(qty) || qty <= 0) {
         toast("Quantity must be a positive integer", "error");
         return false;
       }
 
-      // 3. Validate Stock Boundary
+      // 3. Validate canonical stock
       if (product.stock <= 0) {
         toast(`${product.name || "Product"} is currently out of stock`, "error");
         return false;
       }
 
       const productId = product.id;
-      const remaining = getRemainingStock(product);
+      const remaining = getRemainingStock(productId);
 
       if (remaining <= 0) {
         toast(
@@ -202,18 +129,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       toast(`Added ${qty > 1 ? `${qty}× ` : ""}${product.name} to cart`, "success");
       return true;
     },
-    [getProduct, getRemainingStock]
+    [getRemainingStock]
   );
 
   const setCartQty = useCallback(
-    (productOrId: string | Product, qty: number): boolean => {
-      const product = getProduct(productOrId);
-      if (!product || !product.id || typeof product.id !== "string") {
+    (requestedId: string, qty: number): boolean => {
+      const product = getCartProduct(requestedId);
+      if (!product) {
         toast("Invalid product specified", "error");
         return false;
       }
 
-      if (!Number.isInteger(qty) || qty < 0) {
+      if (!Number.isSafeInteger(qty) || qty < 0) {
         toast("Quantity must be a non-negative integer", "error");
         return false;
       }
@@ -227,6 +154,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         setCart(next);
         toast(`Removed ${product.name} from cart`, "info");
         return true;
+      }
+
+      if (product.stock === 0) {
+        toast(`${product.name} is currently out of stock`, "error");
+        return false;
       }
 
       // Check remaining stock considering bundles
@@ -258,7 +190,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setCart(next);
       return true;
     },
-    [getProduct]
+    []
   );
 
   const removeFromCart = useCallback((productId: string) => {
@@ -281,12 +213,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
       // Validate stock for all items in the bundle before committing
       for (const item of items) {
-        const product = getProduct(item.productId);
+        const product = getCartProduct(item.productId);
         if (!product) {
           toast(`Component ${item.productId} not found`, "error");
           return false;
         }
-        const remaining = getRemainingStock(product);
+        const remaining = getRemainingStock(product.id);
         if (item.qty > remaining) {
           toast(
             `Cannot transfer bundle: insufficient stock for ${product.name} (needs ${item.qty}, only ${remaining} available)`,
@@ -312,7 +244,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       toast(`Transferred ${totalItems} components from "${bomName}" to cart!`, "success");
       return true;
     },
-    [getProduct, getRemainingStock]
+    [getRemainingStock]
   );
 
   // Pure non-destructive bundle removal: removes ONLY the bundle, leaves standalone items untouched
@@ -331,7 +263,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       const bundle = bundlesRef.current.find((b) => b.id === bundleId);
       if (!bundle) return false;
 
-      const product = getProduct(productId);
+      const product = getCartProduct(productId);
       if (!product) return false;
 
       if (qty <= 0) {
@@ -351,7 +283,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Check stock limit for this product
-      // Total in other bundles + standalone
       const inOtherBundles = bundlesRef.current.reduce((sum, b) => {
         if (b.id === bundleId) return sum;
         const item = b.items.find((i) => i.productId === productId);
@@ -379,7 +310,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return true;
     },
-    [getProduct, removeBundleFromCart]
+    [removeBundleFromCart]
   );
 
   const clearCart = useCallback(() => {

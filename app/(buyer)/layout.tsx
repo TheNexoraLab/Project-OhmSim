@@ -6,6 +6,7 @@ import { BomProvider } from "@/hooks/use-bom";
 import { BuyerHeader } from "@/components/buyer/buyer-header";
 import { BuyerMobileHeader, BuyerMobileBottomNav } from "@/components/buyer/buyer-mobile-nav";
 import { ToastContainer } from "@/components/ui/toast";
+import { CartFeedbackProvider } from "@/components/buyer/cart-feedback";
 
 function BuyerShell({ children }: { children: React.ReactNode }) {
   return (
@@ -44,7 +45,9 @@ export default function BuyerLayout({
   return (
     <CartProvider>
       <BomProvider>
-        <BuyerShell>{children}</BuyerShell>
+        <CartFeedbackProvider>
+          <BuyerShell>{children}</BuyerShell>
+        </CartFeedbackProvider>
       </BomProvider>
     </CartProvider>
   );
