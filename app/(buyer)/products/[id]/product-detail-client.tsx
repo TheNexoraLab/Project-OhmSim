@@ -12,7 +12,6 @@ import { SpecsTable } from "@/components/buyer/specs-table";
 import { ProductCard } from "@/components/buyer/product-card";
 import { MobileProductCard } from "@/components/buyer/mobile-product-card";
 import { BomChooserPopover } from "@/components/buyer/bom-chooser-popover";
-import { toast } from "@/components/ui/toast";
 import { useCartFeedback } from "@/components/buyer/cart-feedback";
 
 interface ProductDetailClientProps {
@@ -181,11 +180,6 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
 
             <Link
               href="/chat"
-              prefetch={false}
-              onClick={(e) => {
-                e.preventDefault();
-                toast("Support Chat is scheduled for Batch 3", "info");
-              }}
               className="w-full min-h-[44px] flex items-center justify-center gap-2 font-bold text-[12px] bg-transparent border border-mocha-border-strong text-mocha-text-muted hover:text-mocha-text hover:bg-mocha-panel-raised rounded-xl transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent"
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
