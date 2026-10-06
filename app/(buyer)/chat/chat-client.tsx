@@ -175,17 +175,18 @@ export function ChatClient() {
   };
 
   return (
-    <div className="flex-none flex flex-col h-[calc(100dvh-112px)] md:h-[calc(100dvh-64px)] min-h-[320px] overflow-hidden bg-mocha-bg">
-      <div className="flex-1 min-h-0 flex overflow-hidden max-w-[1400px] w-full mx-auto border-x border-mocha-border">
+    <div data-buyer-chat className="flex-none flex flex-col h-[calc(100dvh-120px)] md:h-[calc(100dvh-64px)] min-h-0 overflow-hidden bg-mocha-bg">
+      <div data-chat-layout className="flex-1 min-h-0 min-w-0 flex overflow-hidden w-full">
         {/* Sidebar: Conversations List */}
         <aside
-          className={`w-full md:w-80 lg:w-96 shrink-0 flex flex-col bg-mocha-panel border-r border-mocha-border overflow-hidden transition-all ${
+          data-chat-sidebar
+          className={`w-full md:w-64 shrink-0 flex flex-col bg-mocha-panel border-r border-mocha-border overflow-hidden ${
             mobileShowList ? "flex" : "hidden md:flex"
           }`}
         >
           {/* Sidebar Header */}
           <div className="p-4 border-b border-mocha-border flex items-center justify-between shrink-0">
-            <div>
+            <div className="min-w-0">
               <h1 className="text-base font-bold text-mocha-text tracking-tight flex items-center gap-2">
                 Support Chat
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-mocha-accent/15 text-mocha-accent">
@@ -211,7 +212,7 @@ export function ChatClient() {
             </button>
           </div>
 
-          {/* New Conversation Inline Modal / Form */}
+          {/* New Conversation Inline Form */}
           {isComposing && (
             <form
               onSubmit={handleCreateNewConvo}
@@ -333,6 +334,7 @@ export function ChatClient() {
 
         {/* Main Chat Area */}
         <section
+          data-chat-thread
           className={`flex-1 min-w-0 min-h-0 flex flex-col bg-mocha-bg overflow-hidden ${
             mobileShowList ? "hidden md:flex" : "flex"
           }`}
@@ -388,7 +390,7 @@ export function ChatClient() {
                 </p>
               )}
               {/* Messages Scroll Area */}
-              <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-6 flex flex-col gap-4">
+              <div data-chat-messages className="flex-1 min-h-0 overflow-y-auto p-4 md:px-6 md:py-5 flex flex-col gap-4">
                 {activeConvo.messages.map((msg) => {
                   const isBuyer = msg.from === "buyer";
                   const isSystem = msg.from === "system";
@@ -399,7 +401,7 @@ export function ChatClient() {
                       const prod = getProductByIdSync(msg.productId);
                       if (!prod) return null;
                       return (
-                        <div key={msg.id} className="mx-auto max-w-sm w-full p-3 rounded-2xl bg-mocha-panel border border-mocha-border shadow-sm flex items-center gap-3">
+                        <div key={msg.id} data-chat-reference="product" className="self-start max-w-xs w-full shrink-0 p-3 rounded-panel bg-mocha-panel border border-mocha-border shadow-sm flex items-center gap-3">
                           <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-mocha-border bg-mocha-bg shrink-0">
                             <Image src={prod.image} alt={prod.name} fill sizes="48px" className="object-cover" />
                           </div>
@@ -420,10 +422,10 @@ export function ChatClient() {
                         ? ORDER_STATUS_META[msg.orderStatus as keyof typeof ORDER_STATUS_META]
                         : null;
                       return (
-                        <div key={msg.id} className="mx-auto max-w-sm w-full p-3 rounded-2xl bg-mocha-panel border border-mocha-border shadow-sm flex items-center justify-between gap-3">
-                          <div>
+                        <div key={msg.id} data-chat-reference="order" className="self-start max-w-xs w-full shrink-0 p-3 rounded-panel bg-mocha-panel border border-mocha-border shadow-sm flex items-center justify-between gap-3">
+                          <div className="min-w-0">
                             <span className="text-[9px] font-bold uppercase tracking-wider text-mocha-text-muted">Referenced Order</span>
-                            <p className="text-xs font-bold font-mono text-mocha-text">{msg.orderNumber}</p>
+                            <p className="text-xs font-bold font-mono text-mocha-text break-words">{msg.orderNumber}</p>
                             {statusMeta && (
                               <span
                                 className="text-[9px] font-bold px-2 py-0.5 rounded-full border mt-1 inline-block"
@@ -447,10 +449,12 @@ export function ChatClient() {
                   return (
                     <div
                       key={msg.id}
-                      className={`flex flex-col ${isBuyer ? "items-end" : "items-start"}`}
+                      data-chat-message-from={msg.from}
+                      className={`shrink-0 flex flex-col ${isBuyer ? "items-end" : "items-start"}`}
                     >
                       <div
-                        className={`max-w-[85%] md:max-w-[70%] rounded-2xl p-3.5 shadow-sm text-xs leading-relaxed ${
+                        data-chat-bubble
+                        className={`max-w-[85%] md:max-w-sm rounded-panel px-4 py-3 shadow-sm text-sm leading-snug ${
                           isBuyer
                             ? "bg-mocha-accent text-mocha-bg font-medium rounded-tr-sm"
                             : "bg-mocha-panel border border-mocha-border text-mocha-text rounded-tl-sm"
@@ -516,7 +520,7 @@ export function ChatClient() {
 
               <p role="status" aria-live="polite" className="sr-only">{activeConvo.messages.length} messages in {activeConvo.name}.</p>
               {/* Composer */}
-              <div className="p-3 md:p-4 bg-mocha-panel border-t border-mocha-border shrink-0 flex flex-col gap-2">
+              <div data-chat-composer className="p-3 md:p-4 bg-mocha-panel border-t border-mocha-border shrink-0 flex flex-col gap-2">
                 <p role="alert" className="text-xs text-mocha-danger">{attachmentError}</p>
                 {/* Pending Attachment Preview */}
                 {pendingAttachment && (
