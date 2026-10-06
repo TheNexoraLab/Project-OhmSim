@@ -63,6 +63,7 @@ export interface MockOrder {
   recipientName: string;
   contactNumber: string;
   deliveryAddress?: string;
+  trackingNo?: string | null;
   notes?: string;
   subtotalAmount: number;
   deliveryFee: number;

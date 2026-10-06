@@ -7,8 +7,10 @@ import { usePathname } from "next/navigation";
 import { useCart } from "@/hooks/use-cart";
 import { toast } from "@/components/ui/toast";
 import { CartFeedbackIcon } from "./cart-feedback";
+import { useNotificationCount } from "./use-notification-count";
 
 export function BuyerMobileHeader() {
+  const unreadCount = useNotificationCount();
   return (
     <header className="flex md:hidden items-center justify-between px-3 h-14 shrink-0 sticky top-0 z-30 bg-mocha-bg-secondary/95 backdrop-blur-[20px] border-b border-mocha-border shadow-[0_1px_8px_rgba(0,0,0,0.32)]">
       <Link
@@ -38,20 +40,17 @@ export function BuyerMobileHeader() {
         </Link>
         <Link
           href="/notifications"
-          prefetch={false}
-          onClick={(e) => {
-            e.preventDefault();
-            toast("Notifications are scheduled for Batch 3", "info");
-          }}
           aria-label="View notifications"
           className="relative min-w-[44px] min-h-[44px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
-          <span className="absolute top-2 right-2 w-3.5 h-3.5 rounded-full text-[7px] font-extrabold text-mocha-bg bg-mocha-accent flex items-center justify-center pointer-events-none">
-            1
-          </span>
+          {unreadCount > 0 && (
+            <span data-notification-count={unreadCount} className="absolute top-2 right-2 w-3.5 h-3.5 rounded-full text-[7px] font-extrabold text-mocha-bg bg-mocha-accent flex items-center justify-center pointer-events-none">
+              {unreadCount}
+            </span>
+          )}
         </Link>
       </div>
     </header>
@@ -129,7 +128,11 @@ export function BuyerMobileBottomNav() {
     >
       {tabs.map((tab) => {
         const isActive = pathname === tab.href || (tab.href !== "/home" && pathname.startsWith(tab.href));
-        const isImplemented = tab.href === "/home" || tab.href === "/products" || tab.href === "/cart";
+        const isImplemented =
+          tab.href === "/home" ||
+          tab.href === "/products" ||
+          tab.href === "/cart" ||
+          tab.href === "/orders";
         return (
           <Link
             key={tab.href}
