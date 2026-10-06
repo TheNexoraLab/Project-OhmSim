@@ -185,8 +185,8 @@ async function run() {
     await page.setViewportSize({ width: 1440, height: 900 });
 
     const touchTargetSelectors = [
-      { name: "Footer Privacy link", selector: "footer button:has-text('Privacy')" },
-      { name: "Footer Terms link", selector: "footer button:has-text('Terms')" },
+      { name: "Footer Privacy link", selector: "footer a[href='/privacy']" },
+      { name: "Footer Terms link", selector: "footer a[href='/terms']" },
       { name: "Footer Contact link", selector: "footer button:has-text('Contact')" },
       { name: "Category Browse MCU", selector: "button[aria-label='Browse Microcontrollers catalog']" },
       { name: "Category Browse SNS", selector: "button[aria-label='Browse Sensors catalog']" },
@@ -372,22 +372,16 @@ async function run() {
       }
     }
 
-    // 8. Neutral Privacy Description Verification
-    console.log("\n8. Verifying neutral privacy description...");
+    // 8. Real Privacy and Terms destinations
+    console.log("\n8. Verifying Privacy and Terms navigation...");
     await page.setViewportSize({ width: 1440, height: 900 });
-    const privacyBtn = await page.$("footer button:has-text('Privacy')");
-    if (privacyBtn) {
-      await privacyBtn.click();
-      await page.waitForTimeout(200);
-
-      const privacyText = await page.textContent("#preview-dialog-description");
-      assert(
-        privacyText && privacyText.includes("Privacy information is not available in this landing-page preview."),
-        `Privacy dialog uses approved neutral wording: "${privacyText}"`
-      );
-
-      await page.keyboard.press("Escape");
-      await page.waitForTimeout(200);
+    for (const policy of ["privacy", "terms"]) {
+      await page.locator(`footer a[href='/${policy}']`).click();
+      await page.waitForURL(`**/${policy}`);
+      await page.getByRole("heading", { level: 1 }).waitFor();
+      assert((await page.locator("h1").textContent()).toLowerCase() === policy, `${policy} opens a real policy page`);
+      await page.getByRole("link", { name: "Back to home", exact: true }).click();
+      await page.waitForURL(LANDING_URL + "/");
     }
 
     // 9. Capture Full-Page Screenshots (cleanly scrolled to top)
