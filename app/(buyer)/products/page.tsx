@@ -134,7 +134,7 @@ function CatalogContent() {
   }, [filtered, sortOption]);
 
   return (
-    <div className="flex-1 max-w-[1280px] w-full mx-auto p-3 sm:p-4 lg:p-6 flex flex-col gap-4">
+    <div data-buyer-catalog className="flex-1 min-w-0 w-full p-3 sm:p-4 lg:p-6 flex flex-col gap-4">
       {/* Mobile Search Bar (Restored from handoff reference lines 3684-3693) */}
       <div className="md:hidden flex items-center gap-2 px-3.5 py-2 rounded-xl bg-mocha-bg-secondary border border-mocha-border focus-within:border-mocha-border-strong transition-colors min-h-[44px]">
         <label htmlFor="mobile-catalog-search" className="sr-only">
@@ -200,7 +200,7 @@ function CatalogContent() {
       </div>
 
       {/* Main Layout Area — flex-col on mobile (stacked), md:flex-row on desktop */}
-      <div className="flex flex-col md:flex-row flex-1 gap-4 items-start w-full">
+      <div data-catalog-layout className="flex flex-col md:flex-row flex-1 gap-4 items-start min-w-0 w-full">
         {/* Left Sidebar Parametric Filter (Desktop) */}
         <FilterPanel
           idPrefix="desktop"
@@ -234,7 +234,7 @@ function CatalogContent() {
         )}
 
         {/* Product Grid Area */}
-        <div className="flex-1 flex flex-col gap-3 min-w-0 w-full">
+        <div data-catalog-results className="flex-1 flex flex-col gap-3 min-w-0 w-full">
           {/* Header Controls: Result Count & Functional Sort */}
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <p className="text-[11px] text-mocha-text-muted">
