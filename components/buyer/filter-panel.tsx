@@ -35,7 +35,8 @@ export function FilterPanel({
 
   return (
     <div
-      className={`shrink-0 flex flex-col overflow-y-auto no-scrollbar bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border rounded-[18px] ${
+      data-catalog-filter-panel
+      className={`shrink-0 min-w-0 flex flex-col bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border rounded-[18px] ${
         className || "w-56"
       }`}
     >
@@ -65,7 +66,9 @@ export function FilterPanel({
         </button>
 
         {filtersOpen && (
-          <div id={controlsId} className="px-3 pb-3 flex flex-col gap-4">
+          // Room for the sliders' 44px hit areas at both track endpoints.
+          // Let the page scroll naturally instead of creating a nested scroller.
+          <div id={controlsId} className="px-5 pb-3 flex flex-col gap-4">
             <div>
               <p className="text-[9px] font-semibold uppercase tracking-wider mb-2 text-mocha-text-muted">
                 Operating Voltage
@@ -136,7 +139,7 @@ export function FilterPanel({
             <Link
               key={proj.id}
               href={`/bom?id=${proj.id}`}
-              className="text-left px-2.5 py-2 min-h-[44px] flex flex-col justify-center bg-mocha-panel-high border border-mocha-border hover:border-mocha-border-strong rounded-xl shadow-sm transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent block"
+              className="min-w-0 text-left px-2.5 py-2 min-h-[44px] flex flex-col justify-center bg-mocha-panel-high border border-mocha-border hover:border-mocha-border-strong rounded-xl shadow-sm transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent"
             >
               <p className="text-[11px] font-medium leading-tight text-mocha-text truncate">
                 {proj.name}
