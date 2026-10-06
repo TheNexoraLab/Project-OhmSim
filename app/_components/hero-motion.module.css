@@ -1,0 +1,23 @@
+.circuits { position: absolute; inset: 0; pointer-events: none; }
+.left, .right { position: absolute; top: 0; width: 22%; max-width: 280px; height: 100%; overflow: hidden; fill: none; stroke: var(--mocha-accent); }
+.left { left: 0; }
+.right { right: 0; stroke: var(--mocha-accent-secondary); }
+.trace { opacity: .12; stroke-width: 1; }
+.pulse { stroke-width: 2; stroke-linecap: round; stroke-dasharray: 8 112; opacity: 0; animation: circuitFlow 6.7s linear infinite; animation-delay: -1.2s; }
+.delayed { animation-duration: 9.3s; animation-delay: -5.1s; animation-direction: reverse; }
+.teal { animation-duration: 7.9s; animation-delay: -3.4s; animation-direction: reverse; }
+.last { animation-duration: 11.1s; animation-delay: -8.2s; }
+@keyframes circuitFlow {
+  0% { stroke-dashoffset: 12; opacity: 0; }
+  12%, 82% { opacity: .4; }
+  100% { stroke-dashoffset: -100; opacity: 0; }
+}
+.statusDot { animation-iteration-count: 2; }
+@media (max-width: 767px) {
+  .left, .right { width: 12%; }
+  .circuits { opacity: .65; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pulse { animation: none !important; display: none; }
+  .statusDot { animation: none !important; }
+}

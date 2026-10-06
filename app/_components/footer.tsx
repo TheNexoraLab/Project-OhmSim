@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { usePreviewDialog } from "./preview-dialog";
 
 export function Footer() {
@@ -41,20 +42,18 @@ export function Footer() {
           className="flex items-center gap-2 sm:gap-4"
           aria-label="Footer legal and contact navigation"
         >
-          <button
-            type="button"
-            onClick={() => openPreview("Privacy")}
+          <Link
+            href="/privacy"
             className="text-xs sm:text-sm text-mocha-text-subtle hover:text-mocha-accent transition-colors min-h-[44px] min-w-[44px] px-3 py-2.5 inline-flex items-center justify-center rounded cursor-pointer focus-visible:outline-2 focus-visible:outline-mocha-accent"
           >
             Privacy
-          </button>
-          <button
-            type="button"
-            onClick={() => openPreview("Terms")}
+          </Link>
+          <Link
+            href="/terms"
             className="text-xs sm:text-sm text-mocha-text-subtle hover:text-mocha-accent transition-colors min-h-[44px] min-w-[44px] px-3 py-2.5 inline-flex items-center justify-center rounded cursor-pointer focus-visible:outline-2 focus-visible:outline-mocha-accent"
           >
             Terms
-          </button>
+          </Link>
           <button
             type="button"
             onClick={() => openPreview("Contact")}
