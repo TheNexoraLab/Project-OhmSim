@@ -66,10 +66,6 @@ export function PreviewDialogProvider({
         "The interactive Bill of Materials project manager is currently in development. You can review the BOM workflow below.",
       Contact:
         "Customer support and direct admin messaging will connect registered users with technicians via our real-time support system.",
-      Privacy:
-        "Privacy information is not available in this landing-page preview.",
-      Terms:
-        "Terms of service, warranty documentation, and return policies will accompany the operational release.",
     };
 
     setState({
