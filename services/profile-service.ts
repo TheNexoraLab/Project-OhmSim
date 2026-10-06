@@ -1,7 +1,7 @@
 import type { UserProfile, UserPreferences, UserAddress } from "@/types/profile";
 import { REGION_3_PROVINCES, Region3Province } from "@/types/order";
 import { INITIAL_USER_PROFILE, INITIAL_USER_PREFERENCES } from "@/lib/mocks/profile";
-import { INITIAL_SAVED_ADDRESSES } from "@/services/order-service";
+import { INITIAL_SAVED_ADDRESSES } from "@/lib/mocks/addresses";
 
 /**
  * Validation Helpers for Profile & Addresses

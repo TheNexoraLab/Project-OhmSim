@@ -223,12 +223,8 @@ export function BuyerHeader() {
 
         <Link
           href="/profile"
-          prefetch={false}
-          onClick={(e) => {
-            e.preventDefault();
-            toast("Profile is scheduled for Batch 4", "info");
-          }}
           aria-label="View profile"
+          aria-current={pathname === "/profile" ? "page" : undefined}
           className="min-w-[44px] min-h-[44px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">

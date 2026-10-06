@@ -132,7 +132,8 @@ export function BuyerMobileBottomNav() {
           tab.href === "/home" ||
           tab.href === "/products" ||
           tab.href === "/cart" ||
-          tab.href === "/orders";
+          tab.href === "/orders" ||
+          tab.href === "/profile";
         return (
           <Link
             key={tab.href}

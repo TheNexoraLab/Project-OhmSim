@@ -1,38 +1,12 @@
 import type { MockOrder, UserAddress, OrderStatus } from "@/types/order";
 import { INITIAL_ORDERS } from "@/lib/mocks/orders";
+import { getAddressesSnapshot } from "@/services/profile-service";
 
 /**
  * Pre-seeded saved addresses conforming to BR-048 (maximum 2 saved addresses)
  * and BR-045 (strictly Region 3 Central Luzon).
  */
-export const INITIAL_SAVED_ADDRESSES: UserAddress[] = [
-  {
-    id: "addr-home",
-    label: "Home / Dormitory",
-    recipientName: "Alex Rivera",
-    contactNumber: "09171234567",
-    region: "Region III",
-    province: "Pampanga",
-    cityMunicipality: "San Fernando",
-    barangay: "Dolores",
-    streetAddress: "123 Rizal Ave",
-    postalCode: "2000",
-    isDefault: true,
-  },
-  {
-    id: "addr-lab",
-    label: "Campus Electronics Lab",
-    recipientName: "Alex Rivera",
-    contactNumber: "09171234567",
-    region: "Region III",
-    province: "Pampanga",
-    cityMunicipality: "Angeles City",
-    barangay: "Balibago",
-    streetAddress: "456 MacArthur Hwy",
-    postalCode: "2009",
-    isDefault: false,
-  },
-];
+export { INITIAL_SAVED_ADDRESSES } from "@/lib/mocks/addresses";
 
 export const ORDER_STATUS_META: Record<
   OrderStatus,
@@ -148,7 +122,9 @@ export { computeDeliveryFee } from "@/lib/fulfillment";
 const placedOrdersStore: MockOrder[] = [...INITIAL_ORDERS];
 
 export function getSavedAddresses(): UserAddress[] {
-  return [...INITIAL_SAVED_ADDRESSES];
+  // Profile and future checkout readers share one address book, not two fixtures.
+  // Return detached entries so callers cannot mutate the subscribed snapshot.
+  return getAddressesSnapshot().map((address) => ({ ...address }));
 }
 
 export function createMockOrder(orderData: Omit<MockOrder, "id" | "orderNumber" | "createdAt" | "status">): MockOrder {

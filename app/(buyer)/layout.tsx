@@ -7,12 +7,15 @@ import { BuyerHeader } from "@/components/buyer/buyer-header";
 import { BuyerMobileHeader, BuyerMobileBottomNav } from "@/components/buyer/buyer-mobile-nav";
 import { ToastContainer } from "@/components/ui/toast";
 import { chatStore } from "@/services/chat-service";
+import { resetProfileStore } from "@/services/profile-service";
 import { CartFeedbackProvider } from "@/components/buyer/cart-feedback";
 
 function BuyerShell({ children }: { children: React.ReactNode }) {
-  // Sent attachment URLs and simulated replies belong to the retained Buyer session,
-  // not a single Chat page mount. Leaving Buyer disposes them.
-  useEffect(() => () => chatStore.cleanup(), []);
+  // Client navigation retains Buyer mock state; leaving the Buyer shell resets it.
+  useEffect(() => () => {
+    chatStore.cleanup();
+    resetProfileStore();
+  }, []);
   return (
     <div className="min-h-screen flex flex-col bg-mocha-bg text-mocha-text selection:bg-mocha-accent/30 selection:text-mocha-text w-full max-w-full overflow-x-clip">
       {/* Desktop Header */}

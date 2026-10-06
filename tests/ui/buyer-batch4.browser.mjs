@@ -64,6 +64,10 @@ console.log("=== OhmSim Buyer Batch 4 Verification Suite ===\n");
 console.log("0. Testing Production Profile & Address Invariants Directly...");
 
 const profileService = loadTsModule("services/profile-service.ts");
+const expectedOrdersCount = loadTsModule("services/order-service.ts").getMockOrders().length;
+const expectsOrdersRoute = expectedOrdersCount > 0;
+const screenshotDirectory = process.env.SCREENSHOT_DIR || "docs/design/buyer/screenshots";
+fs.mkdirSync(screenshotDirectory, { recursive: true });
 const { REGION_3_PROVINCES } = loadTsModule("types/order.ts");
 
 // 0.1 Phone Validation (11 digits starting with 09)
@@ -260,7 +264,7 @@ try {
           const parsed = new URL(locUrl);
           const baseOrigin = new URL(BUYER_URL).origin;
           if (
-            parsed.origin === baseOrigin &&
+            !expectsOrdersRoute && parsed.origin === baseOrigin &&
             parsed.pathname === "/orders" &&
             parsed.searchParams.has("_rsc") &&
             text.includes("404") &&
@@ -289,7 +293,7 @@ try {
         const parsed = new URL(resUrl);
         const baseOrigin = new URL(BUYER_URL).origin;
         if (
-          parsed.origin === baseOrigin &&
+          !expectsOrdersRoute && parsed.origin === baseOrigin &&
           parsed.pathname === "/orders" &&
           parsed.searchParams.has("_rsc") &&
           status === 404
@@ -337,7 +341,7 @@ try {
 
   // Dynamic Stats Sidebar Checks
   const ordersStat = await page.locator("#stat-orders-placed p:last-child").textContent();
-  assert.equal(ordersStat, "0", `Expected 0 placed orders in clean session, got ${ordersStat}`);
+  assert.equal(ordersStat, String(expectedOrdersCount), `Expected ${expectedOrdersCount} actual service orders, got ${ordersStat}`);
 
   const bomStat = await page.locator("#stat-bom-projects p:last-child").textContent();
   assert.equal(bomStat, "3", `Expected 3 BOM projects, got ${bomStat}`);
@@ -941,22 +945,22 @@ try {
   await page.waitForSelector("[data-hydrated='true']");
   await page.waitForSelector("#profile-hero-card");
   await page.waitForTimeout(250);
-  await page.screenshot({ path: "docs/design/buyer/screenshots/profile-desktop-1440.png", fullPage: true });
+  await page.screenshot({ path: path.join(screenshotDirectory, "profile-desktop-1440.png"), fullPage: true });
 
   await page.locator("#profile-tab-addresses").click();
   await page.waitForSelector("#profile-tabpanel-addresses");
   await page.waitForTimeout(250);
-  await page.screenshot({ path: "docs/design/buyer/screenshots/profile-addresses-desktop-1440.png", fullPage: true });
+  await page.screenshot({ path: path.join(screenshotDirectory, "profile-addresses-desktop-1440.png"), fullPage: true });
 
   await page.locator("#profile-tab-security").click();
   await page.waitForSelector("#profile-tabpanel-security");
   await page.waitForTimeout(250);
-  await page.screenshot({ path: "docs/design/buyer/screenshots/profile-security-desktop-1440.png", fullPage: true });
+  await page.screenshot({ path: path.join(screenshotDirectory, "profile-security-desktop-1440.png"), fullPage: true });
 
   await page.locator("#profile-tab-preferences").click();
   await page.waitForSelector("#profile-tabpanel-preferences");
   await page.waitForTimeout(250);
-  await page.screenshot({ path: "docs/design/buyer/screenshots/profile-preferences-desktop-1440.png", fullPage: true });
+  await page.screenshot({ path: path.join(screenshotDirectory, "profile-preferences-desktop-1440.png"), fullPage: true });
 
   // Mobile 390 Captures
   await page.setViewportSize({ width: 390, height: 844 });
@@ -964,12 +968,12 @@ try {
   await page.locator("#profile-tab-account").click();
   await page.waitForSelector("#profile-tabpanel-account");
   await page.waitForTimeout(250);
-  await page.screenshot({ path: "docs/design/buyer/screenshots/profile-mobile-390.png", fullPage: true });
+  await page.screenshot({ path: path.join(screenshotDirectory, "profile-mobile-390.png"), fullPage: true });
 
   await page.locator("#profile-tab-addresses").click();
   await page.waitForSelector("#profile-tabpanel-addresses");
   await page.waitForTimeout(250);
-  await page.screenshot({ path: "docs/design/buyer/screenshots/profile-addresses-mobile-390.png", fullPage: true });
+  await page.screenshot({ path: path.join(screenshotDirectory, "profile-addresses-mobile-390.png"), fullPage: true });
 
   // Open Edit State on Mobile 390
   await page.locator("#profile-tab-account").click();
@@ -978,7 +982,7 @@ try {
   await page.locator("#profile-edit-btn").click();
   await page.waitForSelector("#profile-save-btn");
   await page.waitForTimeout(250);
-  await page.screenshot({ path: "docs/design/buyer/screenshots/profile-edit-open-390.png", fullPage: true });
+  await page.screenshot({ path: path.join(screenshotDirectory, "profile-edit-open-390.png"), fullPage: true });
   await page.locator("#profile-cancel-btn").click();
   await page.waitForTimeout(250);
 
@@ -993,7 +997,7 @@ try {
   await page.locator("#add-address-trigger-btn").click();
   await page.waitForSelector("#new-address-form-panel");
   await page.waitForTimeout(250);
-  await page.screenshot({ path: "docs/design/buyer/screenshots/profile-add-address-open-390.png", fullPage: true });
+  await page.screenshot({ path: path.join(screenshotDirectory, "profile-add-address-open-390.png"), fullPage: true });
   await page.locator("#cancel-address-btn").click();
   await page.waitForTimeout(250);
 
@@ -1006,7 +1010,7 @@ try {
   await page.keyboard.press("ArrowRight");
   await page.waitForSelector("#profile-tabpanel-addresses");
   await page.waitForTimeout(250);
-  await page.screenshot({ path: "docs/design/buyer/screenshots/profile-keyboard-focus.png", fullPage: true });
+  await page.screenshot({ path: path.join(screenshotDirectory, "profile-keyboard-focus.png"), fullPage: true });
 
   console.log("PASS: Fresh screenshots captured (desktop, mobile, open edit, open add address, keyboard focus)");
 
@@ -1020,6 +1024,7 @@ try {
     );
   }
   assert.deepEqual(pageErrors, [], `Expected 0 real uncaught page errors, got: ${JSON.stringify(pageErrors)}`);
+  if (expectsOrdersRoute) assert.deepEqual(rscPrefetch404s, [], "Integrated Orders route must have no known-error exclusion");
 
   console.log(
     `\n>>> ALL OHMSIM BUYER BATCH 4 CORRECTIONS VERIFIED (0 uncaught errors, ${rscPrefetch404s.length} declared pre-Batch-3 /orders RSC prefetch 404s recorded) <<<`
