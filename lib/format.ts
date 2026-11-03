@@ -16,6 +16,7 @@ export function formatDate(isoString: string): string {
       month: "short",
       day: "numeric",
       year: "numeric",
+      timeZone: "Asia/Manila",
     });
   } catch {
     return isoString;
