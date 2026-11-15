@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { INITIAL_ORDERS } from "@/lib/mocks/orders";
 import { PRODUCTS as MOCK_PRODUCTS } from "@/lib/mocks/products";
 import { formatDate, formatPrice } from "@/lib/format";
@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { toast } from "@/components/ui/toast";
+import { getReports, type AdminReportsData } from "@/services/report-service";
 
 interface ProvinceDistributionRow {
   regionLabel: string;
@@ -82,9 +83,22 @@ const LIQUIDATION_BATCHES: LiquidationBatchRow[] = [
 ];
 
 export function ReportsClient() {
+  const [liveReports, setLiveReports] = useState<AdminReportsData | null>(null);
   const [selectedPeriodFilter, setSelectedPeriodFilter] = useState<
     "ALL" | "REMITTED" | "IN_SETTLEMENT"
   >("ALL");
+
+  useEffect(() => {
+    let ignore = false;
+    getReports().then((data) => {
+      if (!ignore && data) {
+        setLiveReports(data);
+      }
+    });
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   // Calculate financial telemetry derived from INITIAL_ORDERS + Monthly Liquidation Ledger
   const financialTelemetry = useMemo(() => {
@@ -197,6 +211,10 @@ export function ReportsClient() {
     [],
   );
 
+  const activeTelemetry = liveReports?.telemetry ?? financialTelemetry;
+  const activeFulfillmentBreakdown = liveReports?.fulfillmentBreakdown ?? fulfillmentBreakdown;
+  const activeLiquidationBatches = liveReports?.liquidationBatches ?? LIQUIDATION_BATCHES;
+
   // Category Revenue Contribution from MOCK_PRODUCTS
   const categoryBreakdown = useMemo(() => {
     const categories = [
@@ -214,20 +232,54 @@ export function ReportsClient() {
         ...cat,
         skuCount,
         amount: Math.round(
-          (financialTelemetry.grossRevenue * cat.sharePct) / 100,
+          (activeTelemetry.grossRevenue * cat.sharePct) / 100,
         ),
       };
     });
-  }, [financialTelemetry.grossRevenue]);
+  }, [activeTelemetry.grossRevenue]);
 
   const filteredLiquidationRows = useMemo(() => {
-    if (selectedPeriodFilter === "ALL") return LIQUIDATION_BATCHES;
-    return LIQUIDATION_BATCHES.filter(
+    if (selectedPeriodFilter === "ALL") return activeLiquidationBatches;
+    return activeLiquidationBatches.filter(
       (row) => row.remittanceStatus === selectedPeriodFilter,
     );
-  }, [selectedPeriodFilter]);
+  }, [selectedPeriodFilter, activeLiquidationBatches]);
 
   const handleExportLiquidation = () => {
+    const headers = [
+      "Settlement Cycle",
+      "Settlement Date",
+      "Total Orders",
+      "COD Collected (PHP)",
+      "Pickup Collected (PHP)",
+      "Shipping Fees (PHP)",
+      "Courier Handling Deduction (PHP)",
+      "Net Remitted (PHP)",
+      "Remittance Status",
+    ];
+    const rows = filteredLiquidationRows.map((r) => [
+      `"${r.period}"`,
+      `"${r.settlementDate}"`,
+      r.totalOrders,
+      r.codCollected.toFixed(2),
+      r.pickupCollected.toFixed(2),
+      r.shippingFeesCollected.toFixed(2),
+      r.courierHandlingDeduction.toFixed(2),
+      r.netRemitted.toFixed(2),
+      r.remittanceStatus,
+    ].join(","));
+
+    const csvContent = [headers.join(","), ...rows].join("\r\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `ohmsim-liquidation-ledger-${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
     toast(
       "Exported Region III Monthly Liquidation & COD Remittance Ledger (CSV).",
       "success",
@@ -282,7 +334,7 @@ export function ReportsClient() {
                 Gross Revenue
               </p>
               <p className="mt-2 font-mono text-2xl font-bold text-[#A6E3A1]">
-                {formatPrice(financialTelemetry.grossRevenue)}
+                {formatPrice(activeTelemetry.grossRevenue)}
               </p>
             </div>
             <Badge variant="success" className="font-mono">
@@ -290,8 +342,8 @@ export function ReportsClient() {
             </Badge>
           </div>
           <p className="mt-3 text-xs text-[#A6ADC8]">
-            Across {financialTelemetry.totalLedgerOrders} settled &amp; active
-            orders ({formatPrice(financialTelemetry.grossOrderFixtureRevenue)}{" "}
+            Across {activeTelemetry.totalLedgerOrders} settled &amp; active
+            orders ({formatPrice(activeTelemetry.grossOrderFixtureRevenue)}{" "}
             in live queue)
           </p>
         </Surface>
@@ -307,7 +359,7 @@ export function ReportsClient() {
                 Average Order Value (AOV)
               </p>
               <p className="mt-2 font-mono text-2xl font-bold text-[#89B4FA]">
-                {formatPrice(financialTelemetry.aov)}
+                {formatPrice(activeTelemetry.aov)}
               </p>
             </div>
             <Badge variant="primary" className="font-mono">
@@ -330,10 +382,10 @@ export function ReportsClient() {
                 Delivery vs Lab Pickup Split
               </p>
               <p className="mt-2 font-mono text-2xl font-bold text-[#CDD6F4]">
-                {financialTelemetry.deliveryPct}%{" "}
+                {activeTelemetry.deliveryPct}%{" "}
                 <span className="text-sm font-normal text-[#A6ADC8]">/</span>{" "}
                 <span className="text-[#94E2D5]">
-                  {financialTelemetry.pickupPct}%
+                  {activeTelemetry.pickupPct}%
                 </span>
               </p>
             </div>
@@ -344,12 +396,12 @@ export function ReportsClient() {
           <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-[#11111B]">
             <div
               className="h-full bg-[#89B4FA]"
-              style={{ width: `${financialTelemetry.deliveryPct}%` }}
+              style={{ width: `${activeTelemetry.deliveryPct}%` }}
             />
           </div>
           <p className="mt-1.5 text-[11px] text-[#A6ADC8]">
-            {financialTelemetry.deliveryPct}% Region III Courier •{" "}
-            {financialTelemetry.pickupPct}% Campus Lab Station
+            {activeTelemetry.deliveryPct}% Region III Courier •{" "}
+            {activeTelemetry.pickupPct}% Campus Lab Station
           </p>
         </Surface>
 
@@ -364,7 +416,7 @@ export function ReportsClient() {
                 COD Collection &amp; Remittance
               </p>
               <p className="mt-2 font-mono text-2xl font-bold text-[#F9E2AF]">
-                {formatPrice(financialTelemetry.totalCodCollected)}
+                {formatPrice(activeTelemetry.totalCodCollected)}
               </p>
             </div>
             <Badge variant="warning" className="font-mono">
@@ -374,11 +426,11 @@ export function ReportsClient() {
           <p className="mt-3 text-xs text-[#A6ADC8]">
             Remitted:{" "}
             <span className="font-mono text-[#A6E3A1]">
-              {formatPrice(financialTelemetry.totalRemitted)}
+              {formatPrice(activeTelemetry.totalRemitted)}
             </span>{" "}
             • In Transit:{" "}
             <span className="font-mono text-[#F9E2AF]">
-              {formatPrice(financialTelemetry.pendingRemittance)}
+              {formatPrice(activeTelemetry.pendingRemittance)}
             </span>
           </p>
         </Surface>
@@ -402,13 +454,13 @@ export function ReportsClient() {
               </p>
             </div>
             <span className="font-mono text-xs text-[#89B4FA]">
-              24 Total Dispatches
+              {activeTelemetry.totalLedgerOrders} Total Dispatches
             </span>
           </div>
 
           <div className="mt-4 space-y-4">
-            {fulfillmentBreakdown.map((item) => {
-              const pct = Math.round((item.orderCount / 24) * 100);
+            {activeFulfillmentBreakdown.map((item) => {
+              const pct = Math.round((item.orderCount / Math.max(1, activeTelemetry.totalLedgerOrders)) * 100);
               return (
                 <div key={item.regionLabel} className="space-y-1.5">
                   <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
