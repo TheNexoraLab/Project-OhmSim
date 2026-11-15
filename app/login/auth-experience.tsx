@@ -3,8 +3,11 @@
 import { useId, useRef, useState, type FormEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
+import { toast } from "@/components/ui/toast";
+import { login, register } from "@/services/auth-service";
 import { AuthIcon } from "./auth-icons";
 import styles from "./auth.module.css";
 
@@ -67,10 +70,12 @@ function AuthField({ name, label, placeholder = label, type = "text", value, onC
 }
 
 export function AuthExperience() {
+  const router = useRouter();
   const [view, setView] = useState<View>("signin");
   const [values, setValues] = useState<Fields>(emptyFields);
   const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [notice, setNotice] = useState("");
   const [resetEmail, setResetEmail] = useState("");
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -82,14 +87,15 @@ export function AuthExperience() {
     setValues(emptyFields);
     setTouched({});
     setSubmitted(false);
+    setIsLoading(false);
     setNotice("");
     setResetEmail("");
     requestAnimationFrame(() => headingRef.current?.focus());
   }
 
-  // Deliberately local presentation only. Developer 3 will supply real auth later.
-  function submit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (isLoading) return;
     setSubmitted(true);
     setNotice("");
     const firstError = (Object.keys(errors) as FieldName[])[0];
@@ -97,11 +103,54 @@ export function AuthExperience() {
       formRef.current?.querySelector<HTMLInputElement>(`input[name="${firstError}"]`)?.focus();
       return;
     }
-    if (view === "forgot") setResetEmail(values.email.trim());
-    else setNotice(view === "signin" ? "Sign-in preview complete. No session was created." : "Account preview complete. No account was created.");
-    setValues((current) => ({ ...current, password: "", confirmPassword: "" }));
-    setTouched({});
-    setSubmitted(false);
+    if (view === "forgot") {
+      setResetEmail(values.email.trim());
+      setValues((current) => ({ ...current, password: "", confirmPassword: "" }));
+      setTouched({});
+      setSubmitted(false);
+      return;
+    }
+
+    setIsLoading(true);
+
+    if (view === "signin") {
+      const result = await login({
+        email: values.email.trim(),
+        password: values.password,
+      });
+      setIsLoading(false);
+
+      if (!result.success) {
+        setNotice(result.error || "Invalid email address or password.");
+        return;
+      }
+
+      toast(`Welcome back, ${result.user?.firstName || 'User'}!`, "success");
+      if (result.user?.role === "ADMIN") {
+        router.push("/admin");
+      } else {
+        router.push("/home");
+      }
+    } else if (view === "register") {
+      const rawPhone = values.contactNumber.trim();
+      const contactNumber = rawPhone.startsWith("0") ? rawPhone : `0${rawPhone}`;
+
+      const result = await register({
+        fullName: values.fullName.trim(),
+        email: values.email.trim(),
+        contactNumber,
+        password: values.password,
+      });
+      setIsLoading(false);
+
+      if (!result.success) {
+        setNotice(result.error || "Failed to create account.");
+        return;
+      }
+
+      toast(`Account created! Welcome to OhmSim, ${result.user?.firstName || 'User'}!`, "success");
+      router.push("/home");
+    }
   }
 
   function field(name: FieldName, label: string, icon: "mail" | "lock" | "user" | "phone", type: string, autoComplete: string, placeholder?: string) {
@@ -152,8 +201,8 @@ export function AuthExperience() {
               {view !== "forgot" && field("password", "Password", "lock", "password", "new-password", view === "register" ? "Password (min 8 characters)" : "Password")}
               {view === "register" && field("confirmPassword", "Confirm password", "lock", "password", "new-password")}
             </div>
-            <div className={styles.actions}><Button type="submit" variant="raised" size="large" className={styles.submit}>
-              {view === "signin" ? "SIGN IN" : view === "register" ? "CREATE ACCOUNT" : "SEND RESET LINK"}
+            <div className={styles.actions}><Button type="submit" variant="raised" size="large" className={styles.submit} disabled={isLoading}>
+              {isLoading ? "PROCESSING..." : view === "signin" ? "SIGN IN" : view === "register" ? "CREATE ACCOUNT" : "SEND RESET LINK"}
             </Button></div>
           </form>}
           {notice && <p role="status" className={styles.notice}>{notice}</p>}
