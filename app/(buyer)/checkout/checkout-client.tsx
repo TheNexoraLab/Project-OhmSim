@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useCart } from "@/hooks/use-cart";
 import { getProductByIdSync } from "@/services/catalog-service";
 import { computeDeliveryFee } from "@/lib/fulfillment";
-import { getSavedAddresses, createMockOrder } from "@/services/order-service";
+import { getSavedAddresses, createOrder } from "@/services/order-service";
 import { formatPrice } from "@/lib/format";
 import { toast } from "@/components/ui/toast";
 import {
@@ -143,13 +143,26 @@ export function CheckoutClient() {
     );
   }
 
-  const handlePlaceOrder = (e: React.FormEvent) => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
 
     let finalRecipient = "";
     let finalContact = "";
     let finalDeliveryAddress: string | undefined;
+
+    let deliveryAddressId: string | undefined;
+    let inlineDeliveryAddress:
+      | {
+          recipientName: string;
+          phone: string;
+          street: string;
+          barangay: string;
+          city: string;
+          province: string;
+          postalCode?: string;
+        }
+      | undefined;
 
     if (fulfillmentType === "PICKUP") {
       if (!pickupRecipient.trim()) {
@@ -170,6 +183,7 @@ export function CheckoutClient() {
           toast("Please select a saved delivery address", "warning");
           return;
         }
+        deliveryAddressId = activeSavedAddress.id;
         finalRecipient = activeSavedAddress.recipientName;
         finalContact = activeSavedAddress.contactNumber;
         finalDeliveryAddress = `${activeSavedAddress.streetAddress}, ${activeSavedAddress.barangay}, ${activeSavedAddress.cityMunicipality}, ${activeSavedAddress.province}, Region III`;
@@ -190,26 +204,53 @@ export function CheckoutClient() {
         finalContact = newContact.trim();
         const postal = newPostalCode.trim() ? ` ${newPostalCode.trim()}` : "";
         finalDeliveryAddress = `${newStreet.trim()}, ${newBarangay.trim()}, ${newCity.trim()}, ${newProvince}${postal}, Region III`;
+        inlineDeliveryAddress = {
+          recipientName: finalRecipient,
+          phone: finalContact,
+          street: newStreet.trim(),
+          barangay: newBarangay.trim(),
+          city: newCity.trim(),
+          province: newProvince,
+          postalCode: newPostalCode.trim() || undefined,
+        };
       }
     }
 
     setIsSubmitting(true);
 
     try {
-      const order = createMockOrder({
+      // Prepare backend item array
+      const orderItemsInput = allItems.map((item) => ({
+        productId: item.productId,
+        quantity: item.qty,
+      }));
+
+      const result = await createOrder({
         fulfillmentType,
         paymentMethod,
+        deliveryAddressId,
+        deliveryAddress: inlineDeliveryAddress,
+        pickupRecipient: fulfillmentType === "PICKUP" ? finalRecipient : undefined,
+        pickupPhone: fulfillmentType === "PICKUP" ? finalContact : undefined,
+        notes: orderNotes.trim() || undefined,
+        items: orderItemsInput,
+        // Fallbacks
         recipientName: finalRecipient,
         contactNumber: finalContact,
-        deliveryAddress: finalDeliveryAddress,
-        notes: orderNotes.trim() || undefined,
+        rawDeliveryAddress: finalDeliveryAddress,
         subtotalAmount: subtotal,
         deliveryFee: shippingFee,
         totalAmount: grandTotal,
-        items: allItems,
-        trackingNo: null,
+        allItems,
       });
 
+      if (!result.success || !result.order) {
+        setIsSubmitting(false);
+        toast(result.error || "Failed to place order. Please check inventory or address.", "error");
+        return;
+      }
+
+      const order = result.order;
       clearCart();
       toast(`Order #${order.orderNumber} placed successfully!`, "success");
       router.push(`/orders/${order.id}`);
