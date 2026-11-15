@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { MockOrder, OrderStatus } from "@/types/order";
 import {
+  getOrders,
   getMockOrders,
+  updateOrderStatus,
   ORDER_STATUS_META,
   getTimelineStepsForOrder,
 } from "@/services/order-service";
@@ -15,10 +17,45 @@ import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 
 export function OrdersClient() {
-  const [orders] = useState<MockOrder[]>(() => getMockOrders());
+  const [orders, setOrders] = useState<MockOrder[]>(() => getMockOrders());
   const [selectedId, setSelectedId] = useState<string>(() => orders[0]?.id ?? "");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "ALL">("ALL");
   const [search, setSearch] = useState("");
+  const [isCancelling, setIsCancelling] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    getOrders()
+      .then((liveOrders) => {
+        if (isMounted && liveOrders.length > 0) {
+          setOrders(liveOrders);
+          setSelectedId((prev) => prev || liveOrders[0]?.id || "");
+        }
+      })
+      .catch(() => {});
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleCancelOrder = async (orderId: string) => {
+    if (isCancelling) return;
+    setIsCancelling(true);
+    const result = await updateOrderStatus(orderId, {
+      status: "CANCELLED",
+      cancelledReason: "Cancelled by customer request",
+    });
+    setIsCancelling(false);
+
+    if (result.success) {
+      toast("Order cancelled successfully.", "info");
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, status: "CANCELLED" } : o))
+      );
+    } else {
+      toast(result.error || "Failed to cancel order.", "error");
+    }
+  };
 
   const filteredOrders = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -132,10 +169,23 @@ export function OrdersClient() {
               </div>
               <p className="text-[11px] text-mocha-text-subtle">Placed on {formatDate(selectedOrder.createdAt)} · {selectedOrder.fulfillmentType === "PICKUP" ? "Store Pickup" : "Region III Delivery"}</p>
             </div>
-            <Button variant="raised" size="compact" onClick={() => window.print()} className="text-[11px] text-mocha-accent print:hidden">
-              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-3.5 h-3.5 mr-1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5M12 15V3" /></svg>
-              Invoice
-            </Button>
+            <div className="flex items-center gap-2 print:hidden">
+              {selectedOrder.status === "PENDING" && (
+                <Button
+                  variant="outline"
+                  size="compact"
+                  onClick={() => handleCancelOrder(selectedOrder.id)}
+                  disabled={isCancelling}
+                  className="text-[11px] text-[#F38BA8] hover:bg-[#F38BA8]/10"
+                >
+                  {isCancelling ? "Cancelling..." : "Cancel Order"}
+                </Button>
+              )}
+              <Button variant="raised" size="compact" onClick={() => window.print()} className="text-[11px] text-mocha-accent">
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-3.5 h-3.5 mr-1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5M12 15V3" /></svg>
+                Invoice
+              </Button>
+            </div>
           </header>
 
           <div data-orders-detail-body className="flex-1 min-w-0 px-6 py-5 flex flex-col gap-5">

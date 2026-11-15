@@ -9,6 +9,7 @@ import {
   markAllNotificationsAsRead,
   dismissNotification,
   clearAllNotifications,
+  syncNotificationsFromApi,
   notificationStore,
 } from "@/services/notification-service";
 import { toast } from "@/components/ui/toast";
@@ -79,6 +80,7 @@ export function NotificationsClient() {
   const [filter, setFilter] = useState<"all" | "unread">("all");
 
   useEffect(() => {
+    syncNotificationsFromApi();
     return notificationStore.subscribe(() => {
       setNotifs(getNotifications());
     });

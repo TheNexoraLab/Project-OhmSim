@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { INITIAL_ORDERS as MOCK_ORDERS } from "@/lib/mocks/orders";
 import { PRODUCTS, INITIAL_BOM_PROJECTS } from "@/lib/mocks/products";
 import { INITIAL_USER_PROFILE } from "@/lib/mocks/profile";
@@ -24,6 +24,7 @@ import {
   formatPaymentMethodLabel,
   type AdminPipelineStatus,
   type EnrichedAdminOrder,
+  type EnrichedOrderItem,
   type StructuredDeliveryAddress,
 } from "@/components/admin/admin-order-drawer";
 
@@ -221,6 +222,137 @@ export function OrdersClient() {
     useState<FulfillmentFilterValue>("ALL");
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
+  useEffect(() => {
+    let isMounted = true;
+    async function loadAdminOrders() {
+      try {
+        const res = await fetch("/api/orders", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.orders) && data.orders.length > 0) {
+            interface ApiOrderItem {
+              productId: string;
+              productName?: string;
+              productSku?: string;
+              productImage?: string;
+              unitPrice?: number;
+              quantity?: number;
+              bomProjectName?: string | null;
+            }
+
+            interface ApiOrder {
+              id: string;
+              orderNumber: string;
+              createdAt?: string;
+              updatedAt?: string;
+              fulfillmentType: FulfillmentType;
+              paymentMethod: PaymentMethod;
+              status: OrderStatus;
+              user?: {
+                id: string;
+                firstName?: string;
+                lastName?: string;
+                email?: string;
+                phone?: string;
+              };
+              deliveryAddress?: {
+                recipientName?: string;
+                phone?: string;
+                street?: string;
+                barangay?: string;
+                city?: string;
+                province?: string;
+                postalCode?: string;
+                fullAddress?: string;
+              } | null;
+              trackingNumber?: string | null;
+              notes?: string;
+              cancelledReason?: string | null;
+              subtotal?: number;
+              shippingFee?: number;
+              totalAmount?: number;
+              items?: ApiOrderItem[];
+            }
+
+            const mappedBackendOrders: EnrichedAdminOrder[] = data.orders.map(
+              (o: ApiOrder) => {
+                const enrichedItems: EnrichedOrderItem[] = (o.items || []).map(
+                  (it: ApiOrderItem) => ({
+                    productId: it.productId,
+                    productName: it.productName || "Product",
+                    productSku: it.productSku || "SKU",
+                    productImage: it.productImage || "/images/placeholder.jpg",
+                    price: it.unitPrice || 0,
+                    qty: it.quantity || 1,
+                    bundleName: it.bomProjectName || undefined,
+                    bomProjectName: it.bomProjectName || undefined,
+                  })
+                );
+
+                const structuredAddress = o.deliveryAddress
+                  ? {
+                      streetAddress: o.deliveryAddress.street || "",
+                      barangay: o.deliveryAddress.barangay || "",
+                      cityMunicipality: o.deliveryAddress.city || "",
+                      province: o.deliveryAddress.province || "Pampanga",
+                      region: "Region III",
+                      postalCode: o.deliveryAddress.postalCode || "2000",
+                    }
+                  : undefined;
+
+                return {
+                  id: o.id,
+                  orderNumber: o.orderNumber,
+                  createdAt: o.createdAt || new Date().toISOString(),
+                  updatedAt: o.updatedAt || new Date().toISOString(),
+                  fulfillmentType: o.fulfillmentType,
+                  paymentMethod: o.paymentMethod,
+                  status: o.status,
+                  recipientName:
+                    o.deliveryAddress?.recipientName ||
+                    (o.user
+                      ? `${o.user.firstName || ""} ${o.user.lastName || ""}`.trim()
+                      : "Customer"),
+                  contactNumber:
+                    o.deliveryAddress?.phone || o.user?.phone || "",
+                  customerEmail: o.user?.email || "customer@ohmsim.ph",
+                  deliveryAddress: o.deliveryAddress?.fullAddress,
+                  structuredAddress,
+                  pickupStation: DEFAULT_PICKUP_STATION,
+                  trackingNo: o.trackingNumber,
+                  notes: o.notes,
+                  cancellationReason: o.cancelledReason,
+                  subtotalAmount: o.subtotal || 0,
+                  deliveryFee: o.shippingFee || 0,
+                  totalAmount: o.totalAmount || 0,
+                  items: enrichedItems,
+                };
+              }
+            );
+
+            if (isMounted) {
+              setOrders((prev) => {
+                const realIds = new Set(mappedBackendOrders.map((bo) => bo.id));
+                const filteredDemo = prev.filter((po) => !realIds.has(po.id));
+                return [...mappedBackendOrders, ...filteredDemo];
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load backend orders:", err);
+      }
+    }
+
+    loadAdminOrders();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // Dynamic Status Counts across all orders
   const statusCounts = useMemo(() => {
     const counts: Record<StatusTabKey, number> = {
@@ -313,6 +445,14 @@ export function OrdersClient() {
         `Order #${target.orderNumber} confirmed and moved to PROCESSING.`,
         "info"
       );
+      if (typeof window !== "undefined") {
+        fetch(`/api/orders/${orderId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ status: "PREPARING" }),
+        }).catch((err) => console.warn("Backend order status patch failed:", err));
+      }
     }
   };
 
@@ -335,6 +475,17 @@ export function OrdersClient() {
         `Order #${target.orderNumber} dispatched as SHIPPED (Tracking: ${trackingNo}).`,
         "success"
       );
+      if (typeof window !== "undefined") {
+        fetch(`/api/orders/${orderId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            status: "OUT_FOR_DELIVERY",
+            trackingNumber: trackingNo,
+          }),
+        }).catch((err) => console.warn("Backend order status patch failed:", err));
+      }
     }
   };
 
@@ -356,6 +507,14 @@ export function OrdersClient() {
         `Order #${target.orderNumber} marked READY_FOR_PICKUP at Building 3, Room 204.`,
         "success"
       );
+      if (typeof window !== "undefined") {
+        fetch(`/api/orders/${orderId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ status: "READY_FOR_PICKUP" }),
+        }).catch((err) => console.warn("Backend order status patch failed:", err));
+      }
     }
   };
 
@@ -377,6 +536,14 @@ export function OrdersClient() {
         `Order #${target.orderNumber} completed and marked as DELIVERED.`,
         "success"
       );
+      if (typeof window !== "undefined") {
+        fetch(`/api/orders/${orderId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ status: "DELIVERED" }),
+        }).catch((err) => console.warn("Backend order status patch failed:", err));
+      }
     }
   };
 
@@ -400,6 +567,17 @@ export function OrdersClient() {
         `Order #${target.orderNumber} cancelled (${reason}).`,
         "warning"
       );
+      if (typeof window !== "undefined") {
+        fetch(`/api/orders/${orderId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            status: "CANCELLED",
+            cancelledReason: reason,
+          }),
+        }).catch((err) => console.warn("Backend order status patch failed:", err));
+      }
     }
   };
 

@@ -1,17 +1,23 @@
 import { PrismaClient, Role } from '@prisma/client';
+import { hashPassword } from '../lib/auth/password';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('--- Seeding OhmSim Database (Complete Catalog) ---');
 
-  // 1. Seed Demo Admin & Buyer
+  // 1. Seed Demo Admin & Buyer with Valid Bcrypt Hashes
+  const adminPasswordHash = await hashPassword('AdminPass123!');
+  const buyerPasswordHash = await hashPassword('BuyerPass123!');
+
   await prisma.user.upsert({
     where: { email: 'admin@ohmsim.nexora.ph' },
-    update: {},
+    update: {
+      passwordHash: adminPasswordHash,
+    },
     create: {
       email: 'admin@ohmsim.nexora.ph',
-      passwordHash: '$2b$10$epNzYIeU9j1FvXoX5u8gCeD9Kx6GzK0pZqJ.V3wL1xU.vE3N0n3jO', // Pre-computed demo hash
+      passwordHash: adminPasswordHash,
       role: Role.ADMIN,
       firstName: 'Admin',
       lastName: 'Nexora',
@@ -21,10 +27,12 @@ async function main() {
 
   await prisma.user.upsert({
     where: { email: 'buyer@ohmsim.nexora.ph' },
-    update: {},
+    update: {
+      passwordHash: buyerPasswordHash,
+    },
     create: {
       email: 'buyer@ohmsim.nexora.ph',
-      passwordHash: '$2b$10$epNzYIeU9j1FvXoX5u8gCeD9Kx6GzK0pZqJ.V3wL1xU.vE3N0n3jO', // Pre-computed demo hash
+      passwordHash: buyerPasswordHash,
       role: Role.BUYER,
       firstName: 'Daniel',
       lastName: 'Cruz',

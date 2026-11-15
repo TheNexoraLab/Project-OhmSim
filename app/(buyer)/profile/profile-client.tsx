@@ -8,6 +8,7 @@ import {
   subscribeProfile,
   getAddressesSnapshot,
   subscribeAddresses,
+  syncProfileFromApi,
 } from "@/services/profile-service";
 import type { ProfileTab } from "@/types/profile";
 import { ProfilePersonalInfo } from "@/components/buyer/profile-personal-info";
@@ -44,6 +45,10 @@ export function ProfileClient() {
     setPrevQueryTab(queryTab);
     setActiveTab(resolvedTab);
   }
+
+  React.useEffect(() => {
+    syncProfileFromApi();
+  }, []);
 
   // Handle native popstate events (e.g. browser back/forward without reload)
   React.useEffect(() => {

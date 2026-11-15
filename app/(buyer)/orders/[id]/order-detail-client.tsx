@@ -1,9 +1,16 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getMockOrderById, ORDER_STATUS_META, getTimelineStepsForOrder } from "@/services/order-service";
+import type { MockOrder } from "@/types/order";
+import {
+  getOrderById,
+  getMockOrderById,
+  updateOrderStatus,
+  ORDER_STATUS_META,
+  getTimelineStepsForOrder,
+} from "@/services/order-service";
 import { formatPrice, formatDate } from "@/lib/format";
 import { toast } from "@/components/ui/toast";
 
@@ -12,7 +19,27 @@ interface OrderDetailClientProps {
 }
 
 export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
-  const order = useMemo(() => getMockOrderById(orderId), [orderId]);
+  const [order, setOrder] = useState<MockOrder | null>(() => getMockOrderById(orderId) ?? null);
+  const [isLoading, setIsLoading] = useState(!order);
+  const [isCancelling, setIsCancelling] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    getOrderById(orderId)
+      .then((liveOrder) => {
+        if (isMounted) {
+          if (liveOrder) setOrder(liveOrder);
+          setIsLoading(false);
+        }
+      })
+      .catch(() => {
+        if (isMounted) setIsLoading(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [orderId]);
+
   const timeline = useMemo(() => (order ? getTimelineStepsForOrder(order) : null), [order]);
 
   const handleCopyTracking = async (trackingNo: string) => {
@@ -25,11 +52,37 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
     }
   };
 
+  const handleCancelOrder = async () => {
+    if (!order || isCancelling) return;
+    setIsCancelling(true);
+    const result = await updateOrderStatus(order.id, {
+      status: "CANCELLED",
+      cancelledReason: "Customer requested cancellation",
+    });
+    setIsCancelling(false);
+
+    if (result.success) {
+      toast("Order cancelled successfully.", "info");
+      setOrder((prev) => (prev ? { ...prev, status: "CANCELLED" } : null));
+    } else {
+      toast(result.error || "Failed to cancel order.", "error");
+    }
+  };
+
   const handlePrint = () => {
     if (typeof window !== "undefined") {
       window.print();
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-12 text-center bg-mocha-bg">
+        <div className="w-12 h-12 rounded-xl border-2 border-mocha-accent border-t-transparent animate-spin mb-4" />
+        <p className="text-xs text-mocha-text-muted">Loading order details...</p>
+      </div>
+    );
+  }
 
   if (!order) {
     return (
@@ -107,6 +160,17 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
           </div>
 
           <div className="flex items-center gap-2 shrink-0 print:hidden">
+            {order.status === "PENDING" && (
+              <button
+                type="button"
+                onClick={handleCancelOrder}
+                disabled={isCancelling}
+                className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#F38BA8]/10 border border-[#F38BA8]/30 text-[#F38BA8] hover:bg-[#F38BA8]/20 transition-colors flex items-center gap-1.5 min-h-[44px] focus-visible:outline-2 focus-visible:outline-[#F38BA8]"
+              >
+                {isCancelling ? "Cancelling..." : "Cancel Order"}
+              </button>
+            )}
+
             <Link
               href={`/chat?convo=c1&orderRef=${order.orderNumber}`}
               className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-mocha-panel-raised border border-mocha-border text-mocha-text hover:border-mocha-accent hover:text-mocha-accent transition-colors flex items-center gap-1.5 min-h-[44px] focus-visible:outline-2 focus-visible:outline-mocha-accent"
