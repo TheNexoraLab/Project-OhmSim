@@ -1,0 +1,217 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------------------------------
+// 1. USER & AUTHENTICATION
+// ----------------------------------------------------
+enum Role {
+  BUYER
+  ADMIN
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  passwordHash  String
+  role          Role           @default(BUYER)
+  firstName     String
+  lastName      String
+  phone         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  addresses     Address[]
+  orders        Order[]
+  bomProjects   BOMProject[]
+  notifications Notification[]
+  messages      Message[]
+  conversations Conversation[]
+}
+
+model Address {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label         String   // e.g., "Home", "Campus Lab"
+  recipientName String
+  phone         String
+  street        String
+  barangay      String
+  city          String
+  province      String   // Version 1.0 fulfillment restricted to Region III
+  postalCode    String
+  isDefault     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  orders        Order[]
+}
+
+// ----------------------------------------------------
+// 2. CATALOG & INVENTORY
+// ----------------------------------------------------
+model Category {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?
+  icon        String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products    Product[]
+}
+
+model Product {
+  id                String       @id @default(uuid())
+  sku               String       @unique
+  name              String
+  brand             String
+  categoryId        String
+  category          Category     @relation(fields: [categoryId], references: [id])
+  price             Decimal      @db.Decimal(10, 2)
+  stockQuantity     Int          @default(0)
+  minStockThreshold Int          @default(5)
+  isFeatured        Boolean      @default(false)
+  shortDescription  String
+  fullDescription   String
+  datasheetUrl      String?
+  imageUrls         String[]
+  specifications    Json?        // Key-value pairs of technical parameters
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  orderItems        OrderItem[]
+  bomItems          BOMItem[]
+}
+
+// ----------------------------------------------------
+// 3. ORDERS & FULFILLMENT
+// ----------------------------------------------------
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum FulfillmentType {
+  PICKUP
+  DELIVERY
+}
+
+enum PaymentMethod {
+  COD
+  PAY_ON_PICKUP
+}
+
+model Order {
+  id                String          @id @default(uuid())
+  orderNumber       String          @unique // e.g., "ORD-2026-0001"
+  userId            String
+  user              User            @relation(fields: [userId], references: [id])
+  status            OrderStatus     @default(PENDING)
+  fulfillmentType   FulfillmentType
+  deliveryAddressId String?
+  deliveryAddress   Address?        @relation(fields: [deliveryAddressId], references: [id])
+  paymentMethod     PaymentMethod
+  subtotal          Decimal         @db.Decimal(10, 2)
+  shippingFee       Decimal         @db.Decimal(10, 2) @default(0.00) // ₱0 pickup; ₱80 or ₱0 Region III
+  totalAmount       Decimal         @db.Decimal(10, 2)
+  trackingNumber    String?
+  notes             String?
+  cancelledReason   String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  items             OrderItem[]
+}
+
+model OrderItem {
+  id           String      @id @default(uuid())
+  orderId      String
+  order        Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    String
+  product      Product     @relation(fields: [productId], references: [id])
+  quantity     Int
+  unitPrice    Decimal     @db.Decimal(10, 2)
+  bomProjectId String?
+  bomProject   BOMProject? @relation(fields: [bomProjectId], references: [id])
+}
+
+// ----------------------------------------------------
+// 4. BILL OF MATERIALS (BOM)
+// ----------------------------------------------------
+model BOMProject {
+  id           String      @id @default(uuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  description  String?
+  targetBudget Decimal?    @db.Decimal(10, 2)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  items        BOMItem[]
+  orderItems   OrderItem[]
+}
+
+model BOMItem {
+  id                  String     @id @default(uuid())
+  bomProjectId        String
+  bomProject          BOMProject @relation(fields: [bomProjectId], references: [id], onDelete: Cascade)
+  productId           String
+  product             Product    @relation(fields: [productId], references: [id])
+  quantity            Int        @default(1)
+  referenceDesignator String?    // e.g., "R1, C2"
+}
+
+// ----------------------------------------------------
+// 5. CHAT & NOTIFICATIONS
+// ----------------------------------------------------
+enum ConversationStatus {
+  ACTIVE
+  RESOLVED
+}
+
+model Conversation {
+  id        String             @id @default(uuid())
+  buyerId   String
+  buyer     User               @relation(fields: [buyerId], references: [id])
+  status    ConversationStatus @default(ACTIVE)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  messages  Message[]
+}
+
+model Message {
+  id             String       @id @default(uuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation(fields: [senderId], references: [id])
+  senderRole     Role
+  text           String
+  attachmentUrl  String?
+  createdAt      DateTime     @default(now())
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   // "order" | "inventory" | "system" | "chat"
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+}
