@@ -39,6 +39,73 @@ function notifyAddresses() {
 }
 
 // ---------------------------------------------------------------------------
+// Backend Synchronization Helper
+// ---------------------------------------------------------------------------
+export async function syncProfileFromApi(): Promise<void> {
+  if (typeof window === "undefined") return;
+
+  try {
+    const [profileRes, addrRes] = await Promise.all([
+      fetch("/api/profile", { cache: "no-store", credentials: "include" }),
+      fetch("/api/profile/addresses", { cache: "no-store", credentials: "include" }),
+    ]);
+
+    if (profileRes.ok) {
+      const data = await profileRes.json();
+      if (data.profile) {
+        profileState = {
+          ...profileState,
+          firstName: data.profile.firstName || profileState.firstName,
+          lastName: data.profile.lastName || profileState.lastName,
+          email: data.profile.email || profileState.email,
+          mobile: data.profile.phone || profileState.mobile,
+        };
+        notifyProfile();
+      }
+    }
+
+    if (addrRes.ok) {
+      const addrData = await addrRes.json();
+      if (Array.isArray(addrData.addresses)) {
+        interface ApiAddr {
+          id: string;
+          label: string;
+          recipientName: string;
+          phone: string;
+          street: string;
+          barangay: string;
+          city: string;
+          province: string;
+          postalCode?: string;
+          isDefault?: boolean;
+        }
+
+        const liveAddresses: UserAddress[] = addrData.addresses.map((a: ApiAddr) => ({
+          id: a.id,
+          label: a.label || "Saved Address",
+          recipientName: a.recipientName,
+          contactNumber: a.phone,
+          region: "Region III",
+          province: a.province as Region3Province,
+          cityMunicipality: a.city,
+          barangay: a.barangay,
+          streetAddress: a.street,
+          postalCode: a.postalCode || "2000",
+          isDefault: Boolean(a.isDefault),
+        }));
+
+        if (liveAddresses.length > 0) {
+          addressesState = liveAddresses;
+          notifyAddresses();
+        }
+      }
+    }
+  } catch (error) {
+    console.warn("Could not sync profile/addresses from backend:", error);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Profile Subscriptions & Mutations
 // ---------------------------------------------------------------------------
 export function getProfileSnapshot(): UserProfile {
@@ -73,11 +140,26 @@ export function updateProfile(data: Partial<UserProfile>): { success: boolean; e
     firstName,
     lastName,
     mobile,
-    // Email is read-only in v1 (identity changes require server auth)
     email: profileState.email,
   };
 
   notifyProfile();
+
+  if (typeof window !== "undefined") {
+    fetch("/api/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        firstName,
+        lastName,
+        phone: mobile,
+      }),
+    }).catch((err) => {
+      console.warn("Failed to patch profile to backend:", err);
+    });
+  }
+
   return { success: true };
 }
 
@@ -197,6 +279,36 @@ export function addAddress(
   addressesState = [...addressesState, newAddress];
   notifyAddresses();
 
+  if (typeof window !== "undefined") {
+    fetch("/api/profile/addresses", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        label: newAddress.label,
+        recipientName: newAddress.recipientName,
+        phone: newAddress.contactNumber,
+        street: newAddress.streetAddress,
+        barangay: newAddress.barangay,
+        city: newAddress.cityMunicipality,
+        province: newAddress.province,
+        postalCode: newAddress.postalCode,
+        isDefault: newAddress.isDefault,
+      }),
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          const resData = await res.json();
+          if (resData.address?.id) {
+            newAddress.id = resData.address.id;
+          }
+        }
+      })
+      .catch((err) => {
+        console.warn("Failed to create address on backend API:", err);
+      });
+  }
+
   return { success: true, address: newAddress };
 }
 
@@ -209,13 +321,22 @@ export function deleteAddress(id: string): { success: boolean; error?: string } 
   const target = addressesState[targetIndex];
   const remaining = addressesState.filter((a) => a.id !== id);
 
-  // If deleted address was the default and another address remains, make the remaining one default
   if (target.isDefault && remaining.length > 0) {
     remaining[0] = { ...remaining[0], isDefault: true };
   }
 
   addressesState = remaining;
   notifyAddresses();
+
+  if (typeof window !== "undefined") {
+    fetch(`/api/profile/addresses/${encodeURIComponent(id)}`, {
+      method: "DELETE",
+      credentials: "include",
+    }).catch((err) => {
+      console.warn("Failed to delete address on backend:", err);
+    });
+  }
+
   return { success: true };
 }
 
@@ -235,12 +356,21 @@ export function setDefaultAddress(id: string): { success: boolean; error?: strin
   }));
 
   notifyAddresses();
+
+  if (typeof window !== "undefined") {
+    fetch(`/api/profile/addresses/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({ isDefault: true }),
+    }).catch((err) => {
+      console.warn("Failed to set default address on backend:", err);
+    });
+  }
+
   return { success: true };
 }
 
-/**
- * Reset store to canonical initial fixtures (useful for testing)
- */
 export function resetProfileStore(): void {
   profileState = { ...INITIAL_USER_PROFILE };
   preferencesState = { ...INITIAL_USER_PREFERENCES };

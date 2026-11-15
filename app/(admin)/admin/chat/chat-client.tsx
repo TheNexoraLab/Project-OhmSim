@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { INITIAL_CONVERSATIONS } from "@/lib/mocks/chat";
 import { PRODUCTS as MOCK_PRODUCTS } from "@/lib/mocks/products";
@@ -164,6 +164,108 @@ export function ChatClient() {
   const [composerText, setComposerText] = useState("");
   const [selectedCanned, setSelectedCanned] = useState("");
 
+  useEffect(() => {
+    let isMounted = true;
+    async function loadConversations() {
+      try {
+        const res = await fetch("/api/conversations", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.conversations) && data.conversations.length > 0) {
+            interface ApiConvoMessage {
+              id: string;
+              senderRole: "ADMIN" | "BUYER" | "SYSTEM";
+              content: string;
+              createdAt: string;
+            }
+
+            interface ApiConversationItem {
+              id: string;
+              title?: string;
+              status?: string;
+              unreadCount?: number;
+              user?: {
+                firstName?: string;
+                lastName?: string;
+                email?: string;
+              };
+              messages?: ApiConvoMessage[];
+            }
+
+            const liveThreads: AdminSupportThread[] = data.conversations.map(
+              (c: ApiConversationItem) => {
+                const customerName = c.user
+                  ? `${c.user.firstName || ""} ${c.user.lastName || ""}`.trim()
+                  : c.title || "Customer";
+
+                const initials =
+                  customerName
+                    .split(" ")
+                    .slice(0, 2)
+                    .map((w) => w[0])
+                    .join("")
+                    .toUpperCase() || "Ω";
+
+                const msgs: ChatMessage[] = (c.messages || []).map(
+                  (m: ApiConvoMessage) => ({
+                    id: m.id,
+                    from:
+                      m.senderRole === "ADMIN"
+                        ? "admin"
+                        : m.senderRole === "SYSTEM"
+                        ? "system"
+                        : "buyer",
+                    type: "text",
+                    text: m.content,
+                    time: new Date(m.createdAt).toLocaleTimeString("en-US", {
+                      hour: "numeric",
+                      minute: "2-digit",
+                    }),
+                  })
+                );
+
+                return {
+                  id: c.id,
+                  customerName,
+                  customerEmail: c.user?.email || "customer@ohmsim.ph",
+                  affiliation: "Central Luzon Engineering Lab",
+                  initials,
+                  color: "#89B4FA",
+                  online: true,
+                  unreadCount: c.unreadCount || 0,
+                  topic: c.title || "Support Thread",
+                  orderNumber: null,
+                  orderStatus: null,
+                  referencedSku: null,
+                  province: "Pampanga",
+                  messages: msgs,
+                };
+              }
+            );
+
+            if (isMounted) {
+              setThreads((prev) => {
+                const realIds = new Set(liveThreads.map((lt) => lt.id));
+                const filteredFixtures = prev.filter((p) => !realIds.has(p.id));
+                return [...liveThreads, ...filteredFixtures];
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not load admin chat conversations:", err);
+      }
+    }
+
+    loadConversations();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const activeThread = useMemo(
     () => threads.find((t) => t.id === activeThreadId) ?? threads[0],
     [threads, activeThreadId],
@@ -242,6 +344,17 @@ export function ChatClient() {
       }.`,
       "success",
     );
+
+    if (typeof window !== "undefined") {
+      fetch(`/api/conversations/${encodeURIComponent(activeThread.id)}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ content: trimmed }),
+      }).catch((err) => {
+        console.warn("Could not dispatch message to backend:", err);
+      });
+    }
   };
 
   const referencedProduct = useMemo(() => {

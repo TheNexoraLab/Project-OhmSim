@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { INITIAL_NOTIFICATIONS } from "@/lib/mocks/notifications";
 import { Badge } from "@/components/ui/badge";
@@ -157,6 +157,88 @@ export function NotificationsClient() {
   );
   const [activeTab, setActiveTab] = useState<AdminNotificationTab>("ALL");
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function fetchAdminNotifs() {
+      try {
+        const res = await fetch("/api/notifications", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.notifications) && data.notifications.length > 0) {
+            interface ApiAdminNotif {
+              id: string;
+              type: string;
+              title: string;
+              message?: string;
+              content?: string;
+              createdAt: string;
+              read?: boolean;
+            }
+
+            const liveAlerts: AdminNotificationEntry[] = data.notifications.map(
+              (n: ApiAdminNotif) => {
+                const category: AdminNotificationCategory =
+                  n.type === "ORDER"
+                    ? "ORDERS"
+                    : n.type === "STOCK"
+                    ? "INVENTORY"
+                    : "SYSTEM";
+
+                const dateObj = new Date(n.createdAt);
+                const isToday =
+                  dateObj.toDateString() === new Date().toDateString();
+
+                return {
+                  id: `live-${n.id}`,
+                  category,
+                  severity: "INFO",
+                  title: n.title,
+                  body: n.message || n.content || "",
+                  time: dateObj.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }),
+                  group: isToday ? "Today" : "Earlier",
+                  read: Boolean(n.read),
+                  actionHref:
+                    category === "ORDERS"
+                      ? "/admin/orders"
+                      : category === "INVENTORY"
+                      ? "/admin/inventory"
+                      : "/admin/chat",
+                  actionLabel:
+                    category === "ORDERS"
+                      ? "Inspect Order"
+                      : category === "INVENTORY"
+                      ? "Adjust Stock"
+                      : "Open Support",
+                };
+              }
+            );
+
+            if (isMounted) {
+              setNotifications((prev) => {
+                const liveIds = new Set(liveAlerts.map((la) => la.id));
+                const filteredFixtures = prev.filter((p) => !liveIds.has(p.id));
+                return [...liveAlerts, ...filteredFixtures];
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not fetch admin notifications from backend:", err);
+      }
+    }
+
+    fetchAdminNotifs();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const unreadCount = useMemo(
     () => notifications.filter((n) => !n.read).length,

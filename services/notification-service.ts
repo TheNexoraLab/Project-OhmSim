@@ -1,7 +1,19 @@
-import type { NotificationItem } from "@/types/notification";
+import type { NotificationItem, NotificationType } from "@/types/notification";
 import { INITIAL_NOTIFICATIONS } from "@/lib/mocks/notifications";
 
 type Listener = () => void;
+
+interface ApiNotification {
+  id: string;
+  type: string;
+  title: string;
+  message?: string;
+  content?: string;
+  read: boolean;
+  createdAt: string;
+  actionUrl?: string;
+  link?: string;
+}
 
 class NotificationStore {
   private notifications: NotificationItem[] = [...INITIAL_NOTIFICATIONS];
@@ -15,6 +27,59 @@ class NotificationStore {
     return this.notifications.filter((n) => !n.read).length;
   }
 
+  async syncFromApi(): Promise<void> {
+    if (typeof window === "undefined") return;
+
+    try {
+      const res = await fetch("/api/notifications", {
+        cache: "no-store",
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.notifications) && data.notifications.length > 0) {
+          const mappedNotifications: NotificationItem[] = data.notifications.map(
+            (n: ApiNotification) => {
+              const rawType = (n.type || "system").toLowerCase();
+              const type: NotificationType =
+                rawType === "order" ||
+                rawType === "stock" ||
+                rawType === "chat" ||
+                rawType === "system"
+                  ? rawType
+                  : "system";
+
+              const dateObj = new Date(n.createdAt);
+              const now = new Date();
+              const isToday =
+                dateObj.toDateString() === now.toDateString();
+
+              return {
+                id: n.id,
+                type,
+                title: n.title,
+                message: n.message || n.content || "",
+                time: dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                dateGroup: isToday ? "Today" : "Earlier",
+                read: Boolean(n.read),
+                actionUrl: n.actionUrl || n.link || undefined,
+              };
+            }
+          );
+
+          // Merge live notifications with mock fallback fixtures
+          const realIds = new Set(mappedNotifications.map((mn) => mn.id));
+          const preservedFixtures = this.notifications.filter((fn) => !realIds.has(fn.id));
+          this.notifications = [...mappedNotifications, ...preservedFixtures];
+          this.emit();
+        }
+      }
+    } catch (error) {
+      console.warn("Could not sync notifications from backend API:", error);
+    }
+  }
+
   markAsRead(id: string): void {
     let changed = false;
     this.notifications = this.notifications.map((n) => {
@@ -24,7 +89,17 @@ class NotificationStore {
       }
       return n;
     });
-    if (changed) this.emit();
+    if (changed) {
+      this.emit();
+      if (typeof window !== "undefined") {
+        fetch(`/api/notifications/${encodeURIComponent(id)}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ read: true }),
+        }).catch((err) => console.warn("Failed to mark notification read on backend:", err));
+      }
+    }
   }
 
   markAllAsRead(): void {
@@ -32,6 +107,14 @@ class NotificationStore {
     if (hasUnread) {
       this.notifications = this.notifications.map((n) => ({ ...n, read: true }));
       this.emit();
+      if (typeof window !== "undefined") {
+        fetch("/api/notifications", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ read: true }),
+        }).catch((err) => console.warn("Failed to mark all notifications read on backend:", err));
+      }
     }
   }
 
@@ -40,6 +123,12 @@ class NotificationStore {
     this.notifications = this.notifications.filter((n) => n.id !== id);
     if (this.notifications.length !== prevLen) {
       this.emit();
+      if (typeof window !== "undefined") {
+        fetch(`/api/notifications/${encodeURIComponent(id)}`, {
+          method: "DELETE",
+          credentials: "include",
+        }).catch((err) => console.warn("Failed to dismiss notification on backend:", err));
+      }
     }
   }
 
@@ -47,6 +136,12 @@ class NotificationStore {
     if (this.notifications.length > 0) {
       this.notifications = [];
       this.emit();
+      if (typeof window !== "undefined") {
+        fetch("/api/notifications", {
+          method: "DELETE",
+          credentials: "include",
+        }).catch((err) => console.warn("Failed to clear notifications on backend:", err));
+      }
     }
   }
 
@@ -69,6 +164,10 @@ class NotificationStore {
 }
 
 export const notificationStore = new NotificationStore();
+
+export function syncNotificationsFromApi(): Promise<void> {
+  return notificationStore.syncFromApi();
+}
 
 export function getNotifications(): NotificationItem[] {
   return notificationStore.getNotifications();

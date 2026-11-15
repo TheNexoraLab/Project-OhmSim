@@ -10,6 +10,7 @@ import {
   sendChatMessage,
   createChatConversation,
   validateChatAttachment,
+  syncChatConversationsFromApi,
   chatStore,
 } from "@/services/chat-service";
 import { getProductByIdSync } from "@/services/catalog-service";
@@ -40,8 +41,9 @@ export function ChatClient() {
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const draftContext = useRef("");
 
-  // Subscribe to chat store changes
+  // Subscribe to chat store changes and hydrate live threads
   useEffect(() => {
+    syncChatConversationsFromApi();
     return chatStore.subscribe(() => {
       setConvos(getChatConversations());
     });

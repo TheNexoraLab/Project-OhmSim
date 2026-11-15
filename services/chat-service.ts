@@ -42,8 +42,31 @@ export function validateChatAttachment(file: {
   if (!expectedTypes || (!genericType && !expectedTypes.includes(file.type.toLowerCase()))) {
     return { valid: false, error: "Unsupported file type. Attach PNG, JPEG, WebP, GIF, PDF, TXT or CSV." };
   }
-  // Browser metadata validation only; real uploads need server/content validation.
   return { valid: true };
+}
+
+interface ApiChatMessage {
+  id: string;
+  senderRole: "BUYER" | "ADMIN" | "SYSTEM";
+  content: string;
+  createdAt: string;
+  metadata?: {
+    attachment?: ChatAttachment;
+    productId?: string;
+    orderNumber?: string;
+    orderStatus?: string;
+  } | null;
+}
+
+interface ApiChatConversation {
+  id: string;
+  title?: string;
+  status?: string;
+  messages?: ApiChatMessage[];
+  user?: {
+    firstName?: string;
+    lastName?: string;
+  };
 }
 
 class ChatStore {
@@ -61,6 +84,93 @@ class ChatStore {
 
   getConversationById(id: string): ChatConversation | undefined {
     return this.convos.find((c) => c.id === id);
+  }
+
+  async syncFromApi(): Promise<void> {
+    if (typeof window === "undefined") return;
+    try {
+      const res = await fetch("/api/conversations", {
+        cache: "no-store",
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.conversations) && data.conversations.length > 0) {
+          const mappedConvos: ChatConversation[] = data.conversations.map(
+            (c: ApiChatConversation) => {
+              const name =
+                c.title ||
+                (c.user
+                  ? `${c.user.firstName || ""} ${c.user.lastName || ""}`.trim()
+                  : "Support Inquiry");
+
+              const initials =
+                name
+                  .split(" ")
+                  .slice(0, 2)
+                  .map((w) => w[0])
+                  .join("")
+                  .toUpperCase() || "Ω";
+
+              const messages: ChatMessage[] = Array.isArray(c.messages)
+                ? c.messages.map((m: ApiChatMessage) => {
+                    const from: "buyer" | "admin" | "system" =
+                      m.senderRole === "ADMIN"
+                        ? "admin"
+                        : m.senderRole === "SYSTEM"
+                        ? "system"
+                        : "buyer";
+
+                    const timeStr = new Date(m.createdAt).toLocaleTimeString(
+                      [],
+                      { hour: "2-digit", minute: "2-digit" }
+                    );
+
+                    const meta = m.metadata || {};
+
+                    return {
+                      id: m.id,
+                      from,
+                      type: meta.attachment
+                        ? "attachment"
+                        : meta.productId
+                        ? "product"
+                        : meta.orderNumber
+                        ? "order"
+                        : "text",
+                      text: m.content,
+                      time: timeStr,
+                      attachment: meta.attachment,
+                      productId: meta.productId,
+                      orderNumber: meta.orderNumber,
+                      orderStatus: meta.orderStatus,
+                    };
+                  })
+                : [];
+
+              return {
+                id: c.id,
+                name,
+                subtitle: c.status || "Active Thread",
+                initials,
+                color: "#89B4FA",
+                online: true,
+                messages,
+              };
+            }
+          );
+
+          // Merge live backend threads
+          const realIds = new Set(mappedConvos.map((mc) => mc.id));
+          const preservedFixtures = this.convos.filter((fc) => !realIds.has(fc.id));
+          this.convos = [...mappedConvos, ...preservedFixtures];
+          this.emit();
+        }
+      }
+    } catch (err) {
+      console.warn("Could not sync chat conversations from backend:", err);
+    }
   }
 
   sendMessage(
@@ -102,8 +212,28 @@ class ChatStore {
     convo.messages.push(newMsg);
     this.emit();
 
-    // Trigger simulated reply if sender was buyer
-    if (newMsg.from === "buyer") {
+    // Fire backend message dispatch in browser runtime
+    if (typeof window !== "undefined") {
+      fetch(`/api/conversations/${encodeURIComponent(convoId)}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          content: messageData.text || (messageData.attachment ? `[Attachment: ${messageData.attachment.name}]` : "[Card]"),
+          metadata: {
+            attachment: messageData.attachment,
+            productId: messageData.productId,
+            orderNumber: messageData.orderNumber,
+            orderStatus: messageData.orderStatus,
+          },
+        }),
+      }).catch((err) => {
+        console.warn("Failed to dispatch message to backend API:", err);
+      });
+    }
+
+    // Trigger simulated reply if sender was buyer on fixture threads
+    if (newMsg.from === "buyer" && convoId.startsWith("c")) {
       this.scheduleAutoReply(convoId);
     }
 
@@ -163,6 +293,20 @@ class ChatStore {
 
     this.convos.unshift(newConvo);
     this.emit();
+
+    if (typeof window !== "undefined") {
+      fetch("/api/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          title: name,
+        }),
+      }).catch((err) => {
+        console.warn("Failed to create conversation on backend API:", err);
+      });
+    }
+
     return newConvo;
   }
 
@@ -194,6 +338,10 @@ class ChatStore {
 }
 
 export const chatStore = new ChatStore();
+
+export function syncChatConversationsFromApi(): Promise<void> {
+  return chatStore.syncFromApi();
+}
 
 export function getChatConversations(): ChatConversation[] {
   return chatStore.getConversations();
