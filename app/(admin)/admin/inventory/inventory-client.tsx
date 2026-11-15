@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { StockStatus } from "@/types/product";
 import { formatDate, formatPrice } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,7 @@ import {
   type StockAdjustmentType,
   adjustAdminProductStock,
   computeStockStatus,
+  syncAdminCatalogFromApi,
   useAdminCatalogStore,
 } from "@/components/admin/admin-catalog-store";
 
@@ -388,6 +389,10 @@ function AdjustStockModalInner({
 
 export function InventoryClient() {
   const { products, adjustmentLogs } = useAdminCatalogStore();
+
+  useEffect(() => {
+    syncAdminCatalogFromApi();
+  }, []);
 
   const [activeStatusTab, setActiveStatusTab] = useState<StockFilterTab>("ALL");
   const [searchQuery, setSearchQuery] = useState("");

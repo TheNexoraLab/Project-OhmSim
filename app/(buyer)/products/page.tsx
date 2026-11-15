@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useMemo, Suspense, useCallback } from "react";
+import React, { useState, useMemo, useEffect, Suspense, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import type { Category, ProductSortOption } from "@/types/product";
-import { getProductsSync, getCategoriesSync } from "@/services/catalog-service";
+import { getProducts, getProductsSync, getCategories, getCategoriesSync } from "@/services/catalog-service";
 import { useCart } from "@/hooks/use-cart";
 import { useBom } from "@/hooks/use-bom";
 import { ProductCard } from "@/components/buyer/product-card";
@@ -19,9 +19,32 @@ function CatalogContent() {
   const { cart, addToCart } = useCart();
   const { bomProjects, addToBomProject, addBomProject } = useBom();
 
-  // Obtain typed data strictly through the approved service boundary
-  const allProducts = useMemo(() => getProductsSync(), []);
-  const categories = useMemo(() => getCategoriesSync(), []);
+  // Initialized with verified sync fixtures, hydrated live from backend APIs
+  const [allProducts, setAllProducts] = useState(() => getProductsSync());
+  const [categories, setCategories] = useState<Category[]>(() => getCategoriesSync());
+
+  useEffect(() => {
+    let isMounted = true;
+    getProducts()
+      .then((liveProducts) => {
+        if (isMounted && liveProducts.length > 0) {
+          setAllProducts(liveProducts);
+        }
+      })
+      .catch(() => {});
+
+    getCategories()
+      .then((liveCats) => {
+        if (isMounted && liveCats.length > 0) {
+          setCategories(liveCats);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // State synchronized with URL query
   const [search, setSearch] = useState(urlQuery);

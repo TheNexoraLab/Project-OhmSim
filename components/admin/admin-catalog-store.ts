@@ -219,6 +219,74 @@ export function useAdminCatalogStore(): AdminCatalogState {
   );
 }
 
+export async function syncAdminCatalogFromApi(): Promise<void> {
+  if (typeof window === "undefined") return;
+  try {
+    const [invRes, catRes] = await Promise.all([
+      fetch("/api/inventory", { cache: "no-store" }),
+      fetch("/api/categories", { cache: "no-store" }),
+    ]);
+
+    if (invRes.ok) {
+      const invData = await invRes.json();
+      if (Array.isArray(invData.items) && invData.items.length > 0) {
+        const updatedProducts = storeState.products.map((p) => {
+          const match = invData.items.find(
+            (item: { id: string; sku: string }) => item.id === p.id || item.sku === p.sku
+          );
+          if (match) {
+            return {
+              ...p,
+              id: match.id || p.id,
+              stock: match.stock,
+              minThreshold: match.minThreshold,
+              status: match.status,
+              price: typeof match.price === "number" ? match.price : p.price,
+              updatedAt: match.updatedAt || p.updatedAt,
+            };
+          }
+          return p;
+        });
+
+        storeState = {
+          ...storeState,
+          products: updatedProducts,
+        };
+        emitChange();
+      }
+    }
+
+    if (catRes.ok) {
+      const catData = await catRes.json();
+      if (Array.isArray(catData.categories) && catData.categories.length > 0) {
+        const liveCategories: AdminCategoryRecord[] = catData.categories.map((c: {
+          id: string;
+          name: string;
+          slug: string;
+          icon?: string;
+          description?: string;
+          createdAt?: string;
+        }) => ({
+          id: c.id,
+          name: c.name,
+          slug: c.slug,
+          icon: (c.icon as AdminCategoryIconKey) || "mcu",
+          description: c.description || "",
+          createdAt: c.createdAt || new Date().toISOString(),
+        }));
+
+        storeState = {
+          ...storeState,
+          categories: liveCategories,
+        };
+        emitChange();
+      }
+    }
+  } catch (error) {
+    console.warn("Could not sync admin catalog from backend API:", error);
+  }
+}
+
 export interface UpsertAdminProductInput {
   id?: string;
   sku: string;
@@ -277,6 +345,28 @@ export function upsertAdminProduct(
       products: nextProducts,
     };
     emitChange();
+
+    if (typeof window !== "undefined") {
+      fetch(`/api/products/${existing.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sku: updated.sku,
+          name: updated.name,
+          brand: updated.brand,
+          price: updated.price,
+          stockQuantity: updated.stock,
+          minStockThreshold: updated.minThreshold,
+          shortDescription: updated.shortDescription,
+          fullDescription: updated.fullDescription,
+          datasheetUrl: updated.datasheetUrl,
+          specifications: updated.specs,
+        }),
+      }).catch((err) => {
+        console.warn("Failed to sync updated product to backend:", err);
+      });
+    }
+
     return updated;
   }
 
@@ -311,6 +401,34 @@ export function upsertAdminProduct(
     products: [newProduct, ...storeState.products],
   };
   emitChange();
+
+  if (typeof window !== "undefined") {
+    const matchedCategory = storeState.categories.find(
+      (c) => c.name.toLowerCase() === input.category.toLowerCase()
+    );
+    if (matchedCategory) {
+      fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sku: newProduct.sku,
+          name: newProduct.name,
+          brand: newProduct.brand,
+          categoryId: matchedCategory.id,
+          price: newProduct.price,
+          stockQuantity: newProduct.stock,
+          minStockThreshold: newProduct.minThreshold,
+          shortDescription: newProduct.shortDescription,
+          fullDescription: newProduct.fullDescription,
+          datasheetUrl: newProduct.datasheetUrl,
+          specifications: newProduct.specs,
+        }),
+      }).catch((err) => {
+        console.warn("Failed to create new product on backend:", err);
+      });
+    }
+  }
+
   return newProduct;
 }
 
@@ -343,6 +461,22 @@ export function addAdminCategory(
     categories: [...storeState.categories, newCategory],
   };
   emitChange();
+
+  if (typeof window !== "undefined") {
+    fetch("/api/categories", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: newCategory.name,
+        slug: newCategory.slug,
+        icon: newCategory.icon,
+        description: newCategory.description,
+      }),
+    }).catch((err) => {
+      console.warn("Failed to create category on backend:", err);
+    });
+  }
+
   return newCategory;
 }
 
@@ -399,6 +533,22 @@ export function adjustAdminProductStock(params: {
     adjustmentLogs: [newLog, ...storeState.adjustmentLogs],
   };
   emitChange();
+
+  if (typeof window !== "undefined") {
+    fetch("/api/inventory", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productId: target.id,
+        sku: target.sku,
+        type: params.type,
+        quantity: delta,
+        reason: params.reason,
+      }),
+    }).catch((err) => {
+      console.warn("Failed to sync stock adjustment to backend:", err);
+    });
+  }
 
   return { product: updatedProduct, log: newLog };
 }

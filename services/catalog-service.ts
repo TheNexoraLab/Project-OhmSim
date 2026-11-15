@@ -1,13 +1,116 @@
-import type { Product, Category, BomProject } from "@/types/product";
+import type { Product, Category, BomProject, StockStatus } from "@/types/product";
 import { PRODUCTS, INITIAL_BOM_PROJECTS } from "@/lib/mocks/products";
 
 /**
  * Catalog Service
  * Approved typed service boundary for Buyer catalog, product details, and search.
- * Currently backed by verified mock fixtures; can transition to backend APIs.
+ * Connects directly to OhmSim live backend APIs (/api/products, /api/categories)
+ * with robust synchronous mock fallbacks for instant SSR/SSG and offline continuity.
  */
 
-export async function getProducts(): Promise<Product[]> {
+function parseVoltage(specs?: Record<string, string> | null, defaultVoltage = 5): number {
+  if (!specs) return defaultVoltage;
+  const val = specs["Operating Voltage"] || specs["Voltage"] || specs["voltage"];
+  if (val) {
+    const match = String(val).match(/([\d.]+)/);
+    if (match) return parseFloat(match[1]);
+  }
+  return defaultVoltage;
+}
+
+function parseResistance(specs?: Record<string, string> | null): number | null {
+  if (!specs) return null;
+  const val = specs["Resistance"] || specs["resistance"];
+  if (val) {
+    const match = String(val).match(/([\d.]+)/);
+    if (match) return parseFloat(match[1]);
+  }
+  return null;
+}
+
+interface RawApiProduct {
+  id: string;
+  sku: string;
+  name: string;
+  label?: string;
+  brand?: string;
+  category: string;
+  price: number | string;
+  stock?: number;
+  stockQuantity?: number;
+  status?: StockStatus;
+  minThreshold?: number;
+  minStockThreshold?: number;
+  image?: string;
+  images?: string[];
+  imageUrls?: string[];
+  specs?: Record<string, string>;
+  specifications?: Record<string, string>;
+  about?: string;
+  fullDescription?: string;
+  shortDescription?: string;
+  voltage?: number;
+  resistance?: number | null;
+}
+
+export function mapApiProductToProduct(raw: RawApiProduct): Product {
+  const specs = raw.specs || raw.specifications || {};
+  const stock = typeof raw.stock === "number" ? raw.stock : (typeof raw.stockQuantity === "number" ? raw.stockQuantity : 0);
+  const minThreshold = raw.minThreshold ?? raw.minStockThreshold ?? 15;
+  const status: StockStatus = raw.status || (stock <= 0 ? "out-of-stock" : stock <= minThreshold ? "low-stock" : "in-stock");
+  const price = typeof raw.price === "number" ? raw.price : parseFloat(String(raw.price)) || 0;
+  const image = raw.image || (raw.images && raw.images[0]) || (raw.imageUrls && raw.imageUrls[0]) || "/images/placeholder.jpg";
+  const images = raw.images || raw.imageUrls || [image];
+
+  return {
+    id: raw.id,
+    sku: raw.sku,
+    category: (raw.category as Exclude<Category, "All">) || "Microcontrollers",
+    label: raw.label || raw.name,
+    name: raw.name,
+    price,
+    voltage: typeof raw.voltage === "number" ? raw.voltage : parseVoltage(specs),
+    resistance: typeof raw.resistance === "number" || raw.resistance === null ? raw.resistance : parseResistance(specs),
+    stock,
+    status,
+    image,
+    brand: raw.brand || "Generic",
+    images,
+    specs,
+    about: raw.about || raw.fullDescription || raw.shortDescription || raw.name,
+  };
+}
+
+export async function getProducts(options?: {
+  category?: string;
+  search?: string;
+  limit?: number;
+  baseUrl?: string;
+}): Promise<Product[]> {
+  try {
+    const isBrowser = typeof window !== "undefined";
+    const base = options?.baseUrl || (isBrowser ? "" : null);
+
+    if (base !== null) {
+      const searchParams = new URLSearchParams();
+      if (options?.category && options.category !== "All") searchParams.set("category", options.category);
+      if (options?.search) searchParams.set("search", options.search);
+      if (options?.limit) searchParams.set("limit", String(options.limit));
+      const qs = searchParams.toString();
+      const url = `${base}/api/products${qs ? `?${qs}` : ""}`;
+
+      const res = await fetch(url, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.products) && data.products.length > 0) {
+          return data.products.map(mapApiProductToProduct);
+        }
+      }
+    }
+  } catch {
+    // Graceful fallback to verified synchronous fixture
+  }
+
   return getProductsSync();
 }
 
@@ -15,7 +118,25 @@ export function getProductsSync(): Product[] {
   return [...PRODUCTS];
 }
 
-export async function getProductById(id: string): Promise<Product | undefined> {
+export async function getProductById(id: string, options?: { baseUrl?: string }): Promise<Product | undefined> {
+  try {
+    const isBrowser = typeof window !== "undefined";
+    const base = options?.baseUrl || (isBrowser ? "" : null);
+
+    if (base !== null) {
+      const url = `${base}/api/products/${encodeURIComponent(id)}`;
+      const res = await fetch(url, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.product) {
+          return mapApiProductToProduct(data.product);
+        }
+      }
+    }
+  } catch {
+    // Graceful fallback
+  }
+
   return getProductByIdSync(id);
 }
 
@@ -23,7 +144,25 @@ export function getProductByIdSync(id: string): Product | undefined {
   return PRODUCTS.find((p) => p.id === id);
 }
 
-export async function getFeaturedProducts(limit: number = 4): Promise<Product[]> {
+export async function getFeaturedProducts(limit: number = 4, options?: { baseUrl?: string }): Promise<Product[]> {
+  try {
+    const isBrowser = typeof window !== "undefined";
+    const base = options?.baseUrl || (isBrowser ? "" : null);
+
+    if (base !== null) {
+      const url = `${base}/api/products?isFeatured=true&limit=${limit}`;
+      const res = await fetch(url, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.products) && data.products.length > 0) {
+          return data.products.map(mapApiProductToProduct);
+        }
+      }
+    }
+  } catch {
+    // Fall back
+  }
+
   return getFeaturedProductsSync(limit);
 }
 
@@ -47,7 +186,26 @@ export function getRelatedProductsSync(
   return PRODUCTS.filter((p) => p.id !== productId && p.category === category).slice(0, limit);
 }
 
-export async function getCategories(): Promise<Category[]> {
+export async function getCategories(options?: { baseUrl?: string }): Promise<Category[]> {
+  try {
+    const isBrowser = typeof window !== "undefined";
+    const base = options?.baseUrl || (isBrowser ? "" : null);
+
+    if (base !== null) {
+      const url = `${base}/api/categories`;
+      const res = await fetch(url, { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.categories) && data.categories.length > 0) {
+          const names = data.categories.map((c: { name: string }) => c.name);
+          return ["All", ...names] as Category[];
+        }
+      }
+    }
+  } catch {
+    // Fall back
+  }
+
   return getCategoriesSync();
 }
 
@@ -65,4 +223,3 @@ export function getCategoriesSync(): Category[] {
 export function getInitialBomProjects(): BomProject[] {
   return JSON.parse(JSON.stringify(INITIAL_BOM_PROJECTS));
 }
-
