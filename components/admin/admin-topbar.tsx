@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { getButtonClasses } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
+import { logout } from "@/services/auth-service";
 import { ADMIN_NAV_ITEMS } from "@/components/admin/admin-sidebar";
 
 export interface AdminTopbarProps {
@@ -45,8 +46,9 @@ export function AdminTopbar({
   const router = useRouter();
   const { title, segmentLabel } = getSectionMeta(pathname);
 
-  const handleSimulatedLogout = () => {
-    toast("Simulated logout complete for Admin Nexora.", "info");
+  const handleLogout = async () => {
+    await logout();
+    toast("Logged out successfully.", "info");
     router.push("/login");
   };
 
@@ -184,9 +186,9 @@ export function AdminTopbar({
 
           <button
             type="button"
-            onClick={handleSimulatedLogout}
+            onClick={handleLogout}
             aria-label="Log out Admin Nexora"
-            title="Simulated Logout"
+            title="Log out"
             data-testid="admin-logout-button"
             className="min-w-[44px] min-h-[36px] px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-[#BAC2DE] hover:text-[#F38BA8] hover:bg-[#F38BA8]/12 border border-transparent hover:border-[#F38BA8]/30 transition-colors inline-flex items-center gap-1 cursor-pointer"
           >
