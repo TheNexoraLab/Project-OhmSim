@@ -119,11 +119,11 @@ Your database models must strictly match the existing TypeScript domain interfac
 
 ## Step 8: Installing Prisma & Developer Dependencies
 
-Install Prisma ORM, Prisma Client, and `tsx` (TypeScript execution engine for seeding):
+Install stable Prisma ORM (v6 LTS), Prisma Client, and `tsx` (TypeScript execution engine for seeding):
 
 ```bash
-npm install @prisma/client
-npm install -D prisma tsx
+npm install @prisma/client@6
+npm install -D prisma@6 tsx
 ```
 
 ---
