@@ -9,6 +9,7 @@ import { toast } from "@/components/ui/toast";
 import {
   useAdminCatalogStore,
   addAdminCategory,
+  syncAdminCatalogFromApi,
   type AdminCategoryIconKey,
 } from "@/components/admin/admin-catalog-store";
 
@@ -139,6 +140,11 @@ function renderCategoryIcon(iconKey: AdminCategoryIconKey) {
 
 export function CategoriesClient() {
   const { categories, products } = useAdminCatalogStore();
+
+  useEffect(() => {
+    syncAdminCatalogFromApi();
+  }, []);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 

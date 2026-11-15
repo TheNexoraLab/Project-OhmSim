@@ -11,6 +11,7 @@ import {
   useAdminCatalogStore,
   upsertAdminProduct,
   computeStockStatus,
+  syncAdminCatalogFromApi,
   type AdminProductRecord,
 } from "@/components/admin/admin-catalog-store";
 
@@ -43,6 +44,10 @@ const STOCK_STATUS_BADGE_TOKENS = {
 
 export function ProductsClient() {
   const { products, categories } = useAdminCatalogStore();
+
+  useEffect(() => {
+    syncAdminCatalogFromApi();
+  }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("ALL");

@@ -1,9 +1,14 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useCart } from "@/hooks/use-cart";
 import { useBom } from "@/hooks/use-bom";
-import { getProductsSync, getFeaturedProductsSync } from "@/services/catalog-service";
+import {
+  getProducts,
+  getProductsSync,
+  getFeaturedProducts,
+  getFeaturedProductsSync,
+} from "@/services/catalog-service";
 import { ProductCard } from "@/components/buyer/product-card";
 import { MobileProductCard } from "@/components/buyer/mobile-product-card";
 
@@ -11,9 +16,28 @@ export default function BuyerHomePage() {
   const { cart, addToCart, cartTotal } = useCart();
   const { bomProjects, addToBomProject } = useBom();
 
-  // Obtain typed data strictly through the approved service boundary
-  const allProducts = getProductsSync();
-  const featured = getFeaturedProductsSync(4);
+  // Initialized with verified sync fixtures, hydrated live from backend APIs
+  const [allProducts, setAllProducts] = useState(() => getProductsSync());
+  const [featured, setFeatured] = useState(() => getFeaturedProductsSync(4));
+
+  useEffect(() => {
+    let isMounted = true;
+    getProducts()
+      .then((prods) => {
+        if (isMounted && prods.length > 0) setAllProducts(prods);
+      })
+      .catch(() => {});
+
+    getFeaturedProducts(4)
+      .then((feat) => {
+        if (isMounted && feat.length > 0) setFeatured(feat);
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const stats = [
     {
