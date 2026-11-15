@@ -89,3 +89,15 @@ export async function getMe(): Promise<{ authenticated: boolean; user: AuthUser 
     return { authenticated: false, user: null };
   }
 }
+
+/**
+ * Initiates Log in with Google via Neon Auth (Managed Better Auth).
+ * Redirects the user's browser directly to Google OAuth consent.
+ */
+export function loginWithGoogle(): void {
+  if (typeof window !== 'undefined') {
+    // External OAuth redirect - requires full browser navigation to trigger 302 redirect
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+    window.location.assign(`${window.location.origin}/api/auth/google`);
+  }
+}
