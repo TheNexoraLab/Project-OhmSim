@@ -3,9 +3,7 @@ import { prisma } from '../../lib/prisma/client.ts';
 import { createSessionToken } from '../../lib/auth/session.ts';
 import {
   isValidRegion3Province,
-  getCanonicalRegion3Province,
   computeOrderShippingFee,
-  normalizeOrderStatus,
 } from '../../lib/orders/order-utils.ts';
 
 console.log('================================================================');
