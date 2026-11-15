@@ -10,6 +10,7 @@ import { formatDate, formatPrice } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
+import { getCustomers } from "@/services/customer-service";
 
 type AdminOrderStatusDisplay =
   | "PENDING"
@@ -616,18 +617,31 @@ function CustomerDetailDrawer({
 }
 
 export function CustomersClient() {
+  const [customers, setCustomers] = useState<AdminCustomerRecord[]>(INITIAL_CUSTOMERS);
   const [searchQuery, setSearchQuery] = useState("");
   const [segmentFilter, setSegmentFilter] =
     useState<CustomerSegmentFilter>("ALL");
   const [selectedCustomer, setSelectedCustomer] =
     useState<AdminCustomerRecord | null>(null);
 
+  useEffect(() => {
+    let ignore = false;
+    getCustomers().then((live) => {
+      if (!ignore && live && live.length > 0) {
+        setCustomers(live);
+      }
+    });
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
   const overviewStats = useMemo(() => {
-    const totalBuyers = INITIAL_CUSTOMERS.length;
-    const activeCentralLuzon = INITIAL_CUSTOMERS.filter(
+    const totalBuyers = customers.length;
+    const activeCentralLuzon = customers.filter(
       (c) => c.activeCentralLuzon,
     ).length;
-    const campusLabVerified = INITIAL_CUSTOMERS.filter(
+    const campusLabVerified = customers.filter(
       (c) => c.campusLabVerified,
     ).length;
 
@@ -636,11 +650,11 @@ export function CustomersClient() {
       activeCentralLuzon,
       campusLabVerified,
     };
-  }, []);
+  }, [customers]);
 
   const filteredCustomers = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    return INITIAL_CUSTOMERS.filter((customer) => {
+    return customers.filter((customer) => {
       if (
         segmentFilter === "CAMPUS_VERIFIED" &&
         !customer.campusLabVerified
@@ -659,7 +673,7 @@ export function CustomersClient() {
         customer.affiliation.toLowerCase().includes(q)
       );
     });
-  }, [searchQuery, segmentFilter]);
+  }, [searchQuery, segmentFilter, customers]);
 
   return (
     <div

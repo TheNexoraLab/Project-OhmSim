@@ -9,6 +9,7 @@ import { useCart } from "@/hooks/use-cart";
 import { getProductByIdSync } from "@/services/catalog-service";
 import { StockBadge } from "@/components/ui/badge";
 import { toast } from "@/components/ui/toast";
+import type { StockStatus } from "@/types/product";
 
 function formatPrice(price: number): string {
   return new Intl.NumberFormat("en-PH", {
@@ -29,12 +30,14 @@ export function BomClient() {
     addBomProject,
     setBomQty,
     removeBomLineItem,
+    deleteProject,
   } = useBom();
 
   const { addBundleToCart } = useCart();
 
   const [creating, setCreating] = useState(false);
   const [newName, setNewName] = useState("");
+  const [newBudget, setNewBudget] = useState("");
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   // Sync with search parameter if provided
@@ -47,6 +50,7 @@ export function BomClient() {
   const startCreate = () => {
     setCreating(true);
     setNewName("");
+    setNewBudget("");
     setTimeout(() => nameInputRef.current?.focus(), 60);
   };
 
@@ -56,15 +60,18 @@ export function BomClient() {
       toast("Please enter a valid project name", "warning");
       return;
     }
-    const newId = addBomProject(trimmed);
+    const parsedBudget = newBudget ? Math.max(0, parseFloat(newBudget)) : undefined;
+    const newId = addBomProject(trimmed, undefined, parsedBudget);
     setSelectedBomId(newId);
     setCreating(false);
     setNewName("");
+    setNewBudget("");
   };
 
   const cancelCreate = () => {
     setCreating(false);
     setNewName("");
+    setNewBudget("");
   };
 
   const selProj = useMemo(() => {
@@ -75,9 +82,48 @@ export function BomClient() {
     return selProj?.lineItems ?? [];
   }, [selProj]);
 
+  // Helper to resolve product from live DB item or fallback sync catalog
+  const resolveProduct = (li: {
+    productId: string;
+    product?: {
+      id: string;
+      name: string;
+      sku: string;
+      brand?: string;
+      price: number;
+      stock?: number;
+      status?: StockStatus;
+      image?: string;
+    };
+  }) => {
+    if (li.product) {
+      const stockVal = li.product.stock ?? 50;
+      const statusVal: StockStatus =
+        li.product.status === "in-stock" ||
+        li.product.status === "low-stock" ||
+        li.product.status === "out-of-stock"
+          ? li.product.status
+          : stockVal > 0
+          ? "in-stock"
+          : "out-of-stock";
+
+      return {
+        id: li.product.id,
+        name: li.product.name,
+        sku: li.product.sku,
+        category: li.product.brand || "Hardware",
+        price: Number(li.product.price),
+        stock: stockVal,
+        status: statusVal,
+        image: li.product.image || "/images/products/placeholder.svg",
+      };
+    }
+    return getProductByIdSync(li.productId);
+  };
+
   const totalCost = useMemo(() => {
     return lineItems.reduce((sum, li) => {
-      const p = getProductByIdSync(li.productId);
+      const p = resolveProduct(li);
       return sum + (p ? p.price * li.qty : 0);
     }, 0);
   }, [lineItems]);
@@ -89,29 +135,50 @@ export function BomClient() {
   const allInStock = useMemo(() => {
     if (lineItems.length === 0) return false;
     return lineItems.every((li) => {
-      const p = getProductByIdSync(li.productId);
-      return p && p.status === "in-stock" && p.stock >= li.qty;
+      const p = resolveProduct(li);
+      return p && (p.status === "in-stock" || p.stock >= li.qty);
     });
   }, [lineItems]);
 
-  // Export to CSV client-side
+  const budgetProgress = useMemo(() => {
+    if (!selProj?.targetBudget || selProj.targetBudget <= 0) return null;
+    const percent = Math.min(100, Math.round((totalCost / selProj.targetBudget) * 100));
+    const isOver = totalCost > selProj.targetBudget;
+    return {
+      target: selProj.targetBudget,
+      percent,
+      isOver,
+    };
+  }, [selProj, totalCost]);
+
+  // Export to CSV client-side with reference designators
   const handleExportCsv = () => {
     if (!selProj || lineItems.length === 0) {
       toast("No components to export in this project", "warning");
       return;
     }
 
-    const headers = ["Part Name", "SKU", "Category", "Unit Price (PHP)", "Quantity", "Subtotal (PHP)", "Stock Status"];
+    const headers = [
+      "Part Name",
+      "SKU",
+      "Category",
+      "Reference Designator",
+      "Unit Price (PHP)",
+      "Quantity",
+      "Subtotal (PHP)",
+      "Stock Status",
+    ];
     const rows = lineItems.map((li) => {
-      const p = getProductByIdSync(li.productId);
+      const p = resolveProduct(li);
       const name = p ? `"${p.name.replace(/"/g, '""')}"` : "Unknown";
       const sku = p ? p.sku : li.productId;
       const cat = p ? p.category : "";
+      const ref = li.referenceDesignator ? `"${li.referenceDesignator}"` : "—";
       const price = p ? p.price.toFixed(2) : "0.00";
       const qty = li.qty;
       const subtotal = p ? (p.price * li.qty).toFixed(2) : "0.00";
       const status = p ? p.status : "unknown";
-      return [name, sku, cat, price, qty, subtotal, status].join(",");
+      return [name, sku, cat, ref, price, qty, subtotal, status].join(",");
     });
 
     const csvContent = [headers.join(","), ...rows].join("\r\n");
@@ -136,6 +203,13 @@ export function BomClient() {
     const success = addBundleToCart(selProj.id, selProj.name, lineItems);
     if (success) {
       toast(`Added all items from "${selProj.name}" to cart!`, "success");
+    }
+  };
+
+  const handleDeleteProject = () => {
+    if (!selProj) return;
+    if (confirm(`Are you sure you want to delete "${selProj.name}"?`)) {
+      deleteProject(selProj.id);
     }
   };
 
@@ -171,10 +245,17 @@ export function BomClient() {
                   if (e.key === "Enter") confirmCreate();
                   if (e.key === "Escape") cancelCreate();
                 }}
-                placeholder="Enter project name..."
+                placeholder="Project name..."
                 className="w-full px-3 py-2 rounded-xl text-xs bg-mocha-bg border border-mocha-accent text-mocha-text outline-none focus:ring-2 focus:ring-mocha-accent/30"
               />
-              <div className="flex gap-1.5">
+              <input
+                type="number"
+                value={newBudget}
+                onChange={(e) => setNewBudget(e.target.value)}
+                placeholder="Target budget (PHP, optional)"
+                className="w-full px-3 py-1.5 rounded-xl text-xs bg-mocha-bg border border-mocha-border text-mocha-text outline-none focus:ring-1 focus:ring-mocha-accent/50"
+              />
+              <div className="flex gap-1.5 mt-1">
                 <button
                   type="button"
                   onClick={confirmCreate}
@@ -201,7 +282,7 @@ export function BomClient() {
             const projLineItems = proj.lineItems ?? [];
             const projItemCount = projLineItems.reduce((s, li) => s + li.qty, 0);
             const projTotal = projLineItems.reduce((sum, li) => {
-              const p = getProductByIdSync(li.productId);
+              const p = resolveProduct(li);
               return sum + (p ? p.price * li.qty : 0);
             }, 0);
 
@@ -231,6 +312,27 @@ export function BomClient() {
       {/* ── Right Content: Selected Project Details ── */}
       {selProj ? (
         <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+          {/* Project Header with Delete Action */}
+          <div className="px-4 py-3 bg-mocha-bg border-b border-mocha-border flex items-center justify-between">
+            <div>
+              <h2 className="text-sm md:text-base font-bold text-mocha-text">
+                {selProj.name}
+              </h2>
+              {selProj.description && (
+                <p className="text-xs text-mocha-text-muted mt-0.5">{selProj.description}</p>
+              )}
+            </div>
+            {bomProjects.length > 1 && (
+              <button
+                type="button"
+                onClick={handleDeleteProject}
+                className="text-xs font-medium text-mocha-text-muted hover:text-mocha-danger transition-colors px-2.5 py-1 rounded-lg border border-mocha-border hover:border-mocha-danger/40"
+              >
+                Delete Project
+              </button>
+            )}
+          </div>
+
           {/* Stat Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 shrink-0 bg-mocha-bg border-b border-mocha-border">
             <div className="p-3.5 rounded-2xl bg-mocha-panel border border-mocha-border shadow-sm">
@@ -240,6 +342,24 @@ export function BomClient() {
               <p className="text-xl md:text-2xl font-bold font-mono tracking-tight text-mocha-accent">
                 {formatPrice(totalCost)}
               </p>
+              {budgetProgress && (
+                <div className="mt-2">
+                  <div className="flex justify-between text-[10px] font-mono text-mocha-text-muted mb-1">
+                    <span>Target: {formatPrice(budgetProgress.target)}</span>
+                    <span className={budgetProgress.isOver ? "text-mocha-danger font-bold" : "text-mocha-success"}>
+                      {budgetProgress.percent}%
+                    </span>
+                  </div>
+                  <div className="w-full h-1.5 rounded-full bg-mocha-bg overflow-hidden border border-mocha-border">
+                    <div
+                      className={`h-full rounded-full transition-all ${
+                        budgetProgress.isOver ? "bg-mocha-danger" : "bg-mocha-success"
+                      }`}
+                      style={{ width: `${Math.min(100, budgetProgress.percent)}%` }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="p-3.5 rounded-2xl bg-mocha-panel border border-mocha-border shadow-sm">
@@ -248,6 +368,9 @@ export function BomClient() {
               </p>
               <p className="text-xl md:text-2xl font-bold font-mono text-mocha-text">
                 {totalComponentCount} <span className="text-xs font-normal text-mocha-text-muted">units</span>
+              </p>
+              <p className="text-[11px] text-mocha-text-muted mt-1">
+                {lineItems.length} unique parts
               </p>
             </div>
 
@@ -302,11 +425,12 @@ export function BomClient() {
               </div>
             ) : (
               <div className="rounded-2xl overflow-hidden border border-mocha-border bg-mocha-panel shadow-sm">
-                {/* Table Header for medium/desktop */}
-                <div className="hidden lg:grid items-center px-4 py-3 bg-mocha-bg-secondary border-b border-mocha-border grid-cols-[56px_1fr_130px_100px_110px_110px_90px_40px] text-[10px] font-bold uppercase tracking-widest text-mocha-text-muted">
+                {/* Table Header for desktop */}
+                <div className="hidden lg:grid items-center px-4 py-3 bg-mocha-bg-secondary border-b border-mocha-border grid-cols-[56px_1fr_110px_90px_100px_110px_110px_80px_40px] text-[10px] font-bold uppercase tracking-widest text-mocha-text-muted">
                   <span>Part</span>
                   <span>Component Details</span>
                   <span>Category</span>
+                  <span>Designator</span>
                   <span>Unit Price</span>
                   <span className="text-center">Quantity</span>
                   <span className="text-right">Subtotal</span>
@@ -317,14 +441,14 @@ export function BomClient() {
                 {/* Table Rows */}
                 <div className="divide-y divide-mocha-border">
                   {lineItems.map((li) => {
-                    const prod = getProductByIdSync(li.productId);
+                    const prod = resolveProduct(li);
                     if (!prod) return null;
                     const subtotal = prod.price * li.qty;
 
                     return (
                       <div
                         key={li.productId}
-                        className="p-3 lg:px-4 lg:py-3.5 flex flex-col lg:grid lg:grid-cols-[56px_1fr_130px_100px_110px_110px_90px_40px] lg:items-center gap-3 hover:bg-mocha-panel-raised/40 transition-colors"
+                        className="p-3 lg:px-4 lg:py-3.5 flex flex-col lg:grid lg:grid-cols-[56px_1fr_110px_90px_100px_110px_110px_80px_40px] lg:items-center gap-3 hover:bg-mocha-panel-raised/40 transition-colors"
                       >
                         {/* Part Image */}
                         <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-mocha-border bg-mocha-bg shrink-0">
@@ -354,6 +478,13 @@ export function BomClient() {
                         <div>
                           <span className="inline-flex text-[9px] font-bold px-2 py-0.5 rounded-full bg-mocha-accent/10 text-mocha-accent border border-mocha-accent/20">
                             {prod.category}
+                          </span>
+                        </div>
+
+                        {/* Reference Designator */}
+                        <div>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-mocha-bg border border-mocha-border text-mocha-text-muted">
+                            {li.referenceDesignator || "—"}
                           </span>
                         </div>
 

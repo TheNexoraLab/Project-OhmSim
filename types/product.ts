@@ -39,14 +39,33 @@ export interface Product {
 }
 
 export interface BomLineItem {
+  id?: string;
   productId: string;
   qty: number;
+  referenceDesignator?: string | null;
+  product?: {
+    id: string;
+    sku: string;
+    name: string;
+    brand?: string;
+    price: number;
+    stock: number;
+    status: StockStatus;
+    image: string;
+  };
 }
 
 export interface BomProject {
   id: string;
   name: string;
+  description?: string | null;
+  targetBudget?: number | null;
+  totalCost?: number;
+  totalComponentCount?: number;
+  allInStock?: boolean;
   lineItems: BomLineItem[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface CartBundle {
