@@ -59,3 +59,41 @@ export const SESSION_COOKIE_OPTIONS = {
   path: '/',
   maxAge: 60 * 60 * 24 * 7, // 7 days in seconds
 };
+
+/**
+ * Extracts and verifies session payload from Request headers (Authorization or Cookie)
+ * or Next.js cookies(). Returns null if unauthenticated.
+ */
+export async function extractSession(request?: Request): Promise<SessionPayload | null> {
+  if (request) {
+    const authHeader = request.headers.get('authorization') || request.headers.get('Authorization');
+    if (authHeader && authHeader.toLowerCase().startsWith('bearer ')) {
+      const token = authHeader.substring(7).trim();
+      const session = await verifySessionToken(token);
+      if (session) return session;
+    }
+
+    const cookieHeader = request.headers.get('cookie') || request.headers.get('Cookie');
+    if (cookieHeader) {
+      const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${SESSION_COOKIE_NAME}=([^;]+)`));
+      if (match && match[1]) {
+        const session = await verifySessionToken(decodeURIComponent(match[1]));
+        if (session) return session;
+      }
+    }
+  }
+
+  try {
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+    if (token) {
+      const session = await verifySessionToken(token);
+      if (session) return session;
+    }
+  } catch {
+    // Non-Next context or headers not available
+  }
+
+  return null;
+}
