@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { toast } from "@/components/ui/toast";
-import { login, register } from "@/services/auth-service";
-import { AuthIcon } from "./auth-icons";
+import { login, register, loginWithGoogle } from "@/services/auth-service";
+import { AuthIcon, GoogleIcon } from "./auth-icons";
 import styles from "./auth.module.css";
 
 type View = "signin" | "register" | "forgot";
@@ -76,11 +76,24 @@ export function AuthExperience() {
   const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({});
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [notice, setNotice] = useState("");
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [notice, setNotice] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("error") || "";
+    }
+    return "";
+  });
   const [resetEmail, setResetEmail] = useState("");
   const headingRef = useRef<HTMLHeadingElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const errors = validation(view, values);
+
+  function handleGoogleLogin() {
+    setIsGoogleLoading(true);
+    setNotice("");
+    loginWithGoogle();
+  }
 
   function switchView(next: View) {
     setView(next);
@@ -88,6 +101,7 @@ export function AuthExperience() {
     setTouched({});
     setSubmitted(false);
     setIsLoading(false);
+    setIsGoogleLoading(false);
     setNotice("");
     setResetEmail("");
     requestAnimationFrame(() => headingRef.current?.focus());
@@ -193,18 +207,37 @@ export function AuthExperience() {
             <p><strong>Reset link sent!</strong></p>
             <p>Check your inbox at <span className={styles.email}>{resetEmail}</span></p>
             <p className={styles.previewNote}>Prototype state only — no email was sent.</p>
-          </Surface> : <form ref={formRef} key={view} autoComplete="off" noValidate onSubmit={submit} aria-label={`${headings[view]} form`}>
-            <div className={styles.fields} data-view={view}>
-              {view === "register" && field("fullName", "Full name", "user", "text", "off")}
-              {field("email", "Email address", "mail", "email", "off")}
-              {view === "register" && field("contactNumber", "Contact number", "phone", "tel", "off", "912 345 6789")}
-              {view !== "forgot" && field("password", "Password", "lock", "password", "new-password", view === "register" ? "Password (min 8 characters)" : "Password")}
-              {view === "register" && field("confirmPassword", "Confirm password", "lock", "password", "new-password")}
-            </div>
-            <div className={styles.actions}><Button type="submit" variant="raised" size="large" className={styles.submit} disabled={isLoading}>
-              {isLoading ? "PROCESSING..." : view === "signin" ? "SIGN IN" : view === "register" ? "CREATE ACCOUNT" : "SEND RESET LINK"}
-            </Button></div>
-          </form>}
+          </Surface> : <>
+            {(view === "signin" || view === "register") && (
+              <>
+                <button
+                  type="button"
+                  className={styles.googleButton}
+                  disabled={isLoading || isGoogleLoading}
+                  onClick={handleGoogleLogin}
+                  aria-label="Continue with Google"
+                >
+                  <GoogleIcon size={18} />
+                  <span>{isGoogleLoading ? "Connecting to Google..." : "Continue with Google"}</span>
+                </button>
+                <div className={styles.socialDivider}>
+                  <span>or continue with email</span>
+                </div>
+              </>
+            )}
+            <form ref={formRef} key={view} autoComplete="off" noValidate onSubmit={submit} aria-label={`${headings[view]} form`}>
+              <div className={styles.fields} data-view={view}>
+                {view === "register" && field("fullName", "Full name", "user", "text", "off")}
+                {field("email", "Email address", "mail", "email", "off")}
+                {view === "register" && field("contactNumber", "Contact number", "phone", "tel", "off", "912 345 6789")}
+                {view !== "forgot" && field("password", "Password", "lock", "password", "new-password", view === "register" ? "Password (min 8 characters)" : "Password")}
+                {view === "register" && field("confirmPassword", "Confirm password", "lock", "password", "new-password")}
+              </div>
+              <div className={styles.actions}><Button type="submit" variant="raised" size="large" className={styles.submit} disabled={isLoading || isGoogleLoading}>
+                {isLoading ? "PROCESSING..." : view === "signin" ? "SIGN IN" : view === "register" ? "CREATE ACCOUNT" : "SEND RESET LINK"}
+              </Button></div>
+            </form>
+          </>}
           {notice && <p role="status" className={styles.notice}>{notice}</p>}
           <div className={styles.links}>
             {view === "signin" ? <>
