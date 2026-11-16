@@ -136,9 +136,21 @@ console.log('✔ markAllNotificationsAsRead verified.');
 // ----------------------------------------------------
 console.log('\n--- 4. Testing Live Database Records in Neon PostgreSQL ---');
 
-const buyer = await prisma.user.findUnique({
-  where: { email: 'buyer@ohmsim.nexora.ph' },
-});
+let buyer = await prisma.user.findFirst({ where: { role: 'BUYER' } });
+let createdDynamicBuyer = false;
+if (!buyer) {
+  buyer = await prisma.user.create({
+    data: {
+      email: `test.chat.buyer.${Date.now()}@ohmsim.ph`,
+      passwordHash: 'dummy',
+      role: 'BUYER',
+      firstName: 'Daniel',
+      lastName: 'Cruz',
+      phone: '09189876543',
+    },
+  });
+  createdDynamicBuyer = true;
+}
 assert.ok(buyer, 'Buyer user must exist in Neon DB');
 
 // Test Live Address Record creation with Region III check
@@ -212,6 +224,9 @@ console.log(`✔ Created and updated test notification ${testNotif.id} in Neon D
 
 // Cleanup test notification
 await prisma.notification.delete({ where: { id: testNotif.id } });
-console.log('✔ Cleaned up test notification from Neon DB.');
+if (createdDynamicBuyer) {
+  await prisma.user.delete({ where: { id: buyer.id } });
+}
+console.log('✔ Cleaned up test notification and buyer from Neon DB.');
 
 console.log('\n=== All Step 4 Chat, Profile & Notifications Checks PASSED Successfully ===');
