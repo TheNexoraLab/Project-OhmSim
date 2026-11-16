@@ -11,7 +11,10 @@ export async function GET(request: Request) {
     if (!result.success || !result.url) {
       console.error('Neon Auth Google initiation error:', result.error);
       const loginUrl = new URL('/login', origin);
-      loginUrl.searchParams.set('error', result.error || 'Could not connect to Google login service.');
+      const userFriendlyError = result.error?.includes('INVALID_CALLBACKURL')
+        ? 'Authentication domain mismatch. Please access the application at http://localhost:3000.'
+        : (result.error || 'Could not connect to Google login service.');
+      loginUrl.searchParams.set('error', userFriendlyError);
       return NextResponse.redirect(loginUrl.toString(), 302);
     }
 
