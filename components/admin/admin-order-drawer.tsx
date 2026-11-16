@@ -139,7 +139,7 @@ export function resolveAdminOrderStatus(
     case "READY_FOR_PICKUP":
       return {
         pipelineKey: "SHIPPED",
-        badgeText: "READY_FOR_PICKUP",
+        badgeText: "READY FOR PICKUP",
         subLabel: "Ready at Lab Station (Bldg 3, Rm 204)",
         ...ADMIN_ORDER_STATUS_TOKENS.SHIPPED,
       };

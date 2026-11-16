@@ -18,10 +18,16 @@ import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { toast } from "@/components/ui/toast";
 import {
+  MapPin,
+  Printer,
+  Search,
+  Download,
+  RefreshCw,
+} from "lucide-react";
+import {
   AdminOrderDrawer,
   ADMIN_ORDER_STATUS_TOKENS,
   resolveAdminOrderStatus,
-  formatPaymentMethodLabel,
   type AdminPipelineStatus,
   type EnrichedAdminOrder,
   type EnrichedOrderItem,
@@ -854,19 +860,7 @@ export function OrdersClient() {
             onClick={handleExportManifest}
             className="text-xs font-semibold gap-1.5"
           >
-            <svg
-              className="w-3.5 h-3.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
+            <Download size={13} />
             <span>Export Manifest CSV</span>
           </Button>
 
@@ -878,6 +872,7 @@ export function OrdersClient() {
             onClick={handleResetDemoOrders}
             className="text-xs font-semibold gap-1.5"
           >
+            <RefreshCw size={13} />
             <span>Reset Demo Queue</span>
           </Button>
         </div>
@@ -966,19 +961,10 @@ export function OrdersClient() {
             <label htmlFor="admin-orders-search" className="sr-only">
               Search orders by Order ID, Customer Name, or Product SKU
             </label>
-            <svg
-              aria-hidden="true"
-              className="w-4 h-4 text-[#A6ADC8] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+            <Search
+              size={15}
+              className="text-[#A6ADC8] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+            />
             <input
               id="admin-orders-search"
               data-testid="admin-orders-search-input"
@@ -1159,48 +1145,48 @@ export function OrdersClient() {
         >
           <table
             data-testid="orders-master-table"
-            className="w-full min-w-[960px] text-left border-collapse"
+            className="w-full text-left border-collapse"
           >
             <thead>
-              <tr className="bg-[#181825] border-b border-[#313244] text-[10px] font-mono font-bold uppercase tracking-wider text-[#A6ADC8]">
-                <th scope="col" className="py-3.5 pl-4 pr-2 w-10 text-center">
+              <tr className="bg-[#181825] border-b border-[#313244] text-[10px] font-bold uppercase tracking-wider text-[#A6ADC8]">
+                <th scope="col" className="py-3 pl-3 pr-1 w-8 text-center">
                   <input
                     type="checkbox"
                     aria-label="Select all orders in current filter"
                     data-testid="select-all-orders-checkbox"
                     checked={isAllFilteredSelected}
                     onChange={handleToggleSelectAllFiltered}
-                    className="w-4 h-4 rounded-sm border-[#45475A] bg-[#181825] text-[#89B4FA] focus:ring-0 focus:outline-none cursor-pointer"
+                    className="w-3.5 h-3.5 rounded-sm border-[#45475A] bg-[#181825] text-[#89B4FA] focus:ring-0 focus:outline-none cursor-pointer"
                   />
                 </th>
-                <th scope="col" className="py-3.5 pl-2 pr-3">
+                <th scope="col" className="py-3 pl-1 pr-2">
                   Order ID
                 </th>
-                <th scope="col" className="py-3.5 px-3">
+                <th scope="col" className="py-3 px-2">
                   Date
                 </th>
-                <th scope="col" className="py-3.5 px-3">
-                  Customer &amp; Province
+                <th scope="col" className="py-3 px-2">
+                  Customer &amp; Location
                 </th>
-                <th scope="col" className="py-3.5 px-3">
-                  Fulfillment &amp; Courier
+                <th scope="col" className="py-3 px-2">
+                  Fulfillment
                 </th>
-                <th scope="col" className="py-3.5 px-3">
-                  Payment Method
+                <th scope="col" className="py-3 px-2">
+                  Payment
                 </th>
-                <th scope="col" className="py-3.5 px-3">
-                  Total Amount
+                <th scope="col" className="py-3 px-2">
+                  Total
                 </th>
-                <th scope="col" className="py-3.5 px-3">
-                  Status Badge
+                <th scope="col" className="py-3 px-2">
+                  Status
                 </th>
-                <th scope="col" className="py-3.5 pl-3 pr-5 text-right">
+                <th scope="col" className="py-3 pl-1 pr-3 text-right">
                   Action
                 </th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-[#313244] text-xs">
+            <tbody className="divide-y divide-[#313244]/60 text-xs">
               {filteredOrders.map((order) => {
                 const statusMeta = resolveAdminOrderStatus(
                   order.status,
@@ -1242,12 +1228,12 @@ export function OrdersClient() {
                         ? "bg-[#89B4FA]/15"
                         : isSelected
                         ? "bg-[#89B4FA]/10"
-                        : "hover:bg-[#313244]/35"
+                        : "hover:bg-[#181825]/80"
                     }`}
                   >
                     {/* Checkbox */}
                     <td
-                      className="py-4 pl-4 pr-2 text-center"
+                      className="py-3 pl-3 pr-1 text-center"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <input
@@ -1256,23 +1242,23 @@ export function OrdersClient() {
                         data-testid={`order-checkbox-${order.orderNumber}`}
                         checked={isChecked}
                         onChange={() => handleToggleSelectOrder(order.id)}
-                        className="w-4 h-4 rounded-sm border-[#45475A] bg-[#181825] text-[#89B4FA] focus:ring-0 focus:outline-none cursor-pointer"
+                        className="w-3.5 h-3.5 rounded-sm border-[#45475A] bg-[#181825] text-[#89B4FA] focus:ring-0 focus:outline-none cursor-pointer"
                       />
                     </td>
 
                     {/* 1. Order ID */}
-                    <td className="py-4 pl-2 pr-3 whitespace-nowrap">
+                    <td className="py-3 pl-1 pr-2 whitespace-nowrap">
                       <div className="font-mono font-bold text-[#CDD6F4] text-xs">
                         #{order.orderNumber}
                       </div>
                       <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className="text-[11px] font-mono text-[#A6ADC8]">
+                        <span className="text-[11px] text-[#A6ADC8]">
                           {order.items.length}{" "}
-                          {order.items.length === 1 ? "SKU" : "SKUs"} (
-                          {totalUnits} {totalUnits === 1 ? "unit" : "units"})
+                          {order.items.length === 1 ? "SKU" : "SKUs"} ({totalUnits}{" "}
+                          {totalUnits === 1 ? "unit" : "units"})
                         </span>
                         {hasBomBundle && (
-                          <span className="px-1.5 py-0 rounded-xs text-[9px] font-mono font-bold bg-[#94E2D5]/12 text-[#94E2D5] border border-[#94E2D5]/30">
+                          <span className="px-1.5 py-0.2 rounded-xs text-[9px] font-mono font-bold bg-[#94E2D5]/12 text-[#94E2D5] border border-[#94E2D5]/30">
                             BOM
                           </span>
                         )}
@@ -1280,64 +1266,75 @@ export function OrdersClient() {
                     </td>
 
                     {/* 2. Date */}
-                    <td className="py-4 px-3 font-mono text-[#BAC2DE] whitespace-nowrap">
+                    <td className="py-3 px-2 text-[#BAC2DE] whitespace-nowrap">
                       {formatDate(order.createdAt)}
                     </td>
 
                     {/* 3. Customer & Province */}
-                    <td className="py-4 px-3">
-                      <div className="font-semibold text-[#CDD6F4]">
+                    <td className="py-3 px-2 whitespace-nowrap max-w-[150px]">
+                      <div className="font-semibold text-[#CDD6F4] text-xs truncate">
                         {order.recipientName}
                       </div>
-                      <div className="text-[11px] font-mono text-[#A6ADC8]">
-                        {order.contactNumber}
-                      </div>
-                      <div className="text-[10px] font-mono text-[#74C7EC]">
-                        📍 {province}
+                      <div className="flex items-center gap-1 text-[11px] text-[#A6ADC8] mt-0.5 truncate">
+                        <span className="font-mono text-[10px]">{order.contactNumber}</span>
+                        <span className="text-[#45475A]">·</span>
+                        <span className="inline-flex items-center gap-0.5 text-[#74C7EC] truncate text-[10px]">
+                          <MapPin size={10} className="shrink-0" />
+                          <span className="truncate">{province}</span>
+                        </span>
                       </div>
                     </td>
 
                     {/* 4. Fulfillment Type & Courier */}
-                    <td className="py-4 px-3 whitespace-nowrap">
+                    <td className="py-3 px-2 whitespace-nowrap">
                       {order.fulfillmentType === "PICKUP" ? (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold bg-[#94E2D5]/12 text-[#94E2D5] border border-[#94E2D5]/30">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#94E2D5]" />
-                          <span>Store Pickup (₱0.00)</span>
-                        </span>
+                        <div className="flex flex-col gap-0.5 max-w-[175px]">
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#94E2D5]/12 text-[#94E2D5] border border-[#94E2D5]/30 w-fit">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#94E2D5]" />
+                            <span>Campus Pickup</span>
+                          </span>
+                          <span className="text-[10px] text-[#A6ADC8] truncate">
+                            Bldg 3, Rm 204
+                          </span>
+                        </div>
                       ) : (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold bg-[#74C7EC]/12 text-[#74C7EC] border border-[#74C7EC]/30">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#74C7EC]" />
-                          <span>Region III Delivery</span>
-                        </span>
+                        <div className="flex flex-col gap-0.5 max-w-[190px]">
+                          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#74C7EC]/12 text-[#74C7EC] border border-[#74C7EC]/30 w-fit">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#74C7EC]" />
+                            <span>Region III Delivery</span>
+                          </span>
+                          <div className="flex items-center gap-1 text-[10px] text-[#A6ADC8] truncate">
+                            <span className="text-[#BAC2DE] truncate">{courierName}</span>
+                            {order.trackingNo ? (
+                              <span className="font-mono text-[9px] text-[#74C7EC] shrink-0">({order.trackingNo})</span>
+                            ) : (
+                              <span className="text-[9px] text-[#F9E2AF]/80 italic shrink-0">(Pending)</span>
+                            )}
+                          </div>
+                        </div>
                       )}
-                      <div className="mt-1 flex items-center gap-1.5 text-[10px] font-mono text-[#BAC2DE]">
-                        <span className="font-semibold text-[#89B4FA]">{courierName}</span>
-                        {order.trackingNo ? (
-                          <span className="text-[#A6ADC8]">({order.trackingNo})</span>
-                        ) : (
-                          <span className="text-[#F9E2AF] italic">(Pending Trk)</span>
-                        )}
-                      </div>
                     </td>
 
                     {/* 5. Payment Method */}
-                    <td className="py-4 px-3 whitespace-nowrap">
+                    <td className="py-3 px-2 whitespace-nowrap">
                       <Badge
                         variant={
                           order.paymentMethod === "COD"
                             ? "primary"
                             : "secondary"
                         }
-                        className="font-mono"
+                        className="font-mono text-[9px] px-1.5 py-0.5 uppercase tracking-wider"
                       >
-                        {formatPaymentMethodLabel(order.paymentMethod)}
+                        {order.paymentMethod === "COD" ? "COD" : "Pickup"}
                       </Badge>
                     </td>
 
                     {/* 6. Total Amount */}
-                    <td className="py-4 px-3 font-mono font-bold text-[#CDD6F4] whitespace-nowrap">
-                      <div>{formatPrice(order.totalAmount)}</div>
-                      <div className="text-[10px] font-normal text-[#A6ADC8]">
+                    <td className="py-3 px-2.5 whitespace-nowrap">
+                      <div className="font-mono font-bold text-[#CDD6F4] text-xs">
+                        {formatPrice(order.totalAmount)}
+                      </div>
+                      <div className="text-[10px] text-[#A6ADC8] mt-0.5">
                         {order.deliveryFee === 0
                           ? "Free Shipping"
                           : `+${formatPrice(order.deliveryFee)} fee`}
@@ -1345,7 +1342,7 @@ export function OrdersClient() {
                     </td>
 
                     {/* 7. Status Badge */}
-                    <td className="py-4 px-3 whitespace-nowrap">
+                    <td className="py-3 px-2 whitespace-nowrap">
                       <span
                         data-testid={`row-status-badge-${order.orderNumber}`}
                         data-status={statusMeta.pipelineKey}
@@ -1354,7 +1351,7 @@ export function OrdersClient() {
                           color: statusMeta.text,
                           borderColor: statusMeta.border,
                         }}
-                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase border tracking-wide"
+                        className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[9.5px] font-mono font-bold uppercase border"
                       >
                         <span
                           className="w-1.5 h-1.5 rounded-full"
@@ -1366,10 +1363,10 @@ export function OrdersClient() {
 
                     {/* 8. Action */}
                     <td
-                      className="py-4 pl-3 pr-5 text-right whitespace-nowrap"
+                      className="py-3 pl-1.5 pr-3.5 text-right whitespace-nowrap"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-end gap-1.5">
                         <Button
                           type="button"
                           variant="surface"
@@ -1377,22 +1374,10 @@ export function OrdersClient() {
                           title="Print Packaging & Shipping Slip"
                           data-testid={`print-slip-btn-${order.orderNumber}`}
                           onClick={() => printOrderShippingSlip(order)}
-                          className="text-xs font-semibold gap-1 px-2.5"
+                          className="text-xs font-semibold px-2 h-7"
                         >
-                          <svg
-                            className="w-3.5 h-3.5"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M6 9V2h12v7" />
-                            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                            <path d="M6 14h12v8H6z" />
-                          </svg>
-                          <span className="hidden xl:inline">Slip</span>
+                          <Printer size={13} />
+                          <span className="sr-only">Print Slip</span>
                         </Button>
 
                         <Button
@@ -1401,9 +1386,9 @@ export function OrdersClient() {
                           size="compact"
                           data-testid={`manage-order-btn-${order.orderNumber}`}
                           onClick={() => setSelectedOrderId(order.id)}
-                          className="text-xs font-semibold"
+                          className="text-xs font-semibold px-2.5 h-7"
                         >
-                          Manage / View Details
+                          Manage
                         </Button>
                       </div>
                     </td>
