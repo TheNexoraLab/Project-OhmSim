@@ -218,25 +218,25 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
           <div className="p-4 sm:p-6 rounded-2xl bg-mocha-panel border border-mocha-border shadow-sm flex flex-col gap-4">
             <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-mocha-border">
               <div>
-                <h2 className="text-xs font-bold uppercase tracking-wider text-mocha-text-muted">
-                  Fulfillment Status & Timeline
+                <h2 className="text-xs font-semibold text-mocha-text-muted">
+                  Fulfillment Status
                 </h2>
-                <p className="text-xs text-mocha-text font-medium mt-0.5">
+                <p className="text-sm font-semibold text-mocha-text mt-0.5">
                   {statusMeta.description}
                 </p>
               </div>
 
               {order.trackingNo && (
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-mocha-text-muted">Tracking:</span>
+                  <span className="text-xs text-mocha-text-muted">Tracking:</span>
                   <button
                     type="button"
                     onClick={() => handleCopyTracking(order.trackingNo!)}
-                    className="min-h-[44px] min-w-[44px] font-mono text-xs font-bold text-mocha-accent hover:underline flex items-center gap-1"
+                    className="min-h-[36px] px-2.5 py-1 rounded-lg bg-mocha-panel-raised border border-mocha-border font-mono text-xs font-bold text-mocha-accent hover:border-mocha-accent flex items-center gap-1.5 transition-colors"
                     title="Click to copy tracking number"
                   >
                     <span>{order.trackingNo}</span>
-                    <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <rect x="9" y="9" width="13" height="13" rx="2" ry="2" strokeWidth="2" />
                       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" strokeWidth="2" />
                     </svg>
@@ -259,32 +259,46 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
               </div>
             ) : (
               <div className="pt-2 pb-1 overflow-x-auto" tabIndex={0} role="region" aria-label="Fulfillment timeline" data-timeline-scroll>
-                <div className="flex items-center justify-between relative min-w-[560px]" data-timeline>
+                <div className="flex items-start justify-between relative min-w-[560px]" data-timeline>
                   {timeline.steps.map((step, idx) => {
-                    const isDone = idx <= timeline.currentStepIndex;
+                    const isDone = idx < timeline.currentStepIndex;
                     const isCurrent = idx === timeline.currentStepIndex;
                     const stepMeta = ORDER_STATUS_META[step];
 
                     return (
                       <div key={step} className="flex-1 flex flex-col items-center text-center relative z-10 px-1">
                         <div
-                          className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all shadow-sm ${
+                          className={`w-9 h-9 rounded-full flex items-center justify-center text-xs transition-all shadow-sm ${
                             isCurrent
-                              ? "bg-mocha-accent text-mocha-bg ring-4 ring-mocha-accent/25"
+                              ? "bg-[#89B4FA] text-[#11111B] ring-4 ring-[#89B4FA]/25 shadow-md font-bold scale-105"
                               : isDone
-                              ? "bg-mocha-accent/20 text-mocha-accent border border-mocha-accent"
-                              : "bg-mocha-bg border border-mocha-border text-mocha-text-muted"
+                              ? "bg-[#89B4FA] text-[#11111B] font-bold"
+                              : "bg-[#1E1E2E] border-2 border-[#313244] text-[#6C7086] font-medium"
                           }`}
                         >
-                          {isDone && !isCurrent ? "✓" : idx + 1}
+                          {isDone ? (
+                            <svg
+                              className="w-4 h-4"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="3"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          ) : (
+                            <span>{idx + 1}</span>
+                          )}
                         </div>
                         <span
-                          className={`text-[11px] font-bold mt-2 max-w-[95px] leading-tight ${
+                          className={`text-[11px] sm:text-xs mt-2.5 max-w-[95px] leading-tight ${
                             isCurrent
-                              ? "text-mocha-accent"
+                              ? "font-bold text-[#89B4FA]"
                               : isDone
-                              ? "text-mocha-text"
-                              : "text-mocha-text-muted"
+                              ? "font-medium text-[#CDD6F4]"
+                              : "text-[#6C7086]"
                           }`}
                         >
                           {stepMeta.label}
@@ -293,10 +307,16 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
                     );
                   })}
 
-                  {/* Connecting Progress Line */}
-                  <div className="absolute top-4 left-6 right-6 h-0.5 bg-mocha-border -z-0">
+                  {/* Connecting Progress Line Track */}
+                  <div
+                    className="absolute top-[18px] h-0.5 bg-[#313244] -z-0"
+                    style={{
+                      left: `${100 / (2 * timeline.steps.length)}%`,
+                      right: `${100 / (2 * timeline.steps.length)}%`,
+                    }}
+                  >
                     <div
-                      className="h-full bg-mocha-accent transition-all duration-300"
+                      className="h-full bg-[#89B4FA] transition-all duration-300"
                       style={{
                         width: `${(timeline.currentStepIndex / (timeline.steps.length - 1)) * 100}%`,
                       }}
