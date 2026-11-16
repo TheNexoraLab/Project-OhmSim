@@ -1,5 +1,6 @@
 import type { NotificationItem, NotificationType } from "@/types/notification";
 import { INITIAL_NOTIFICATIONS } from "@/lib/mocks/notifications";
+import { toast } from "@/components/ui/toast";
 
 type Listener = () => void;
 
@@ -18,6 +19,8 @@ interface ApiNotification {
 class NotificationStore {
   private notifications: NotificationItem[] = [...INITIAL_NOTIFICATIONS];
   private listeners: Set<Listener> = new Set();
+  private seenNotificationIds: Set<string> = new Set(INITIAL_NOTIFICATIONS.map((n) => n.id));
+  private isInitialSync = true;
 
   getNotifications(): NotificationItem[] {
     return [...this.notifications];
@@ -38,7 +41,7 @@ class NotificationStore {
 
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data.notifications) && data.notifications.length > 0) {
+        if (Array.isArray(data.notifications)) {
           const mappedNotifications: NotificationItem[] = data.notifications.map(
             (n: ApiNotification) => {
               const rawType = (n.type || "system").toLowerCase();
@@ -59,19 +62,33 @@ class NotificationStore {
                 id: n.id,
                 type,
                 title: n.title,
-                message: n.message || n.content || "",
+                body: n.message || n.content || "",
                 time: dateObj.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-                dateGroup: isToday ? "Today" : "Earlier",
+                group: isToday ? "Today" : "Earlier",
                 read: Boolean(n.read),
-                actionUrl: n.actionUrl || n.link || undefined,
+                linkHref: n.actionUrl || n.link || undefined,
               };
             }
           );
 
-          // Merge live notifications with mock fallback fixtures
-          const realIds = new Set(mappedNotifications.map((mn) => mn.id));
-          const preservedFixtures = this.notifications.filter((fn) => !realIds.has(fn.id));
-          this.notifications = [...mappedNotifications, ...preservedFixtures];
+          if (!this.isInitialSync) {
+            // Find newly received unread notifications to alert the buyer
+            const newlyReceived = mappedNotifications.filter(
+              (n) => !n.read && !this.seenNotificationIds.has(n.id)
+            );
+            if (newlyReceived.length > 0) {
+              const latest = newlyReceived[0];
+              toast(`🔔 ${latest.title}: ${latest.body}`, "info");
+            }
+          }
+
+          // Track seen IDs
+          mappedNotifications.forEach((n) => this.seenNotificationIds.add(n.id));
+          this.isInitialSync = false;
+
+          if (mappedNotifications.length > 0) {
+            this.notifications = mappedNotifications;
+          }
           this.emit();
         }
       }
