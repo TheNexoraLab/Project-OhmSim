@@ -78,6 +78,86 @@ export function FloatingChatWidget() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const popupRef = useRef<HTMLDivElement>(null);
+  const launcherRef = useRef<HTMLDivElement>(null);
+  const [isIdle, setIsIdle] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Draggable position along screen edge (persisted in session)
+  const [dockY, setDockY] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      return Math.max(90, Math.min(window.innerHeight - 100, Math.floor(window.innerHeight * 0.62)));
+    }
+    return 420;
+  });
+  const [dockSide, setDockSide] = useState<"left" | "right">("right");
+  const isDraggingRef = useRef(false);
+  const startDragRef = useRef({ startX: 0, startY: 0, initialY: 0, moved: false });
+
+  // Close on Click Outside or Escape Key
+  useEffect(() => {
+    if (!widgetState.isOpen) return;
+
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
+      const target = event.target as Node;
+      if (
+        popupRef.current &&
+        !popupRef.current.contains(target) &&
+        launcherRef.current &&
+        !launcherRef.current.contains(target)
+      ) {
+        chatWidgetStore.close();
+      }
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        chatWidgetStore.close();
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [widgetState.isOpen]);
+
+  // Idle side-docking staring behavior when collapsed (no synchronous setState in effect)
+  useEffect(() => {
+    if (widgetState.isOpen) return;
+
+    let timer: ReturnType<typeof setTimeout>;
+
+    const setIdleTimer = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        setIsIdle(true);
+      }, 3500);
+    };
+
+    const handleActivity = () => {
+      setIsIdle(false);
+      setIdleTimer();
+    };
+
+    setIdleTimer();
+
+    window.addEventListener("mousemove", handleActivity, { passive: true });
+    window.addEventListener("scroll", handleActivity, { passive: true });
+    window.addEventListener("touchstart", handleActivity, { passive: true });
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("mousemove", handleActivity);
+      window.removeEventListener("scroll", handleActivity);
+      window.removeEventListener("touchstart", handleActivity);
+    };
+  }, [widgetState.isOpen]);
 
   // Subscribe to widget store
   useEffect(() => {
@@ -183,13 +263,67 @@ export function FloatingChatWidget() {
     }
   };
 
+  // Draggable Pointer Event Handlers
+  const handlePointerDown = (e: React.PointerEvent) => {
+    isDraggingRef.current = true;
+    startDragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      initialY: dockY,
+      moved: false,
+    };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDraggingRef.current) return;
+    const deltaX = e.clientX - startDragRef.current.startX;
+    const deltaY = e.clientY - startDragRef.current.startY;
+
+    if (Math.hypot(deltaX, deltaY) > 6) {
+      startDragRef.current.moved = true;
+      setIsIdle(false);
+    }
+
+    if (startDragRef.current.moved) {
+      const newY = Math.max(70, Math.min(window.innerHeight - 80, startDragRef.current.initialY + deltaY));
+      setDockY(newY);
+
+      if (e.clientX < window.innerWidth / 2) {
+        setDockSide("left");
+      } else {
+        setDockSide("right");
+      }
+    }
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
+
+    // Toggle only on clean click/tap without dragging
+    if (!startDragRef.current.moved) {
+      chatWidgetStore.toggle();
+    }
+  };
+
   return (
     <>
       {/* 1. Proactive Floating Speech Bubble (Flowii Style) */}
       {!widgetState.isOpen && showProactiveBubble && !widgetState.bubbleDismissed && (
-        <div className="fixed bottom-24 md:bottom-20 right-4 md:right-6 z-40 max-w-[290px] sm:max-w-[340px] flex flex-col items-end gap-2 animate-in fade-in slide-in-from-bottom-3 duration-300">
+        <div
+          style={{ top: `${Math.max(60, dockY - 90)}px` }}
+          className={`fixed z-40 max-w-[260px] sm:max-w-[300px] flex flex-col items-end gap-2 animate-in fade-in duration-300 ${
+            dockSide === "right" ? "right-12 sm:right-14" : "left-12 sm:left-14 items-start"
+          }`}
+        >
           {/* Main proactive card */}
-          <div className="relative bg-mocha-panel/95 backdrop-blur-md border border-mocha-accent/30 text-mocha-text rounded-2xl p-3.5 shadow-2xl text-xs leading-relaxed group hover:border-mocha-accent transition-all">
+          <div className="relative bg-mocha-panel/95 backdrop-blur-md border border-mocha-accent/30 text-mocha-text rounded-2xl p-3 shadow-2xl text-xs leading-relaxed group hover:border-mocha-accent transition-all">
             <button
               type="button"
               onClick={(e) => {
@@ -210,17 +344,17 @@ export function FloatingChatWidget() {
                 chatWidgetStore.open({ mode: "bot" });
               }}
             >
-              <div className="flex items-center gap-2 mb-1.5">
+              <div className="flex items-center gap-1.5 mb-1">
                 <span className="flex h-2 w-2 relative">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span className="font-bold text-[11px] text-mocha-accent tracking-wide uppercase">
+                <span className="font-bold text-[10px] text-mocha-accent tracking-wide uppercase">
                   OhmBot AI · 24/7 Support
                 </span>
               </div>
-              <p className="text-[12px] font-medium text-mocha-text">
-                👋 Hi! Need circuit help or BOM advice for your capstone project?
+              <p className="text-[11px] font-medium text-mocha-text">
+                👋 Need circuit help or BOM advice for your capstone?
               </p>
             </div>
           </div>
@@ -235,44 +369,72 @@ export function FloatingChatWidget() {
               });
               handleSendQuery("Can I connect a 5V sensor directly to the ESP32 GPIO pins?");
             }}
-            className="bg-mocha-panel-raised/90 backdrop-blur-sm border border-mocha-border/80 hover:border-mocha-accent text-mocha-text rounded-xl px-3 py-1.5 shadow-lg text-[11px] flex items-center gap-1.5 transition-all hover:scale-102 active:scale-98"
+            className="bg-mocha-panel-raised/90 backdrop-blur-sm border border-mocha-border/80 hover:border-mocha-accent text-mocha-text rounded-xl px-2.5 py-1 shadow-lg text-[10px] flex items-center gap-1.5 transition-all hover:scale-102 active:scale-98"
           >
             <span className="text-mocha-accent">⚡</span>
-            <span>Can I power an ESP32 with 5V VIN? · <strong className="text-mocha-accent">Tap to Ask</strong></span>
+            <span>Can I power ESP32 with 5V VIN? · <strong className="text-mocha-accent">Tap to Ask</strong></span>
           </button>
         </div>
       )}
 
-      {/* 2. Floating Launcher Button (Squircle with Robot Emblem) */}
+      {/* 2. Compact Draggable "Staring" Edge Tab */}
       {!widgetState.isOpen && (
-        <button
-          type="button"
-          onClick={() => chatWidgetStore.toggle()}
-          aria-label="Open OhmSim Support and Technical Chatbot"
-          className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40 w-14 h-14 rounded-2xl bg-gradient-to-tr from-mocha-panel-raised via-mocha-panel to-mocha-panel-raised border-2 border-mocha-accent/60 hover:border-mocha-accent shadow-[0_8px_30px_rgb(0,0,0,0.4)] hover:shadow-mocha-accent/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center group focus-visible:outline-2 focus-visible:outline-mocha-accent"
+        <div
+          ref={launcherRef}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onMouseEnter={() => {
+            setIsHovered(true);
+            setIsIdle(false);
+          }}
+          onMouseLeave={() => {
+            setIsHovered(false);
+          }}
+          style={{ top: `${dockY}px` }}
+          title="Drag up or down to reposition · Click to open OhmBot"
+          className={`fixed z-40 select-none touch-none transition-transform duration-200 ease-out cursor-grab active:cursor-grabbing ${
+            dockSide === "right" ? "right-0" : "left-0"
+          } ${
+            isIdle && !isHovered
+              ? dockSide === "right"
+                ? "translate-x-3 opacity-75 hover:translate-x-0 hover:opacity-100"
+                : "-translate-x-3 opacity-75 hover:translate-x-0 hover:opacity-100"
+              : "translate-x-0 opacity-100"
+          }`}
         >
-          {/* Robot Emblem SVG */}
-          <div className="relative text-mocha-accent group-hover:text-mocha-accent-secondary transition-colors">
-            <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="11" width="18" height="10" rx="3" />
-              <circle cx="12" cy="5" r="2" />
-              <path d="M12 7v4" />
-              <line x1="8" y1="16" x2="8" y2="16.01" />
-              <line x1="16" y1="16" x2="16" y2="16.01" />
-            </svg>
+          <div
+            className={`flex items-center justify-center w-9 sm:w-10 h-10 sm:h-11 bg-gradient-to-l from-mocha-panel-raised via-mocha-panel to-mocha-panel-raised shadow-[-4px_6px_20px_rgba(0,0,0,0.5)] hover:shadow-[-6px_8px_24px_rgba(137,180,250,0.35)] transition-all ${
+              dockSide === "right"
+                ? "rounded-l-2xl rounded-r-none border-y-2 border-l-2 border-r-0 border-mocha-accent/70 hover:border-mocha-accent pl-1.5 pr-1"
+                : "rounded-r-2xl rounded-l-none border-y-2 border-r-2 border-l-0 border-mocha-accent/70 hover:border-mocha-accent pr-1.5 pl-1"
+            }`}
+          >
+            {/* Robot Emblem SVG with "staring" glowing eyes */}
+            <div className="relative text-mocha-accent hover:text-mocha-accent-secondary transition-colors pointer-events-none">
+              <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="11" width="18" height="10" rx="3" />
+                <circle cx="12" cy="5" r="2" />
+                <path d="M12 7v4" />
+                {/* Staring Robot Eyes with cyan glow */}
+                <circle cx="8" cy="16" r="1.5" fill="currentColor" className="animate-pulse" />
+                <circle cx="16" cy="16" r="1.5" fill="currentColor" className="animate-pulse" />
+              </svg>
 
-            {/* Glowing Online Pulse Indicator */}
-            <span className="absolute -top-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-mocha-panel"></span>
-            </span>
+              {/* Pulsing Emerald Online Indicator */}
+              <span className="absolute -top-1 -left-1 flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 border border-mocha-panel"></span>
+              </span>
+            </div>
           </div>
-        </button>
+        </div>
       )}
 
-      {/* 3. Pop-up Chat Window (Drawer) */}
+      {/* 3. Pop-up Chat Window (Drawer with Click Outside ref) */}
       {widgetState.isOpen && (
         <div
+          ref={popupRef}
           role="dialog"
           aria-label="OhmSim Assistant & Seller Chat"
           className="fixed bottom-20 md:bottom-6 right-2 sm:right-6 z-50 w-[calc(100vw-16px)] sm:w-[420px] h-[580px] max-h-[82vh] bg-mocha-panel/95 backdrop-blur-xl border border-mocha-border/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200"
