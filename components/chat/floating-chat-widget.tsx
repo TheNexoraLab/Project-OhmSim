@@ -98,12 +98,9 @@ export function FloatingChatWidget() {
 
     function handleClickOutside(event: MouseEvent | TouchEvent) {
       const target = event.target as Node;
-      if (
-        popupRef.current &&
-        !popupRef.current.contains(target) &&
-        launcherRef.current &&
-        !launcherRef.current.contains(target)
-      ) {
+      // Do not close if clicking inside launcher button or inside the popup drawer
+      if (launcherRef.current?.contains(target)) return;
+      if (popupRef.current && !popupRef.current.contains(target)) {
         chatWidgetStore.close();
       }
     }
@@ -305,12 +302,12 @@ export function FloatingChatWidget() {
       {!widgetState.isOpen && showProactiveBubble && !widgetState.bubbleDismissed && (
         <div
           style={{ top: `${Math.max(60, dockY - 90)}px` }}
-          className={`fixed z-40 max-w-[260px] sm:max-w-[300px] flex flex-col items-end gap-2 animate-in fade-in duration-300 ${
+          className={`fixed z-40 max-w-[260px] sm:max-w-[300px] flex flex-col items-end gap-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             dockSide === "right" ? "right-12 sm:right-14" : "left-12 sm:left-14 items-start"
           }`}
         >
           {/* Main proactive card */}
-          <div className="relative bg-mocha-panel/95 backdrop-blur-md border border-mocha-accent/30 text-mocha-text rounded-2xl p-3 shadow-2xl text-xs leading-relaxed group hover:border-mocha-accent transition-all">
+          <div className="relative bg-mocha-panel/95 backdrop-blur-md border border-mocha-border/80 text-mocha-text rounded-2xl p-3 shadow-lg shadow-black/25 text-xs leading-relaxed group hover:border-mocha-accent/50 transition-all">
             <button
               type="button"
               onClick={(e) => {
@@ -332,10 +329,7 @@ export function FloatingChatWidget() {
               }}
             >
               <div className="flex items-center gap-1.5 mb-1">
-                <span className="flex h-2 w-2 relative">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
+                <span className="h-2 w-2 rounded-full bg-emerald-500 inline-block" />
                 <span className="font-bold text-[10px] text-mocha-accent tracking-wide uppercase">
                   OhmBot AI · 24/7 Support
                 </span>
@@ -356,7 +350,7 @@ export function FloatingChatWidget() {
               });
               handleSendQuery("Can I connect a 5V sensor directly to the ESP32 GPIO pins?");
             }}
-            className="bg-mocha-panel-raised/90 backdrop-blur-sm border border-mocha-border/80 hover:border-mocha-accent text-mocha-text rounded-xl px-2.5 py-1 shadow-lg text-[10px] flex items-center gap-1.5 transition-all hover:scale-102 active:scale-98"
+            className="bg-mocha-panel-raised/90 backdrop-blur-sm border border-mocha-border/80 hover:border-mocha-accent/50 text-mocha-text rounded-xl px-2.5 py-1 shadow-md text-[10px] flex items-center gap-1.5 transition-all hover:scale-102 active:scale-98"
           >
             <span className="text-mocha-accent">⚡</span>
             <span>Can I power ESP32 with 5V VIN? · <strong className="text-mocha-accent">Tap to Ask</strong></span>
@@ -364,68 +358,73 @@ export function FloatingChatWidget() {
         </div>
       )}
 
-      {/* 2. Compact Draggable "Staring" Edge Tab */}
-      {!widgetState.isOpen && (
+      {/* 2. Compact Draggable Edge Tab (Fluid spring motion & matte styling) */}
+      <div
+        ref={launcherRef}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onMouseEnter={() => {
+          setIsHovered(true);
+          setIsIdle(false);
+        }}
+        onMouseLeave={() => {
+          setIsHovered(false);
+        }}
+        style={{ top: `${dockY}px` }}
+        title="Drag up or down to reposition · Click to open OhmBot"
+        className={`fixed z-40 select-none touch-none transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-grab active:cursor-grabbing ${
+          widgetState.isOpen
+            ? "opacity-0 scale-75 pointer-events-none invisible"
+            : "opacity-100 scale-100 pointer-events-auto visible"
+        } ${
+          dockSide === "right" ? "right-0" : "left-0"
+        } ${
+          isIdle && !isHovered && !widgetState.isOpen
+            ? dockSide === "right"
+              ? "translate-x-2.5 opacity-80 hover:translate-x-0 hover:opacity-100"
+              : "-translate-x-2.5 opacity-80 hover:translate-x-0 hover:opacity-100"
+            : "translate-x-0 opacity-100"
+        }`}
+      >
         <div
-          ref={launcherRef}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onMouseEnter={() => {
-            setIsHovered(true);
-            setIsIdle(false);
-          }}
-          onMouseLeave={() => {
-            setIsHovered(false);
-          }}
-          style={{ top: `${dockY}px` }}
-          title="Drag up or down to reposition · Click to open OhmBot"
-          className={`fixed z-40 select-none touch-none transition-transform duration-200 ease-out cursor-grab active:cursor-grabbing ${
-            dockSide === "right" ? "right-0" : "left-0"
-          } ${
-            isIdle && !isHovered
-              ? dockSide === "right"
-                ? "translate-x-3 opacity-75 hover:translate-x-0 hover:opacity-100"
-                : "-translate-x-3 opacity-75 hover:translate-x-0 hover:opacity-100"
-              : "translate-x-0 opacity-100"
+          className={`flex items-center justify-center w-9 sm:w-10 h-10 sm:h-11 bg-mocha-panel-raised border border-mocha-border hover:border-mocha-accent/50 shadow-md shadow-black/30 hover:shadow-lg transition-all ${
+            dockSide === "right"
+              ? "rounded-l-2xl rounded-r-none border-r-0 pl-1.5 pr-1"
+              : "rounded-r-2xl rounded-l-none border-l-0 pr-1.5 pl-1"
           }`}
         >
-          <div
-            className={`flex items-center justify-center w-9 sm:w-10 h-10 sm:h-11 bg-gradient-to-l from-mocha-panel-raised via-mocha-panel to-mocha-panel-raised shadow-[-4px_6px_20px_rgba(0,0,0,0.5)] hover:shadow-[-6px_8px_24px_rgba(137,180,250,0.35)] transition-all ${
-              dockSide === "right"
-                ? "rounded-l-2xl rounded-r-none border-y-2 border-l-2 border-r-0 border-mocha-accent/70 hover:border-mocha-accent pl-1.5 pr-1"
-                : "rounded-r-2xl rounded-l-none border-y-2 border-r-2 border-l-0 border-mocha-accent/70 hover:border-mocha-accent pr-1.5 pl-1"
-            }`}
-          >
-            {/* Robot Emblem SVG with "staring" glowing eyes */}
-            <div className="relative text-mocha-accent hover:text-mocha-accent-secondary transition-colors pointer-events-none">
-              <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="3" y="11" width="18" height="10" rx="3" />
-                <circle cx="12" cy="5" r="2" />
-                <path d="M12 7v4" />
-                {/* Staring Robot Eyes with cyan glow */}
-                <circle cx="8" cy="16" r="1.5" fill="currentColor" className="animate-pulse" />
-                <circle cx="16" cy="16" r="1.5" fill="currentColor" className="animate-pulse" />
-              </svg>
+          {/* Robot Emblem SVG (Clean matte finish, no harsh pulse) */}
+          <div className="relative text-mocha-accent hover:text-mocha-accent-secondary transition-colors pointer-events-none">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="10" rx="3" />
+              <circle cx="12" cy="5" r="2" />
+              <path d="M12 7v4" />
+              <circle cx="8" cy="16" r="1.5" fill="currentColor" />
+              <circle cx="16" cy="16" r="1.5" fill="currentColor" />
+            </svg>
 
-              {/* Pulsing Emerald Online Indicator */}
-              <span className="absolute -top-1 -left-1 flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 border border-mocha-panel"></span>
-              </span>
-            </div>
+            {/* Crisp Solid Emerald Online Dot */}
+            <span className="absolute -top-0.5 -left-0.5 flex h-2 w-2">
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 border border-mocha-panel"></span>
+            </span>
           </div>
         </div>
-      )}
+      </div>
 
-      {/* 3. Pop-up Chat Window (Drawer with Click Outside ref) */}
-      {widgetState.isOpen && (
-        <div
-          ref={popupRef}
-          role="dialog"
-          aria-label="OhmSim Assistant & Seller Chat"
-          className="fixed bottom-20 md:bottom-6 right-2 sm:right-6 z-50 w-[calc(100vw-16px)] sm:w-[420px] h-[580px] max-h-[82vh] bg-mocha-panel/95 backdrop-blur-xl border border-mocha-border/80 rounded-2xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200"
-        >
+      {/* 3. Pop-up Chat Window (Drawer with fluid spring open/close transition) */}
+      <div
+        ref={popupRef}
+        role="dialog"
+        aria-modal="true"
+        aria-hidden={!widgetState.isOpen}
+        aria-label="OhmSim Assistant & Seller Chat"
+        className={`fixed bottom-20 md:bottom-6 right-2 sm:right-6 z-50 w-[calc(100vw-16px)] sm:w-[420px] h-[580px] max-h-[82vh] bg-mocha-panel/95 backdrop-blur-xl border border-mocha-border/80 rounded-2xl shadow-xl shadow-black/40 flex flex-col overflow-hidden origin-bottom-right transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          widgetState.isOpen
+            ? "opacity-100 scale-100 translate-y-0 pointer-events-auto visible"
+            : "opacity-0 scale-95 translate-y-6 pointer-events-none invisible"
+        }`}
+      >
           {/* Header */}
           <div className="p-3.5 bg-mocha-panel-raised/90 border-b border-mocha-border/80 flex flex-col gap-2.5 shrink-0">
             <div className="flex items-center justify-between">
@@ -690,7 +689,6 @@ export function FloatingChatWidget() {
             </div>
           </div>
         </div>
-      )}
     </>
   );
 }
