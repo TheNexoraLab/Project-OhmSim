@@ -12,6 +12,7 @@ import { formatPrice, formatDate } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
+import { printOrderShippingSlip } from "@/lib/orders/shipping-slip";
 
 export type AdminPipelineStatus =
   | "PENDING"
@@ -358,25 +359,50 @@ function AdminOrderDrawerContent({
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close order management drawer"
-            data-testid="close-order-drawer-btn"
-            className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl bg-[#181825] border border-[#313244] text-[#BAC2DE] hover:text-[#CDD6F4] hover:border-[#89B4FA] transition-colors shrink-0 cursor-pointer"
-          >
-            <svg
-              className="w-5 h-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => printOrderShippingSlip(order)}
+              data-testid="drawer-print-slip-btn"
+              title="Print Shipping & Packaging Slip"
+              className="min-h-[44px] px-3.5 inline-flex items-center gap-1.5 rounded-xl bg-[#181825] border border-[#313244] text-xs font-mono font-semibold text-[#BAC2DE] hover:text-[#89B4FA] hover:border-[#89B4FA] transition-colors cursor-pointer"
             >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
+              <svg
+                className="w-4 h-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M6 9V2h12v7" />
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                <path d="M6 14h12v8H6z" />
+              </svg>
+              <span className="hidden sm:inline">Print Slip</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close order management drawer"
+              data-testid="close-order-drawer-btn"
+              className="min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl bg-[#181825] border border-[#313244] text-[#BAC2DE] hover:text-[#CDD6F4] hover:border-[#89B4FA] transition-colors cursor-pointer"
+            >
+              <svg
+                className="w-5 h-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Lifecycle Progress Bar */}
