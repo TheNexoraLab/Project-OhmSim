@@ -281,8 +281,17 @@ export async function PATCH(request: Request, { params }: RouteParams) {
             notifTitle = 'Ready for Campus Pickup';
             notifMessage = `Your order ${order.orderNumber} is ready for collection at Campus Electronics Lab Station (Building 3, Room 204).`;
           } else {
-            notifTitle = 'Out for Delivery';
-            notifMessage = `Your order ${order.orderNumber} is on the way via Cash on Delivery.${order.trackingNumber ? ` Tracking: ${order.trackingNumber}` : ''}`;
+            const tracking = (order.trackingNumber || '').toUpperCase();
+            let courier = 'Region III Logistics Partner';
+            if (tracking.startsWith('JNT') || tracking.includes('J&T')) {
+              courier = 'J&T Express';
+            } else if (tracking.startsWith('FLS') || tracking.includes('FLASH')) {
+              courier = 'Flash Express';
+            } else if (tracking.startsWith('LLM') || tracking.includes('LALAMOVE')) {
+              courier = 'Lalamove (Same-day)';
+            }
+            notifTitle = `Out for Delivery via ${courier}`;
+            notifMessage = `Your order ${order.orderNumber} is on the way via ${courier}.${order.trackingNumber ? ` Tracking: ${order.trackingNumber}` : ''}`;
           }
         } else if (targetStatus === 'DELIVERED') {
           notifTitle = 'Order Completed';
