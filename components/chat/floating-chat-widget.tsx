@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { chatWidgetStore } from "@/lib/chat/chat-widget-store";
-import { INQUIRY_CATEGORIES, type InquiryChip } from "@/lib/chat/inquiry-chips";
 import { matchOhmBotQuery, type BotAnswer } from "@/lib/chat/ohmbot-knowledge";
 import {
   getChatConversations,
@@ -66,7 +65,6 @@ export function FloatingChatWidget() {
   const isHiddenRoute = pathname === "/chat" || pathname?.startsWith("/admin");
 
   const [widgetState, setWidgetState] = useState(() => chatWidgetStore.getState());
-  const [activeCategory, setActiveCategory] = useState<string>("circuits");
   const [inputText, setInputText] = useState("");
   const [botMessages, setBotMessages] = useState<LocalBotMessage[]>(INITIAL_BOT_MESSAGES);
   const [isBotTyping, setIsBotTyping] = useState(false);
@@ -209,10 +207,6 @@ export function FloatingChatWidget() {
     }
   }, [widgetState.isOpen]);
 
-  const activeCategoryData = useMemo(() => {
-    return INQUIRY_CATEGORIES.find((c) => c.id === activeCategory) ?? INQUIRY_CATEGORIES[0];
-  }, [activeCategory]);
-
   if (isHiddenRoute) return null;
 
   const handleSendQuery = (textToSend?: string) => {
@@ -247,13 +241,6 @@ export function FloatingChatWidget() {
       }
       setInputText("");
     }
-  };
-
-  const handleChipClick = (chip: InquiryChip | { label: string; prompt: string }) => {
-    if (chip.label.includes("seller") || chip.label.includes("human")) {
-      chatWidgetStore.setMode("seller");
-    }
-    handleSendQuery(chip.prompt);
   };
 
   const handleActionClick = (action: BotAnswer["suggestedAction"]) => {
@@ -537,44 +524,6 @@ export function FloatingChatWidget() {
               </button>
             </div>
           )}
-
-          {/* Suggestion Category Pills & Chips Row */}
-          <div className="bg-mocha-panel border-b border-mocha-border/50 px-3 py-2 flex flex-col gap-2 shrink-0">
-            {/* Category Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-              {INQUIRY_CATEGORIES.map((cat) => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold shrink-0 flex items-center gap-1 transition-all ${
-                    activeCategory === cat.id
-                      ? "bg-mocha-accent/15 border border-mocha-accent text-mocha-accent"
-                      : "bg-mocha-panel-raised border border-mocha-border/60 text-mocha-text-muted hover:text-mocha-text"
-                  }`}
-                >
-                  <span>{cat.icon}</span>
-                  <span>{cat.label}</span>
-                </button>
-              ))}
-            </div>
-
-            {/* Quick Suggestion Chips */}
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-              {activeCategoryData.chips.map((chip) => (
-                <button
-                  key={chip.id}
-                  type="button"
-                  onClick={() => handleChipClick(chip)}
-                  className="px-2 py-1 rounded-md text-[10px] bg-mocha-bg/70 hover:bg-mocha-panel-raised border border-mocha-border/60 hover:border-mocha-accent text-mocha-text-muted hover:text-mocha-text transition-colors shrink-0 flex items-center gap-1 max-w-[200px] truncate"
-                  title={chip.prompt}
-                >
-                  <span>{chip.icon}</span>
-                  <span className="truncate">{chip.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
 
           {/* Message Stream */}
           <div className="flex-1 p-3 overflow-y-auto flex flex-col gap-3 text-xs bg-gradient-to-b from-mocha-bg/40 to-transparent">
