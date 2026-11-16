@@ -6,10 +6,16 @@ import { INITIAL_CONVERSATIONS } from "@/lib/mocks/chat";
 import { PRODUCTS as MOCK_PRODUCTS } from "@/lib/mocks/products";
 import type { ChatMessage } from "@/types/chat";
 import { formatPrice } from "@/lib/format";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { toast } from "@/components/ui/toast";
+import {
+  Search,
+  Send,
+  Package,
+  Cpu,
+  Zap,
+} from "lucide-react";
 
 interface AdminSupportThread {
   id: string;
@@ -57,7 +63,7 @@ function buildInitialSupportThreads(): AdminSupportThread[] {
       initials: "AR",
       color: "#89B4FA",
       online: true,
-      unreadCount: 2,
+      unreadCount: 0,
       topic: "ESP32-WROOM-32U 5V VIN Pin Regulation",
       orderNumber: "#OHM-2026-089",
       orderStatus: "PROCESSING",
@@ -162,7 +168,6 @@ export function ChatClient() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterUnreadOnly, setFilterUnreadOnly] = useState(false);
   const [composerText, setComposerText] = useState("");
-  const [selectedCanned, setSelectedCanned] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -298,7 +303,6 @@ export function ChatClient() {
   };
 
   const handleApplyCannedResponse = (value: string) => {
-    setSelectedCanned(value);
     if (!value) return;
     const match = CANNED_RESPONSES.find((c) => c.label === value);
     if (match) {
@@ -337,7 +341,6 @@ export function ChatClient() {
     );
 
     setComposerText("");
-    setSelectedCanned("");
     toast(
       `Reply sent to ${activeThread.customerName}${
         activeThread.orderNumber ? ` (${activeThread.orderNumber})` : ""
@@ -369,36 +372,50 @@ export function ChatClient() {
       data-testid="admin-chat-page"
       className="mx-auto flex w-full max-w-[1600px] flex-col gap-6"
     >
-      {/* Header */}
-      <div className="flex flex-col gap-4 border-b border-[#313244] pb-2 sm:flex-row sm:items-center sm:justify-between">
+      {/* Clean, Tranquil Page Header */}
+      <div className="flex flex-col gap-3 pb-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#89B4FA]/30 bg-[#89B4FA]/12 px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider text-[#89B4FA] uppercase">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#89B4FA]" />
-              TECHNICAL &amp; FULFILLMENT HELPDESK
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
+              Support Chat
+            </h1>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#181825] border border-[#313244] text-[11px] font-mono text-[#BAC2DE]">
+              {threads.length} conversations
             </span>
             {totalUnread > 0 && (
-              <Badge variant="warning" className="font-mono">
-                {totalUnread} UNREAD
-              </Badge>
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-[#89B4FA]/15 border border-[#89B4FA]/30 text-[11px] font-mono font-semibold text-[#89B4FA]">
+                {totalUnread} unread
+              </span>
             )}
           </div>
-          <h1 className="mt-2 text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
-            Support Chat Responder
-          </h1>
+          <p className="mt-0.5 text-xs text-[#6C7086]">
+            Campus pickups, Region III courier tracking, and component engineering inquiries.
+          </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Filter Segmented Control */}
+        <div className="inline-flex items-center p-1 rounded-xl bg-[#181825] border border-[#313244] text-xs">
           <button
             type="button"
-            onClick={() => setFilterUnreadOnly((prev) => !prev)}
-            className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
-              filterUnreadOnly
-                ? "border-[#89B4FA] bg-[#89B4FA]/14 text-[#89B4FA]"
-                : "border-[#313244] bg-[#181825] text-[#A6ADC8] hover:border-[#45475A] hover:text-[#CDD6F4]"
+            onClick={() => setFilterUnreadOnly(false)}
+            className={`px-3 py-1 rounded-lg font-medium transition-all ${
+              !filterUnreadOnly
+                ? "bg-[#313244] text-[#CDD6F4] shadow-xs"
+                : "text-[#6C7086] hover:text-[#CDD6F4]"
             }`}
           >
-            {filterUnreadOnly ? "Showing Unread Only" : "Filter Unread"}
+            All ({threads.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilterUnreadOnly(true)}
+            className={`px-3 py-1 rounded-lg font-medium transition-all ${
+              filterUnreadOnly
+                ? "bg-[#313244] text-[#CDD6F4] shadow-xs"
+                : "text-[#6C7086] hover:text-[#CDD6F4]"
+            }`}
+          >
+            Unread only ({totalUnread})
           </button>
         </div>
       </div>
@@ -408,31 +425,27 @@ export function ChatClient() {
         {/* Left Pane: Active Threads (4 cols on lg) */}
         <Surface
           variant="panel"
-          className="flex flex-col overflow-hidden border border-[#313244] bg-[#1E1E2E] p-0 lg:col-span-4"
+          className="flex flex-col overflow-hidden border border-[#313244] bg-[#1E1E2E] rounded-2xl p-0 lg:col-span-4 shadow-sm"
         >
-          <div className="border-b border-[#313244] bg-[#181825] p-3.5">
-            <div className="mb-2.5 flex items-center justify-between">
-              <span className="text-xs font-semibold tracking-wider text-[#CDD6F4] uppercase">
-                Active Conversations ({filteredThreads.length})
-              </span>
-              <span className="font-mono text-[11px] text-[#94E2D5]">
-                SLA &lt; 15m
-              </span>
+          {/* Search Header */}
+          <div className="border-b border-[#313244] bg-[#181825] p-3">
+            <div className="relative">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6C7086]" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search buyer, order, or SKU..."
+                aria-label="Search support threads"
+                className="h-9 w-full rounded-xl border border-[#313244] bg-[#11111B] pl-8.5 pr-3 text-xs text-[#CDD6F4] placeholder-[#585B70] focus:border-[#89B4FA] focus:ring-1 focus:ring-[#89B4FA]/30 focus:outline-none transition-all"
+              />
             </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search buyer, #OHM order, or SKU..."
-              aria-label="Search support threads"
-              className="h-9 w-full rounded-lg border border-[#313244] bg-[#11111B] px-3 text-xs text-[#CDD6F4] placeholder-[#A6ADC8] focus:border-[#89B4FA] focus:outline-none"
-            />
           </div>
 
-          <div className="divide-y divide-[#313244]/60 overflow-y-auto">
+          <div className="divide-y divide-[#313244]/40 overflow-y-auto max-h-[640px]">
             {filteredThreads.length === 0 ? (
               <div className="p-8 text-center">
-                <p className="text-xs font-semibold text-[#CDD6F4]">
+                <p className="text-xs font-semibold text-[#A6ADC8]">
                   No conversations match your filter
                 </p>
               </div>
@@ -452,60 +465,75 @@ export function ChatClient() {
                     key={thread.id}
                     type="button"
                     onClick={() => handleSelectThread(thread.id)}
-                    className={`flex w-full items-start gap-3 p-4 text-left transition-colors ${
+                    className={`group flex w-full items-start gap-3 p-3.5 text-left transition-all ${
                       isSelected
-                        ? "bg-[#89B4FA]/12"
-                        : "hover:bg-[#181825]/80"
+                        ? "bg-[#89B4FA]/10 border-l-[3px] border-[#89B4FA]"
+                        : "hover:bg-[#181825]/60 border-l-[3px] border-transparent"
                     }`}
                   >
+                    {/* Soft Tone-on-Tone Avatar */}
                     <div className="relative shrink-0">
                       <div
-                        className="flex h-10 w-10 items-center justify-center rounded-xl font-mono text-xs font-bold text-[#11111B]"
-                        style={{ backgroundColor: thread.color }}
+                        className={`flex h-9 w-9 items-center justify-center rounded-xl font-mono text-xs font-bold transition-colors ${
+                          isSelected
+                            ? "bg-[#89B4FA]/20 text-[#89B4FA] border border-[#89B4FA]/40"
+                            : "bg-[#181825] text-[#BAC2DE] border border-[#313244]"
+                        }`}
                       >
                         {thread.initials}
                       </div>
-                      <span
-                        className={`absolute -right-0.5 -bottom-0.5 h-2.5 w-2.5 rounded-full border-2 border-[#1E1E2E] ${
-                          thread.online ? "bg-[#A6E3A1]" : "bg-[#A6ADC8]"
-                        }`}
-                      />
+                      {thread.online && (
+                        <span
+                          className="absolute -right-0.5 -bottom-0.5 h-2 w-2 rounded-full bg-[#A6E3A1] ring-2 ring-[#1E1E2E]"
+                          title="Online"
+                        />
+                      )}
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="truncate text-sm font-semibold text-[#CDD6F4]">
+                      {/* Name & Time */}
+                      <div className="flex items-center justify-between gap-1.5">
+                        <span
+                          className={`truncate text-xs font-semibold ${
+                            isSelected
+                              ? "text-[#CDD6F4]"
+                              : "text-[#BAC2DE] group-hover:text-[#CDD6F4]"
+                          }`}
+                        >
                           {thread.customerName}
                         </span>
-                        <span className="shrink-0 font-mono text-[10px] text-[#A6ADC8]">
+                        <span className="shrink-0 font-mono text-[10px] text-[#6C7086]">
                           {lastMessage?.time ?? "Just now"}
                         </span>
                       </div>
 
-                      <p className="mt-0.5 truncate text-xs font-medium text-[#89B4FA]">
+                      {/* Topic (Muted, single line) */}
+                      <p className="mt-0.5 truncate text-[11px] font-medium text-[#BAC2DE]">
                         {thread.topic}
                       </p>
 
-                      <p className="mt-1 line-clamp-1 text-xs text-[#A6ADC8]">
+                      {/* Preview Text */}
+                      <p className="mt-0.5 line-clamp-1 text-[11px] text-[#6C7086]">
                         {previewText}
                       </p>
 
-                      <div className="mt-2 flex flex-wrap items-center justify-between gap-1.5">
-                        <div className="flex items-center gap-1.5">
+                      {/* Compact Footer Tags: Order or SKU + Unread Badge */}
+                      <div className="mt-2 flex items-center justify-between gap-1">
+                        <div className="flex items-center gap-1.5 truncate">
                           {thread.orderNumber && (
-                            <span className="rounded border border-[#313244] bg-[#181825] px-1.5 py-0.5 font-mono text-[10px] text-[#BAC2DE]">
+                            <span className="rounded px-1.5 py-0.5 font-mono text-[9.5px] bg-[#181825] border border-[#313244] text-[#A6ADC8]">
                               {thread.orderNumber}
                             </span>
                           )}
                           {thread.referencedSku && (
-                            <span className="rounded border border-[#313244] bg-[#181825] px-1.5 py-0.5 font-mono text-[10px] text-[#94E2D5]">
+                            <span className="rounded px-1.5 py-0.5 font-mono text-[9.5px] bg-[#181825] border border-[#313244] text-[#6C7086]">
                               {thread.referencedSku}
                             </span>
                           )}
                         </div>
 
                         {thread.unreadCount > 0 && (
-                          <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#89B4FA] px-1.5 font-mono text-[10px] font-bold text-[#11111B]">
+                          <span className="inline-flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-[#89B4FA] px-1.5 font-mono text-[9.5px] font-bold text-[#11111B] shadow-xs">
                             {thread.unreadCount}
                           </span>
                         )}
@@ -521,62 +549,52 @@ export function ChatClient() {
         {/* Right Pane: Chat Workspace (8 cols on lg) */}
         <Surface
           variant="panel"
-          className="flex min-h-[600px] flex-col overflow-hidden border border-[#313244] bg-[#1E1E2E] p-0 lg:col-span-8"
+          className="flex min-h-[600px] flex-col overflow-hidden border border-[#313244] bg-[#1E1E2E] rounded-2xl p-0 lg:col-span-8 shadow-sm"
         >
           {activeThread ? (
             <>
               {/* Active Customer Header */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#313244] bg-[#181825] px-5 py-4">
-                <div className="flex items-center gap-3">
-                  <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-mono text-xs font-bold text-[#11111B]"
-                    style={{ backgroundColor: activeThread.color }}
-                  >
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#313244] bg-[#181825] px-5 py-3.5">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-mono text-xs font-bold bg-[#313244]/60 border border-[#45475A] text-[#CDD6F4]">
                     {activeThread.initials}
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <h2 className="text-sm font-bold text-[#CDD6F4]">
+                      <h2 className="text-sm font-bold text-[#CDD6F4] truncate">
                         {activeThread.customerName}
                       </h2>
-                      <span
-                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold ${
-                          activeThread.online
-                            ? "bg-[#A6E3A1]/12 text-[#A6E3A1]"
-                            : "bg-[#313244]/70 text-[#A6ADC8]"
-                        }`}
-                      >
+                      <span className="inline-flex items-center gap-1 text-[10px] font-mono text-[#A6E3A1]">
                         <span
                           className={`h-1.5 w-1.5 rounded-full ${
-                            activeThread.online
-                              ? "bg-[#A6E3A1]"
-                              : "bg-[#A6ADC8]"
+                            activeThread.online ? "bg-[#A6E3A1]" : "bg-[#6C7086]"
                           }`}
                         />
-                        {activeThread.online ? "ONLINE" : "OFFLINE"}
+                        {activeThread.online ? "Online" : "Offline"}
                       </span>
                     </div>
-                    <p className="text-xs text-[#A6ADC8]">
+                    <p className="text-xs text-[#6C7086] truncate">
                       {activeThread.affiliation} •{" "}
-                      <span className="font-mono">
+                      <span className="font-mono text-[#A6ADC8]">
                         {activeThread.customerEmail}
                       </span>
                     </p>
                   </div>
                 </div>
 
-                {/* Order # & Referenced SKU Badges */}
-                <div className="flex flex-wrap items-center gap-2">
+                {/* Subtle Order # & Referenced SKU Links */}
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
                   {activeThread.orderNumber && (
                     <Link
                       href="/admin/orders"
                       prefetch={false}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-[#89B4FA]/40 bg-[#89B4FA]/12 px-2.5 py-1 font-mono text-xs font-semibold text-[#89B4FA] transition-colors hover:bg-[#89B4FA]/20"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-[#313244] bg-[#1E1E2E] hover:border-[#89B4FA]/60 hover:text-[#89B4FA] px-2.5 py-1 font-mono text-xs text-[#CDD6F4] transition-colors"
                     >
-                      <span>Order {activeThread.orderNumber}</span>
+                      <Package size={13} className="text-[#89B4FA]" />
+                      <span>{activeThread.orderNumber}</span>
                       {activeThread.orderStatus && (
-                        <span className="rounded bg-[#11111B]/60 px-1.5 py-0.2 text-[10px] text-[#CDD6F4]">
-                          {activeThread.orderStatus}
+                        <span className="text-[10px] text-[#A6ADC8]">
+                          ({activeThread.orderStatus})
                         </span>
                       )}
                     </Link>
@@ -586,10 +604,11 @@ export function ChatClient() {
                     <Link
                       href="/admin/products"
                       prefetch={false}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-[#313244] bg-[#11111B] px-2.5 py-1 font-mono text-xs text-[#94E2D5] hover:border-[#94E2D5]/50"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-[#313244] bg-[#1E1E2E] hover:border-[#89B4FA]/60 hover:text-[#89B4FA] px-2.5 py-1 font-mono text-xs text-[#CDD6F4] transition-colors"
                     >
+                      <Cpu size={13} className="text-[#94E2D5]" />
                       <span>{referencedProduct.sku}</span>
-                      <span className="text-[#A6ADC8]">
+                      <span className="text-[10px] text-[#6C7086]">
                         ({formatPrice(referencedProduct.price)})
                       </span>
                     </Link>
@@ -597,25 +616,36 @@ export function ChatClient() {
                 </div>
               </div>
 
-              {/* Message History Bubble Feed */}
-              <div className="flex-1 space-y-4 overflow-y-auto bg-[#11111B]/50 p-5">
+              {/* Message History Feed */}
+              <div className="flex-1 space-y-4 overflow-y-auto bg-[#11111B]/40 p-5">
                 {activeThread.messages.map((msg) => {
                   if (msg.from === "system") {
                     return (
                       <div
                         key={msg.id}
-                        className="mx-auto flex max-w-md items-center justify-between rounded-lg border border-[#313244] bg-[#181825] px-3.5 py-2 text-xs"
+                        className="my-3 flex items-center justify-center gap-3"
                       >
-                        <span className="text-[#A6ADC8]">
-                          {msg.type === "order"
-                            ? `Linked Order Reference: #${msg.orderNumber} (${msg.orderStatus})`
-                            : `Linked Component SKU: ${
-                                activeThread.referencedSku ?? "ESP32-WROOM-32U"
-                              }`}
+                        <div className="h-px flex-1 bg-[#313244]/60" />
+                        <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[#6C7086]">
+                          {msg.type === "order" ? (
+                            <>
+                              <Package size={12} className="text-[#6C7086]" />
+                              <span>
+                                Linked Order: #{msg.orderNumber} ({msg.orderStatus})
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <Cpu size={12} className="text-[#6C7086]" />
+                              <span>
+                                Linked Component: {activeThread.referencedSku ?? "ESP32-WROOM-32U"}
+                              </span>
+                            </>
+                          )}
+                          <span className="text-[#45475A]">·</span>
+                          <span className="text-[#585B70]">{msg.time}</span>
                         </span>
-                        <span className="font-mono text-[10px] text-[#89B4FA]">
-                          {msg.time}
-                        </span>
+                        <div className="h-px flex-1 bg-[#313244]/60" />
                       </div>
                     );
                   }
@@ -629,21 +659,25 @@ export function ChatClient() {
                       }`}
                     >
                       <div className="mb-1 flex items-center gap-2 px-1">
-                        <span className="text-[11px] font-semibold text-[#BAC2DE]">
+                        <span
+                          className={`text-[11px] font-medium ${
+                            isAdmin ? "text-[#89B4FA]/80" : "text-[#A6ADC8]"
+                          }`}
+                        >
                           {isAdmin
-                            ? "OhmSim Engineering Support (You)"
+                            ? "OhmSim Support (You)"
                             : activeThread.customerName}
                         </span>
-                        <span className="font-mono text-[10px] text-[#A6ADC8]">
+                        <span className="font-mono text-[10px] text-[#585B70]">
                           {msg.time}
                         </span>
                       </div>
 
                       <div
-                        className={`max-w-xl rounded-2xl px-4 py-3 text-xs leading-relaxed sm:text-sm ${
+                        className={`max-w-xl rounded-2xl px-4 py-2.5 text-xs sm:text-sm leading-relaxed shadow-xs ${
                           isAdmin
-                            ? "rounded-br-xs border border-[#89B4FA]/40 bg-[#89B4FA]/16 text-[#CDD6F4]"
-                            : "rounded-bl-xs border border-[#313244] bg-[#181825] text-[#CDD6F4]"
+                            ? "rounded-tr-xs border border-[#89B4FA]/25 bg-[#89B4FA]/10 text-[#CDD6F4]"
+                            : "rounded-tl-xs border border-[#313244] bg-[#181825] text-[#CDD6F4]"
                         }`}
                       >
                         {msg.text}
@@ -656,59 +690,45 @@ export function ChatClient() {
               {/* Reply Composer */}
               <form
                 onSubmit={handleSendMessage}
-                className="space-y-3 border-t border-[#313244] bg-[#181825] p-4"
+                className="space-y-2.5 border-t border-[#313244] bg-[#181825] p-3.5"
               >
-                {/* Canned Responses Bar */}
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="text-[11px] font-semibold text-[#A6ADC8]">
-                      Quick Canned Responses:
-                    </span>
-                    {CANNED_RESPONSES.map((preset) => (
-                      <button
-                        key={preset.label}
-                        type="button"
-                        onClick={() => handleApplyCannedResponse(preset.label)}
-                        className="rounded-md border border-[#313244] bg-[#1E1E2E] px-2.5 py-1 text-[11px] font-medium text-[#BAC2DE] transition-colors hover:border-[#89B4FA] hover:text-[#89B4FA]"
-                      >
-                        {preset.label}
-                      </button>
-                    ))}
-                  </div>
-
-                  <select
-                    aria-label="Select canned response template"
-                    value={selectedCanned}
-                    onChange={(e) => handleApplyCannedResponse(e.target.value)}
-                    className="h-8 rounded-lg border border-[#313244] bg-[#1E1E2E] px-2.5 text-xs text-[#CDD6F4] focus:border-[#89B4FA] focus:outline-none"
-                  >
-                    <option value="">Insert Canned Template...</option>
-                    {CANNED_RESPONSES.map((preset) => (
-                      <option key={preset.label} value={preset.label}>
-                        {preset.label}
-                      </option>
-                    ))}
-                  </select>
+                {/* Clean Quick Responses Toolbar */}
+                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#6C7086] shrink-0 mr-1">
+                    <Zap size={12} className="text-[#89B4FA]" />
+                    <span>Quick Reply:</span>
+                  </span>
+                  {CANNED_RESPONSES.map((preset) => (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      onClick={() => handleApplyCannedResponse(preset.label)}
+                      className="shrink-0 rounded-lg border border-[#313244] bg-[#1E1E2E] px-2.5 py-1 text-[11px] font-medium text-[#BAC2DE] transition-colors hover:border-[#89B4FA]/50 hover:bg-[#89B4FA]/10 hover:text-[#89B4FA]"
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
                 </div>
 
                 {/* Input Box & Send Button */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <input
                     type="text"
                     value={composerText}
                     onChange={(e) => setComposerText(e.target.value)}
                     placeholder={`Reply to ${activeThread.customerName}...`}
                     aria-label="Message reply input"
-                    className="h-10 flex-1 rounded-xl border border-[#313244] bg-[#11111B] px-4 text-sm text-[#CDD6F4] placeholder-[#A6ADC8] focus:border-[#89B4FA] focus:outline-none"
+                    className="h-10 flex-1 rounded-xl border border-[#313244] bg-[#11111B] px-4 text-xs sm:text-sm text-[#CDD6F4] placeholder-[#585B70] focus:border-[#89B4FA] focus:ring-1 focus:ring-[#89B4FA]/30 focus:outline-none transition-all"
                   />
                   <Button
                     type="submit"
                     variant="accent"
                     size="small"
                     disabled={!composerText.trim()}
-                    className="h-10 px-5 font-semibold"
+                    className="h-10 px-4.5 font-semibold text-xs gap-1.5 shadow-sm shrink-0"
                   >
-                    Send Reply
+                    <span>Send Reply</span>
+                    <Send size={13} />
                   </Button>
                 </div>
               </form>
