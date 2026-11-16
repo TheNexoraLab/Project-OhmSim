@@ -8,10 +8,10 @@ import { toast } from "@/components/ui/toast";
 import { logout } from "@/services/auth-service";
 import { ADMIN_NAV_ITEMS } from "@/components/admin/admin-sidebar";
 import {
-  HamburgerMenuIcon,
-  ArrowRightUpIcon,
-  Logout2Icon,
-} from "@solar-icons/react/linear";
+  Menu,
+  ExternalLink,
+  LogOut,
+} from "lucide-react";
 
 export interface AdminTopbarProps {
   isMobileMenuOpen?: boolean;
@@ -74,7 +74,7 @@ export function AdminTopbar({
           {isMobileMenuOpen ? (
             <span className="text-sm font-bold">✕</span>
           ) : (
-            <HamburgerMenuIcon size={20} />
+            <Menu size={20} />
           )}
         </button>
 
@@ -119,7 +119,7 @@ export function AdminTopbar({
           )}
         >
           <span>View Storefront</span>
-          <ArrowRightUpIcon size={14} className="shrink-0" />
+          <ExternalLink size={14} className="shrink-0" />
         </a>
 
         {/* Admin Profile Chip */}
@@ -156,7 +156,7 @@ export function AdminTopbar({
             data-testid="admin-logout-button"
             className="min-w-[44px] min-h-[36px] px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-[#BAC2DE] hover:text-[#F38BA8] hover:bg-[#F38BA8]/12 border border-transparent hover:border-[#F38BA8]/30 transition-colors inline-flex items-center gap-1 cursor-pointer"
           >
-            <Logout2Icon size={14} className="shrink-0" />
+            <LogOut size={14} className="shrink-0" />
             <span className="hidden md:inline">Logout</span>
           </button>
         </div>

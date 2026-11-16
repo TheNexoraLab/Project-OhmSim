@@ -15,11 +15,11 @@ import { formatPrice, formatDate } from "@/lib/format";
 import { toast } from "@/components/ui/toast";
 import { chatWidgetStore } from "@/lib/chat/chat-widget-store";
 import {
-  DangerCircleIcon,
-  ChatRoundDotsIcon,
-  Printer2Icon,
-  CopyIcon,
-} from "@solar-icons/react/linear";
+  AlertCircle,
+  MessageSquare,
+  Printer,
+  Copy,
+} from "lucide-react";
 
 interface OrderDetailClientProps {
   orderId: string;
@@ -113,7 +113,7 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-12 text-center bg-mocha-bg">
         <div className="w-16 h-16 rounded-2xl bg-mocha-panel border border-mocha-border flex items-center justify-center mb-4 text-mocha-danger">
-          <DangerCircleIcon size={32} />
+          <AlertCircle size={32} />
         </div>
         <h1 className="text-xl font-bold text-mocha-text mb-1">Order Not Found</h1>
         <p className="text-xs text-mocha-text-muted max-w-sm mb-6">
@@ -196,7 +196,7 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
               href={`/chat?convo=c1&orderRef=${order.orderNumber}`}
               className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-mocha-panel-raised border border-mocha-border text-mocha-text hover:border-mocha-accent hover:text-mocha-accent transition-colors flex items-center gap-1.5 min-h-[44px] focus-visible:outline-2 focus-visible:outline-mocha-accent"
             >
-              <ChatRoundDotsIcon size={14} className="text-[#89B4FA]" />
+              <MessageSquare size={14} className="text-[#89B4FA]" />
               <span>Inquire</span>
             </Link>
 
@@ -205,7 +205,7 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
               onClick={handlePrint}
               className="px-3.5 py-2 rounded-xl text-xs font-bold bg-mocha-panel border border-mocha-border text-mocha-accent hover:border-mocha-accent transition-colors flex items-center gap-1.5 min-h-[44px] focus-visible:outline-2 focus-visible:outline-mocha-accent"
             >
-              <Printer2Icon size={14} />
+              <Printer size={14} />
               <span>Invoice</span>
             </button>
           </div>
@@ -234,7 +234,7 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
                     title="Click to copy tracking number"
                   >
                     <span>{order.trackingNo}</span>
-                    <CopyIcon size={14} />
+                    <Copy size={14} />
                   </button>
                 </div>
               )}

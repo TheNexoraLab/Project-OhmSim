@@ -241,7 +241,17 @@ async function run() {
 
     // Check aria-current on Catalog nav link
     const catalogNavLink = page.locator("nav[aria-label='Buyer Primary Navigation'] a[href='/products']");
-    assert((await catalogNavLink.getAttribute("aria-current")) === "page", "Catalog nav link has aria-current='page' when on /products");
+    const catalogNavCount = await catalogNavLink.count();
+    if (catalogNavCount > 1) {
+      for (let i = 0; i < catalogNavCount; i++) {
+        console.log(`DUPLICATE ${i}:`, await catalogNavLink.nth(i).evaluate(el => ({
+          html: el.outerHTML,
+          parent: el.parentElement?.outerHTML?.slice(0, 200),
+          header: el.closest("header")?.outerHTML?.slice(0, 200),
+        })));
+      }
+    }
+    assert((await catalogNavLink.first().getAttribute("aria-current")) === "page", "Catalog nav link has aria-current='page' when on /products");
 
     // Initial catalog: exactly 8 products
     const initialCards = await page.locator(".hidden.md\\:grid a[href^='/products/']").all();

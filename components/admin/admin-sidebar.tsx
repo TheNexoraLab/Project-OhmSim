@@ -6,17 +6,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import {
-  Widget4Icon,
-  BoxMinimalisticIcon,
-  Widget2Icon,
-  ArchiveCheckIcon,
-  BillListIcon,
-  UsersGroupTwoRoundedIcon,
-  ChatRoundDotsIcon,
-  Chart2Icon,
-  BellIcon,
-  SettingsIcon,
-} from "@solar-icons/react/linear";
+  LayoutDashboard,
+  Cpu,
+  Layers,
+  Boxes,
+  ClipboardList,
+  Users,
+  MessageSquareText,
+  BarChart3,
+  Bell,
+  Settings,
+} from "lucide-react";
 
 export interface AdminNavItem {
   label: string;
@@ -29,54 +29,54 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   {
     label: "Dashboard",
     href: "/admin",
-    icon: <Widget4Icon size={18} className="shrink-0" />,
+    icon: <LayoutDashboard size={18} className="shrink-0" />,
   },
   {
     label: "Products",
     href: "/admin/products",
-    icon: <BoxMinimalisticIcon size={18} className="shrink-0" />,
+    icon: <Cpu size={18} className="shrink-0" />,
   },
   {
     label: "Categories",
     href: "/admin/categories",
-    icon: <Widget2Icon size={18} className="shrink-0" />,
+    icon: <Layers size={18} className="shrink-0" />,
   },
   {
     label: "Inventory",
     href: "/admin/inventory",
     badge: "2 Low",
-    icon: <ArchiveCheckIcon size={18} className="shrink-0" />,
+    icon: <Boxes size={18} className="shrink-0" />,
   },
   {
     label: "Orders",
     href: "/admin/orders",
-    icon: <BillListIcon size={18} className="shrink-0" />,
+    icon: <ClipboardList size={18} className="shrink-0" />,
   },
   {
     label: "Customers",
     href: "/admin/customers",
-    icon: <UsersGroupTwoRoundedIcon size={18} className="shrink-0" />,
+    icon: <Users size={18} className="shrink-0" />,
   },
   {
     label: "Support Chat",
     href: "/admin/chat",
     badge: "3",
-    icon: <ChatRoundDotsIcon size={18} className="shrink-0" />,
+    icon: <MessageSquareText size={18} className="shrink-0" />,
   },
   {
     label: "Sales Reports",
     href: "/admin/reports",
-    icon: <Chart2Icon size={18} className="shrink-0" />,
+    icon: <BarChart3 size={18} className="shrink-0" />,
   },
   {
     label: "Notifications",
     href: "/admin/notifications",
-    icon: <BellIcon size={18} className="shrink-0" />,
+    icon: <Bell size={18} className="shrink-0" />,
   },
   {
     label: "Settings",
     href: "/admin/settings",
-    icon: <SettingsIcon size={18} className="shrink-0" />,
+    icon: <Settings size={18} className="shrink-0" />,
   },
 ];
 

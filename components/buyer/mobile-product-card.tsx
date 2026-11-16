@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Product, BomProject } from "@/types/product";
-import { CartLarge2Icon } from "@solar-icons/react/linear";
+import { ShoppingCart } from "lucide-react";
 import { StockBadge } from "@/components/ui/badge";
 import { BomChooserPopover } from "./bom-chooser-popover";
 import { useCartFeedback } from "./cart-feedback";
@@ -115,8 +115,8 @@ export function MobileProductCard({
               "Max in Cart"
             ) : (
               <span className="flex items-center gap-1.5">
-                <span className="text-sm font-bold leading-none">+</span>
-                <CartLarge2Icon size={16} />
+                <span className="text-xs font-bold leading-none">+</span>
+                <ShoppingCart size={15} className="stroke-[2.2]" />
               </span>
             )}
           </button>

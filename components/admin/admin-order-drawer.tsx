@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { printOrderShippingSlip } from "@/lib/orders/shipping-slip";
-import { Printer2Icon } from "@solar-icons/react/linear";
+import { Printer } from "lucide-react";
 
 export type AdminPipelineStatus =
   | "PENDING"
@@ -368,7 +368,7 @@ function AdminOrderDrawerContent({
               title="Print Shipping & Packaging Slip"
               className="min-h-[44px] px-3.5 inline-flex items-center gap-1.5 rounded-xl bg-[#181825] border border-[#313244] text-xs font-mono font-semibold text-[#BAC2DE] hover:text-[#89B4FA] hover:border-[#89B4FA] transition-colors cursor-pointer"
             >
-              <Printer2Icon size={16} />
+              <Printer size={16} />
               <span className="hidden sm:inline">Print Slip</span>
             </button>
 

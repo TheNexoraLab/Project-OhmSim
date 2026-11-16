@@ -13,16 +13,16 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { toast } from "@/components/ui/toast";
 import {
-  AddIcon,
-  Banknote2Icon,
-  BoxMinimalisticIcon,
-  DangerTriangleIcon,
-  ChatRoundDotsIcon,
-  MapPointIcon,
-  DeliveryIcon,
-  BillListIcon,
-  ArchiveCheckIcon,
-} from "@solar-icons/react/linear";
+  Plus,
+  Banknote,
+  Package,
+  AlertTriangle,
+  MessageSquare,
+  MapPin,
+  Truck,
+  ClipboardList,
+  Boxes,
+} from "lucide-react";
 
 type SemanticStatusKey =
   | "PENDING"
@@ -267,7 +267,7 @@ export default function AdminDashboardPage() {
             size="small"
             className="text-xs font-semibold gap-1.5"
           >
-            <AddIcon size={14} className="stroke-[2.5]" />
+            <Plus size={14} className="stroke-[2.5]" />
             <span>Add Product</span>
           </ButtonLink>
         </div>
@@ -290,7 +290,7 @@ export default function AdminDashboardPage() {
             accentColor="#89B4FA"
             progressPercent={84}
             progressLabel="Gross revenue target progress"
-            icon={<Banknote2Icon size={20} />}
+            icon={<Banknote size={20} />}
           />
 
           {/* Card 2: Active Orders */}
@@ -306,7 +306,7 @@ export default function AdminDashboardPage() {
               (activeOrders.length / Math.max(1, MOCK_ORDERS.length)) * 100
             )}
             progressLabel="Active order ratio"
-            icon={<BoxMinimalisticIcon size={20} />}
+            icon={<Package size={20} />}
           />
 
           {/* Card 3: Low Stock Alerts */}
@@ -326,7 +326,7 @@ export default function AdminDashboardPage() {
                 100
             )}
             progressLabel="Low stock SKU share"
-            icon={<DangerTriangleIcon size={20} />}
+            icon={<AlertTriangle size={20} />}
           />
 
           {/* Card 4: Unread Inquiries */}
@@ -340,7 +340,7 @@ export default function AdminDashboardPage() {
             accentColor="#94E2D5"
             progressPercent={60}
             progressLabel="Support queue SLA utilization"
-            icon={<ChatRoundDotsIcon size={20} />}
+            icon={<MessageSquare size={20} />}
           />
         </div>
       </section>
@@ -521,12 +521,12 @@ export default function AdminDashboardPage() {
                           <span className="inline-flex items-center gap-1.5 text-xs text-[#BAC2DE]">
                             {order.fulfillmentType === "PICKUP" ? (
                               <>
-                                <MapPointIcon size={14} className="text-[#A6ADC8]" />
+                                <MapPin size={14} className="text-[#A6ADC8]" />
                                 <span>Campus Pickup</span>
                               </>
                             ) : (
                               <>
-                                <DeliveryIcon size={14} className="text-[#A6ADC8]" />
+                                <Truck size={14} className="text-[#A6ADC8]" />
                                 <span>Delivery</span>
                               </>
                             )}
@@ -792,7 +792,7 @@ export default function AdminDashboardPage() {
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="w-8 h-8 rounded-lg bg-[#313244]/50 text-[#CDD6F4] flex items-center justify-center shrink-0 group-hover:text-[#89B4FA] transition-colors">
-                      <AddIcon size={16} />
+                      <Plus size={16} />
                     </span>
                     <span className="text-xs font-semibold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
                       Add Product
@@ -810,7 +810,7 @@ export default function AdminDashboardPage() {
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="w-8 h-8 rounded-lg bg-[#313244]/50 text-[#CDD6F4] flex items-center justify-center shrink-0 group-hover:text-[#89B4FA] transition-colors">
-                      <BillListIcon size={16} />
+                      <ClipboardList size={16} />
                     </span>
                     <span className="text-xs font-semibold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
                       Review Orders
@@ -828,7 +828,7 @@ export default function AdminDashboardPage() {
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="w-8 h-8 rounded-lg bg-[#313244]/50 text-[#CDD6F4] flex items-center justify-center shrink-0 group-hover:text-[#89B4FA] transition-colors">
-                      <ArchiveCheckIcon size={16} />
+                      <Boxes size={16} />
                     </span>
                     <span className="text-xs font-semibold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
                       Adjust Inventory

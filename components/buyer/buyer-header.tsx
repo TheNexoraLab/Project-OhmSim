@@ -5,17 +5,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
-  Home2Icon,
-  Widget4Icon,
-  DocumentsIcon,
-  BoxMinimalisticIcon,
-  ChatRoundDotsIcon,
-  MagnifierIcon,
-  BellIcon,
-  UserCircleIcon,
-  CartLarge2Icon,
-  Logout2Icon,
-} from "@solar-icons/react/linear";
+  Home,
+  LayoutGrid,
+  ClipboardList,
+  Package,
+  MessageSquare,
+  Search,
+  Bell,
+  User,
+  ShoppingCart,
+  LogOut,
+} from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useBom } from "@/hooks/use-bom";
 import { toast } from "@/components/ui/toast";
@@ -61,32 +61,32 @@ export function BuyerHeader() {
       href: "/home",
       label: "Home",
       phase: "Batch 1",
-      icon: <Home2Icon size={16} className="shrink-0" />,
+      icon: <Home size={16} className="shrink-0" />,
     },
     {
       href: "/products",
       label: "Catalog",
       phase: "Batch 1",
-      icon: <Widget4Icon size={16} className="shrink-0" />,
+      icon: <LayoutGrid size={16} className="shrink-0" />,
     },
     {
       href: "/bom",
       label: "BOM",
       phase: "Batch 2",
       badge: bomCount,
-      icon: <DocumentsIcon size={16} className="shrink-0" />,
+      icon: <ClipboardList size={16} className="shrink-0" />,
     },
     {
       href: "/orders",
       label: "Orders",
       phase: "Batch 3",
-      icon: <BoxMinimalisticIcon size={16} className="shrink-0" />,
+      icon: <Package size={16} className="shrink-0" />,
     },
     {
       href: "/chat",
       label: "Chat",
       phase: "Batch 3",
-      icon: <ChatRoundDotsIcon size={16} className="shrink-0" />,
+      icon: <MessageSquare size={16} className="shrink-0" />,
     },
   ];
 
@@ -163,7 +163,7 @@ export function BuyerHeader() {
       </div>
 
       {/* Center: Search Box (Prominently Widened & Centered in Header) */}
-      <div className="flex-1 flex items-center justify-center min-w-0 mx-2 lg:mx-6 max-w-[170px] lg:max-w-[460px] xl:max-w-[560px]">
+      <div className="flex-1 flex items-center justify-center min-w-0 mx-2 lg:mx-6 max-w-[260px] lg:max-w-[480px] xl:max-w-[580px]">
         <form
           onSubmit={handleSearchSubmit}
           className="group flex items-center gap-2 px-3 py-1.5 w-full bg-[#181825] border border-[#313244] rounded-xl focus-within:border-[#89B4FA] focus-within:ring-2 focus-within:ring-[#89B4FA]/20 transition-all min-h-[38px] shadow-xs"
@@ -171,7 +171,7 @@ export function BuyerHeader() {
           <label htmlFor="buyer-desktop-search" className="sr-only">
             Search components or SKU
           </label>
-          <MagnifierIcon size={16} className="text-[#A6ADC8] group-focus-within:text-[#89B4FA] shrink-0 transition-colors" />
+          <Search size={16} className="text-[#A6ADC8] group-focus-within:text-[#89B4FA] shrink-0 transition-colors" />
           <input
             id="buyer-desktop-search"
             type="search"
@@ -205,7 +205,7 @@ export function BuyerHeader() {
           aria-label="View notifications"
           className="relative min-w-[36px] lg:min-w-[38px] min-h-[36px] lg:min-h-[38px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
-          <BellIcon size={18} />
+          <Bell size={18} />
           {unreadCount > 0 && (
             <span data-notification-count={unreadCount} className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full text-[7.5px] font-bold text-mocha-bg bg-mocha-accent flex items-center justify-center pointer-events-none">
               {unreadCount}
@@ -219,7 +219,7 @@ export function BuyerHeader() {
           aria-current={pathname === "/profile" ? "page" : undefined}
           className="min-w-[36px] lg:min-w-[38px] min-h-[36px] lg:min-h-[38px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
-          <UserCircleIcon size={18} />
+          <User size={18} />
         </Link>
 
         <Link
@@ -228,7 +228,7 @@ export function BuyerHeader() {
           className="relative min-w-[36px] lg:min-w-[38px] min-h-[36px] lg:min-h-[38px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
           <CartFeedbackIcon target="desktop">
-            <CartLarge2Icon size={18} />
+            <ShoppingCart size={18} />
           </CartFeedbackIcon>
           {cartTotal > 0 && (
             <span data-cart-count={cartTotal} className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full text-[7.5px] font-extrabold text-mocha-bg bg-mocha-accent flex items-center justify-center shadow-sm pointer-events-none">
@@ -243,7 +243,7 @@ export function BuyerHeader() {
           href="/"
           className={`${styles.exitLink} min-h-[38px] flex items-center gap-1.5 px-2 lg:px-3 py-1.5 rounded-xl text-xs font-semibold text-mocha-text-muted hover:text-mocha-danger transition-all focus-visible:outline-2 focus-visible:outline-mocha-danger`}
         >
-          <Logout2Icon size={15} className="shrink-0" />
+          <LogOut size={15} className="shrink-0" />
           Exit Store
         </Link>
       </div>

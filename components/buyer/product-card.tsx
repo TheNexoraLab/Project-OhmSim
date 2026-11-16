@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Product, BomProject } from "@/types/product";
-import { CartLarge2Icon } from "@solar-icons/react/linear";
+import { ShoppingCart } from "lucide-react";
 import { StockBadge } from "@/components/ui/badge";
 import { BomChooserPopover } from "./bom-chooser-popover";
 import styles from "./home-product-card.module.css";
@@ -98,16 +98,6 @@ export function ProductCard({
 
         {/* Action Button Row */}
         <div className="flex items-center gap-1.5 mt-2">
-          {isHome && (
-            <Link
-              href={`/products/${product.id}`}
-              aria-label={`View details for ${product.name}`}
-              className={`flex-1 min-h-[38px] sm:min-h-[44px] flex items-center justify-center text-[10px] sm:text-[11px] font-bold px-2 rounded-xl border border-mocha-border-strong text-mocha-text bg-mocha-panel-high hover:border-mocha-accent hover:text-mocha-accent transition-colors focus-visible:outline-2 focus-visible:outline-mocha-accent ${styles.action} ${styles.details}`}
-            >
-              View Details
-            </Link>
-          )}
-
           <button
             type="button"
             onClick={event => {
@@ -122,7 +112,7 @@ export function ProductCard({
                 ? `Maximum stock reached for ${product.name}`
                 : `Add ${product.name} to cart`
             }
-            className={`flex-1 min-h-[38px] sm:min-h-[44px] flex items-center justify-center text-[10px] sm:text-[11px] font-bold px-3 rounded-xl border transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${isHome ? `${styles.action} ${styles.cart}` : ""} ${
+            className={`w-full min-h-[38px] sm:min-h-[42px] flex items-center justify-center text-[11px] font-bold px-3 rounded-xl border transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
               isCartDisabled
                 ? "border-mocha-border/40 text-mocha-text-muted/60 bg-mocha-panel-high/40 cursor-not-allowed opacity-60"
                 : "border-mocha-border-strong text-mocha-accent bg-gradient-to-b from-mocha-panel-raised to-mocha-panel hover:border-mocha-accent hover:brightness-110 active:scale-95 shadow-sm"
@@ -132,12 +122,10 @@ export function ProductCard({
               "Sold Out"
             ) : isMaxInCart ? (
               "Max in Cart"
-            ) : isHome ? (
-              "Add to Cart"
             ) : (
               <span className="flex items-center gap-1.5">
-                <span className="text-sm font-bold leading-none">+</span>
-                <CartLarge2Icon size={16} />
+                <span className="text-xs font-bold leading-none">+</span>
+                <ShoppingCart size={15} className="stroke-[2.2]" />
               </span>
             )}
           </button>

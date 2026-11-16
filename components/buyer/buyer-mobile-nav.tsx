@@ -7,13 +7,13 @@ import { usePathname } from "next/navigation";
 import { useCart } from "@/hooks/use-cart";
 import { toast } from "@/components/ui/toast";
 import {
-  Home2Icon,
-  MagnifierIcon,
-  CartLarge2Icon,
-  BoxMinimalisticIcon,
-  UserCircleIcon,
-  BellIcon,
-} from "@solar-icons/react/linear";
+  Home,
+  Search,
+  ShoppingCart,
+  Package,
+  User,
+  Bell,
+} from "lucide-react";
 import { CartFeedbackIcon } from "./cart-feedback";
 import { useNotificationCount } from "./use-notification-count";
 
@@ -42,14 +42,14 @@ export function BuyerMobileHeader() {
           aria-label="Search catalog"
           className="min-w-[44px] min-h-[44px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
-          <MagnifierIcon size={18} />
+          <Search size={18} />
         </Link>
         <Link
           href="/notifications"
           aria-label="View notifications"
           className="relative min-w-[44px] min-h-[44px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
-          <BellIcon size={18} />
+          <Bell size={18} />
           {unreadCount > 0 && (
             <span data-notification-count={unreadCount} className="absolute top-2 right-2 w-3.5 h-3.5 rounded-full text-[7px] font-extrabold text-mocha-bg bg-mocha-accent flex items-center justify-center pointer-events-none">
               {unreadCount}
@@ -70,32 +70,32 @@ export function BuyerMobileBottomNav() {
       href: "/home",
       label: "Home",
       phase: "Batch 1",
-      icon: <Home2Icon size={20} />,
+      icon: <Home size={20} />,
     },
     {
       href: "/products",
       label: "Search",
       phase: "Batch 1",
-      icon: <MagnifierIcon size={20} />,
+      icon: <Search size={20} />,
     },
     {
       href: "/cart",
       label: "Cart",
       phase: "Batch 2",
       badge: cartTotal,
-      icon: <CartLarge2Icon size={20} />,
+      icon: <ShoppingCart size={20} />,
     },
     {
       href: "/orders",
       label: "Orders",
       phase: "Batch 3",
-      icon: <BoxMinimalisticIcon size={20} />,
+      icon: <Package size={20} />,
     },
     {
       href: "/profile",
       label: "Profile",
       phase: "Batch 4",
-      icon: <UserCircleIcon size={20} />,
+      icon: <User size={20} />,
     },
   ];
 

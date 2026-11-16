@@ -15,11 +15,12 @@ import { BomChooserPopover } from "@/components/buyer/bom-chooser-popover";
 import { useCartFeedback } from "@/components/buyer/cart-feedback";
 import { chatWidgetStore } from "@/lib/chat/chat-widget-store";
 import {
-  CartLarge2Icon,
-  DocumentAddIcon,
-  ChatRoundDotsIcon,
-  ChatLineIcon,
-} from "@solar-icons/react/linear";
+  ShoppingCart,
+  ClipboardList,
+  MessageSquare,
+  Bot,
+  MessageCircle,
+} from "lucide-react";
 
 interface ProductDetailClientProps {
   product: Product;
@@ -174,7 +175,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                   : "bg-[#89B4FA] hover:bg-[#74c7ec] text-[#11111B] hover:shadow-lg active:scale-[0.99]"
               }`}
             >
-              <CartLarge2Icon size={18} />
+              <ShoppingCart size={18} />
               {isOutOfStock
                 ? "Out of Stock"
                 : isMaxInCart
@@ -201,7 +202,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                       : "border-[#313244] text-[#CDD6F4] bg-[#181825] hover:border-[#45475A] hover:bg-[#1E1E2E]"
                   }`}
                 >
-                  <DocumentAddIcon size={16} className="text-[#89B4FA] shrink-0" />
+                  <ClipboardList size={16} className="text-[#89B4FA] shrink-0" />
                   <span className="truncate">Add to BOM</span>
                   {bomProjects.length > 0 && (
                     <span className="px-1.5 py-0.2 rounded-full font-mono text-[10px] font-bold bg-[#313244] text-[#BAC2DE] shrink-0">
@@ -225,7 +226,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                 aria-label="Contact Administrator"
                 className="min-h-[42px] flex items-center justify-center gap-1.5 px-3 font-semibold text-xs border border-[#313244] bg-[#181825] text-[#BAC2DE] hover:text-[#CDD6F4] hover:bg-[#1E1E2E] hover:border-[#45475A] rounded-xl transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent"
               >
-                <ChatRoundDotsIcon size={16} className="text-[#A6ADC8] shrink-0" />
+                <MessageSquare size={16} className="text-[#A6ADC8] shrink-0" />
                 <span className="truncate">Contact Admin</span>
               </Link>
             </div>
@@ -258,7 +259,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                   }}
                   className="px-3 py-2 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#89B4FA] text-[#CDD6F4] hover:text-[#89B4FA] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
                 >
-                  <ChatRoundDotsIcon size={15} className="text-[#89B4FA]" />
+                  <Bot size={15} className="text-[#89B4FA]" />
                   <span>Ask OhmBot</span>
                 </button>
 
@@ -279,7 +280,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                   }}
                   className="px-3 py-2 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#89B4FA] text-[#CDD6F4] hover:text-[#89B4FA] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
                 >
-                  <ChatLineIcon size={15} className="text-[#A6ADC8]" />
+                  <MessageCircle size={15} className="text-[#A6ADC8]" />
                   <span>Chat to Seller</span>
                 </button>
               </div>

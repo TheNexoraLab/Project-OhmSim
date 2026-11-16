@@ -82,15 +82,18 @@ export function FloatingChatWidget() {
   const [isHovered, setIsHovered] = useState(false);
 
   // Draggable position along screen edge (persisted in session)
-  const [dockY, setDockY] = useState<number>(() => {
-    if (typeof window !== "undefined") {
-      return Math.max(90, Math.min(window.innerHeight - 100, Math.floor(window.innerHeight * 0.62)));
-    }
-    return 420;
-  });
+  const [dockY, setDockY] = useState<number>(420);
   const [dockSide, setDockSide] = useState<"left" | "right">("right");
   const isDraggingRef = useRef(false);
   const startDragRef = useRef({ startX: 0, startY: 0, initialY: 0, moved: false });
+
+  // Adjust initial position based on client viewport after hydration (prevents SSR mismatch)
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setDockY(Math.max(90, Math.min(window.innerHeight - 100, Math.floor(window.innerHeight * 0.62))));
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   // Close on Click Outside or Escape Key
   useEffect(() => {

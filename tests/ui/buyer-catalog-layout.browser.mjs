@@ -62,8 +62,9 @@ try {
   for (const width of [320, 390, 768, 1024, 1440, 1536, 1920]) {
     await page.setViewportSize({ width, height: 1080 });
     await page.goto(`${url}/products`);
+    await page.locator("[data-buyer-catalog]").first().waitFor();
     await page.evaluate(() => document.fonts.ready);
-    const root = await page.locator("[data-buyer-catalog]").boundingBox();
+    const root = await page.locator("[data-buyer-catalog]").first().boundingBox();
     assert.ok(root && Math.abs(root.x) < 1 && Math.abs(root.width - width) < 1,
       `Catalog fills the page without the old width cap at ${width}px`);
     if (width < 768) {
