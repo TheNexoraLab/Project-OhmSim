@@ -31,7 +31,7 @@ export interface AdminProductRecord extends Omit<Product, "category"> {
   updatedAt: string;
 }
 
-export type StockAdjustmentType = "ADD" | "REMOVE";
+export type StockAdjustmentType = "ADD" | "REMOVE" | "SET";
 
 export type StockAdjustmentReason =
   | "Restock Shipment"
@@ -230,6 +230,7 @@ export async function syncAdminCatalogFromApi(): Promise<void> {
     if (invRes.ok) {
       const invData = await invRes.json();
       if (Array.isArray(invData.items) && invData.items.length > 0) {
+        const existingSkus = new Set(storeState.products.map((p) => p.sku.toUpperCase()));
         const updatedProducts = storeState.products.map((p) => {
           const match = invData.items.find(
             (item: { id: string; sku: string }) => item.id === p.id || item.sku === p.sku
@@ -248,9 +249,37 @@ export async function syncAdminCatalogFromApi(): Promise<void> {
           return p;
         });
 
+        // Add any products present in the database but not in the local initial array
+        const newProductsFromDb: AdminProductRecord[] = [];
+        for (const item of invData.items) {
+          if (!existingSkus.has(item.sku.toUpperCase())) {
+            newProductsFromDb.push({
+              id: item.id,
+              sku: item.sku,
+              name: item.name,
+              brand: "OhmSim Direct",
+              category: item.category || "Microcontrollers",
+              label: item.name,
+              shortDescription: item.name,
+              fullDescription: item.name,
+              about: item.name,
+              price: typeof item.price === "number" ? item.price : 0,
+              voltage: 5,
+              resistance: null,
+              stock: item.stock,
+              minThreshold: item.minThreshold,
+              status: computeStockStatus(item.stock, item.minThreshold),
+              datasheetUrl: `https://datasheets.ohmsim.ph/${item.sku.toLowerCase()}.pdf`,
+              image: "https://images.unsplash.com/photo-1634452015397-ad0686a2ae2d?w=400&h=300&fit=crop&auto=format",
+              specs: {},
+              updatedAt: item.updatedAt || new Date().toISOString(),
+            });
+          }
+        }
+
         storeState = {
           ...storeState,
-          products: updatedProducts,
+          products: [...updatedProducts, ...newProductsFromDb],
         };
         emitChange();
       }
@@ -495,12 +524,21 @@ export function adjustAdminProductStock(params: {
   if (targetIndex < 0) return null;
 
   const target = storeState.products[targetIndex];
-  const delta = Math.max(1, Math.round(params.quantity));
+  const delta = Math.max(0, Math.round(params.quantity));
   const previousStock = target.stock;
-  const newStock =
-    params.type === "ADD"
-      ? previousStock + delta
-      : Math.max(0, previousStock - delta);
+  let newStock = previousStock;
+  let loggedQuantity = delta;
+
+  if (params.type === "ADD") {
+    newStock = previousStock + Math.max(1, delta);
+    loggedQuantity = Math.max(1, delta);
+  } else if (params.type === "REMOVE") {
+    newStock = Math.max(0, previousStock - Math.max(1, delta));
+    loggedQuantity = Math.max(1, delta);
+  } else if (params.type === "SET") {
+    newStock = delta;
+    loggedQuantity = Math.abs(newStock - previousStock);
+  }
 
   const nextStatus = computeStockStatus(newStock, target.minThreshold);
   const now = new Date().toISOString();
@@ -517,7 +555,7 @@ export function adjustAdminProductStock(params: {
     sku: target.sku,
     productName: target.name,
     type: params.type,
-    quantity: delta,
+    quantity: loggedQuantity,
     previousStock,
     newStock,
     reason: params.reason,
@@ -542,7 +580,7 @@ export function adjustAdminProductStock(params: {
         productId: target.id,
         sku: target.sku,
         type: params.type,
-        quantity: delta,
+        quantity: params.type === "SET" ? newStock : loggedQuantity,
         reason: params.reason,
       }),
     }).catch((err) => {

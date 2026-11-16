@@ -1,15 +1,23 @@
 import assert from 'node:assert/strict';
-import { prisma } from '../../lib/prisma/client.ts';
-import {
+
+try {
+  process.loadEnvFile?.('.env.local');
+} catch {}
+try {
+  process.loadEnvFile?.('.env');
+} catch {}
+
+const { prisma } = await import('../../lib/prisma/client.ts');
+const {
   getNeonAuthBaseUrl,
   initiateGoogleSocialLogin,
   syncNeonUserToOhmSim,
-} from '../../lib/auth/neon-auth.ts';
-import {
+} = await import('../../lib/auth/neon-auth.ts');
+const {
   createSessionToken,
   verifySessionToken,
   SESSION_COOKIE_NAME,
-} from '../../lib/auth/session.ts';
+} = await import('../../lib/auth/session.ts');
 
 console.log('=== OhmSim: Neon Auth & Google OAuth Flow Verification ===\n');
 
