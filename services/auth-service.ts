@@ -96,8 +96,13 @@ export async function getMe(): Promise<{ authenticated: boolean; user: AuthUser 
  */
 export function loginWithGoogle(): void {
   if (typeof window !== 'undefined') {
-    // External OAuth redirect - requires full browser navigation to trigger 302 redirect
+    // External OAuth redirect - requires full browser navigation to trigger 302 redirect.
+    // If user is accessing via 127.0.0.1, navigate to localhost so cookies and callbacks align with Neon Auth allowlists.
+    let targetOrigin = window.location.origin;
+    if (targetOrigin.includes('127.0.0.1')) {
+      targetOrigin = targetOrigin.replace('127.0.0.1', 'localhost');
+    }
     // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-    window.location.assign(`${window.location.origin}/api/auth/google`);
+    window.location.assign(`${targetOrigin}/api/auth/google`);
   }
 }
