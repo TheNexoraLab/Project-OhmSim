@@ -1,0 +1,26 @@
+meta {
+  name: Create Lab Pickup Order (Building 3)
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/orders
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "fulfillmentType": "PICKUP",
+    "pickupRecipient": "Alex Rivera",
+    "pickupPhone": "09171234567",
+    "notes": "Picking up after lab session",
+    "items": [
+      {
+        "productId": "560c4078-5127-47ec-85c1-d76d3f80295a",
+        "quantity": 1
+      }
+    ]
+  }
+}

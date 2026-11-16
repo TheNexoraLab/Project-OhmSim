@@ -1,0 +1,20 @@
+meta {
+  name: Simulate GCash or Maya Payment Webhook
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/api/payment/simulate
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "provider": "GCASH",
+    "amount": 1450.00,
+    "referenceNumber": "102938481928",
+    "customerName": "Alex Rivera"
+  }
+}
