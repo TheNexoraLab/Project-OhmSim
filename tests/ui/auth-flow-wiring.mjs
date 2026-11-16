@@ -17,7 +17,18 @@ assert.equal(admin.role, 'ADMIN');
 const isValidAdminPass = await verifyPassword('AdminPass123!', admin.passwordHash);
 assert.equal(isValidAdminPass, true, 'Admin password must verify correctly');
 
-const buyer = await prisma.user.findUnique({ where: { email: 'buyer@ohmsim.nexora.ph' } });
+const testBuyerHash = await hashPassword('BuyerPass123!');
+const buyer = await prisma.user.upsert({
+  where: { email: 'test.runner.buyer@ohmsim.ph' },
+  update: { passwordHash: testBuyerHash },
+  create: {
+    email: 'test.runner.buyer@ohmsim.ph',
+    passwordHash: testBuyerHash,
+    role: 'BUYER',
+    firstName: 'Test',
+    lastName: 'Buyer',
+  },
+});
 assert.ok(buyer, 'Buyer account must exist in Neon DB');
 assert.equal(buyer.role, 'BUYER');
 
@@ -90,6 +101,7 @@ console.log('✔ Session JWT signing, verification, and role retention passed.')
 // ----------------------------------------------------
 console.log('\n--- 4. Cleaning Test User ---');
 await prisma.user.delete({ where: { id: createdTestUser.id } });
+await prisma.user.deleteMany({ where: { email: 'test.runner.buyer@ohmsim.ph' } });
 console.log('✔ Neon database cleaned of test user.');
 
 console.log('\n=== All Step 1 Auth Flow Checks PASSED Successfully ===');

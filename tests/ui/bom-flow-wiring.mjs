@@ -26,10 +26,21 @@ async function runBomWiringSuite() {
     // 2. Test Live Neon PostgreSQL BOM CRUD
     // -------------------------------------------------------------
     console.log('--- 2. Testing Live Neon PostgreSQL BOM CRUD ---');
-    const buyer = await prisma.user.findFirst({
-      where: { email: 'buyer@ohmsim.nexora.ph' },
-    });
-    assert(buyer, 'Demo buyer must exist in Neon PostgreSQL');
+    let buyer = await prisma.user.findFirst({ where: { role: 'BUYER' } });
+    let createdDynamicBuyer = false;
+    if (!buyer) {
+      buyer = await prisma.user.create({
+        data: {
+          email: `test.bom.buyer.${Date.now()}@ohmsim.ph`,
+          passwordHash: 'dummy',
+          role: 'BUYER',
+          firstName: 'BOM',
+          lastName: 'Tester',
+        },
+      });
+      createdDynamicBuyer = true;
+    }
+    assert(buyer, 'Buyer user must exist in Neon PostgreSQL');
 
     // Fetch two catalog products
     const products = await prisma.product.findMany({
@@ -130,6 +141,11 @@ async function runBomWiringSuite() {
     });
     assert.strictEqual(verifyItemsDeleted.length, 0, 'Cascade delete must remove all associated items');
     console.log('✔ Project cascade delete cleaned up all associated items in Neon DB.');
+
+    if (createdDynamicBuyer) {
+      await prisma.user.delete({ where: { id: buyer.id } });
+      console.log('✔ Cleaned up dynamic test buyer in Neon DB.');
+    }
 
     console.log('\n=== All BOM Wiring Checks PASSED Successfully ===');
   } catch (error) {

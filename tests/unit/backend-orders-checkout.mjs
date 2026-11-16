@@ -48,9 +48,21 @@ console.log('✔ All fulfillment helper unit checks passed.');
 // ----------------------------------------------------
 console.log('\n--- 2. Connecting to Database & Fetching Baseline Data ---');
 
-const buyer = await prisma.user.findFirst({
-  where: { email: 'buyer@ohmsim.nexora.ph' },
-});
+let buyer = await prisma.user.findFirst({ where: { role: 'BUYER' } });
+let createdDynamicBuyer = false;
+if (!buyer) {
+  buyer = await prisma.user.create({
+    data: {
+      email: `test.unit.buyer.${Date.now()}@ohmsim.ph`,
+      passwordHash: 'dummy',
+      role: 'BUYER',
+      firstName: 'Daniel',
+      lastName: 'Cruz',
+      phone: '09189876543',
+    },
+  });
+  createdDynamicBuyer = true;
+}
 assert.ok(buyer, 'Buyer user must exist in database');
 
 const products = await prisma.product.findMany({
@@ -267,6 +279,9 @@ console.log(`✔ Order cancelled. Stock restored: ${stockBeforeCancel} -> ${stoc
 await prisma.orderItem.deleteMany({ where: { orderId: testDeliveryOrder.id } });
 await prisma.order.delete({ where: { id: testDeliveryOrder.id } });
 await prisma.address.delete({ where: { id: testDeliveryOrder.deliveryAddressId } });
-console.log('✔ Cleaned up temporary test order artifacts.');
+if (createdDynamicBuyer) {
+  await prisma.user.delete({ where: { id: buyer.id } });
+}
+console.log('✔ Cleaned up temporary test order artifacts and buyer.');
 
 console.log('\n=== All BE-04 Atomic Checkout & Orders Tests PASSED Successfully ===');

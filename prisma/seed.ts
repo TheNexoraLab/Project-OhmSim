@@ -6,9 +6,8 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('--- Seeding OhmSim Database (Complete Catalog) ---');
 
-  // 1. Seed Demo Admin & Buyer with Valid Bcrypt Hashes
+  // 1. Seed Demo Admin with Valid Bcrypt Hash
   const adminPasswordHash = await hashPassword('AdminPass123!');
-  const buyerPasswordHash = await hashPassword('BuyerPass123!');
 
   await prisma.user.upsert({
     where: { email: 'admin@ohmsim.nexora.ph' },
@@ -25,22 +24,7 @@ async function main() {
     },
   });
 
-  await prisma.user.upsert({
-    where: { email: 'buyer@ohmsim.nexora.ph' },
-    update: {
-      passwordHash: buyerPasswordHash,
-    },
-    create: {
-      email: 'buyer@ohmsim.nexora.ph',
-      passwordHash: buyerPasswordHash,
-      role: Role.BUYER,
-      firstName: 'Daniel',
-      lastName: 'Cruz',
-      phone: '+63 918 987 6543',
-    },
-  });
-
-  console.log('✔ Seeded users: Admin and Buyer.');
+  console.log('✔ Seeded user: Admin.');
 
   // 2. Seed All 5 Canonical Categories
   const categoriesData = [

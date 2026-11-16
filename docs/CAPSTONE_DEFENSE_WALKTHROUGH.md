@@ -53,7 +53,7 @@ To deliver an uninterrupted, professional demonstration, set up your presentatio
 
 | Window / Tool | URL / Path | Role / Purpose | Credentials |
 | :--- | :--- | :--- | :--- |
-| **Window 1: Buyer Experience** | `http://localhost:3000` (or `https://project-ohm-sim.vercel.app`) | Student / Buyer user flow | `buyer@ohmsim.nexora.ph`<br>`BuyerPass123!` |
+| **Window 1: Buyer Experience** | `http://localhost:3000` (or `https://project-ohm-sim.vercel.app`) | Student / Buyer user flow | Your Student / Google Account or newly registered user |
 | **Window 2: Admin Operations** | `http://localhost:3000/admin` (Incognito Window) | Fulfillment, Waybills, Dispatch | `admin@ohmsim.nexora.ph`<br>`AdminPass123!` |
 | **Window 3: Technical Validation** | **Bruno API Client** (`api/bruno`) & Neon Console | Live endpoint proof & database state | API Token / Live Database |
 
@@ -152,9 +152,9 @@ To deliver an uninterrupted, professional demonstration, set up your presentatio
 Follow these exact steps during the live oral defense:
 
 ```text
-STEP 1: Log in as Buyer (Daniel Cruz)
+STEP 1: Log in as Buyer
 ├── URL: http://localhost:3000/login
-├── Input: buyer@ohmsim.nexora.ph / BuyerPass123!
+├── Input: Your Student / Buyer credentials or Continue with Google
 └── Target: Lands on /catalog
 
 STEP 2: Explore Catalog & Open Datasheet
@@ -256,7 +256,7 @@ If unexpected technical issues arise during the defense, follow these immediate 
 | Scenario | Immediate Action | Spoken Pivot |
 | :--- | :--- | :--- |
 | **Internet Disconnection / Slow Cloud Query** | Switch instantly to local environment: `http://localhost:3000` with local database seed. | *"While the campus Wi-Fi reconnects, let me demonstrate the identical flow running against our local replica."* |
-| **Session Expired / Logged Out** | Click 'Quick Demo Fill' or log in with saved demo credentials: `buyer@ohmsim.nexora.ph` / `BuyerPass123!`. | *"Our security session policy automatically expires stale sessions. Let me re-authenticate."* |
+| **Session Expired / Logged Out** | Sign in with your registered account or Continue with Google. | *"Our security session policy automatically expires stale sessions. Let me re-authenticate."* |
 | **Test Data Cluttered / Need Clean State** | Open PowerShell and run: `npx tsx prisma/seed.ts` (takes 3 seconds). | *"Let me refresh our demo catalog and inventory to pristine seed state."* |
 | **Live Toast Doesn't Show Immediately** | Click the notification bell icon directly or trigger window focus by switching tabs. | *"The notification polling engine syncs every 10 seconds or instantly upon regaining window focus."* |
 
