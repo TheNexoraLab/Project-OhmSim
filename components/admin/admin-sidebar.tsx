@@ -157,7 +157,7 @@ function SidebarContent({
   return (
     <div className="flex flex-col h-full w-full bg-[#181825] text-[#CDD6F4] select-none">
       {/* Sidebar Header: OhmSim logo with distinct ADMIN badge */}
-      <div className="h-16 px-4 flex items-center justify-between gap-2 border-b border-[#313244] shrink-0">
+      <div className="h-16 px-4 flex items-center justify-between gap-2 shrink-0">
         <Link
           href="/admin"
           onClick={onNavigate}
@@ -195,21 +195,10 @@ function SidebarContent({
         )}
       </div>
 
-      {/* Console Section Label */}
-      <div className="px-4 pt-4 pb-2 flex items-center justify-between">
-        <span className="text-[10px] font-mono font-semibold uppercase tracking-[0.14em] text-[#A6ADC8]">
-          Operations Console
-        </span>
-        <span className="inline-flex items-center gap-1 text-[10px] font-mono text-[#94E2D5]">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#A6E3A1]" />
-          v1.0
-        </span>
-      </div>
-
       {/* Navigation Links (All 10 required links) */}
       <nav
         aria-label="Admin Sidebar Navigation"
-        className="flex-1 overflow-y-auto px-2 py-1 space-y-1"
+        className="flex-1 overflow-y-auto px-2 py-2 space-y-1"
       >
         {ADMIN_NAV_ITEMS.map((item) => {
           const isActive = isNavItemActive(pathname, item.href);
