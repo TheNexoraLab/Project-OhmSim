@@ -43,8 +43,8 @@ export function ProductCard({
 
   return (
     <div data-cart-source className="group relative flex flex-col bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border hover:border-mocha-border-strong rounded-[22px] shadow-[0_12px_30px_rgba(0,0,0,0.14)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.28)] transition-all duration-300">
-      {/* Product Image Well — overflow-hidden localized here to prevent clipping outer popovers */}
-      <div className="relative h-[138px] bg-mocha-bg-secondary rounded-t-[22px] overflow-hidden shrink-0">
+      {/* Product Image Well — increased height to give ample room for picture */}
+      <div className={`relative ${isHome ? "h-[148px]" : "h-[175px]"} bg-mocha-bg-secondary rounded-t-[22px] overflow-hidden shrink-0`}>
         <Link
           href={`/products/${product.id}`}
           className="absolute inset-0 block focus-visible:outline-2 focus-visible:outline-mocha-accent"
@@ -73,8 +73,8 @@ export function ProductCard({
 
       {/* Content Area */}
       <div className={`p-3 flex flex-col flex-1 ${isHome ? "gap-0.5" : "gap-1"}`}>
-        <p className="text-[9px] font-semibold uppercase tracking-[0.1em] text-mocha-accent truncate">
-          {product.label}
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-[#89B4FA] truncate">
+          {product.category || "Component"}
         </p>
         <Link
           href={`/products/${product.id}`}
@@ -95,15 +95,17 @@ export function ProductCard({
           </span>}
         </div>
 
-        {/* Action Button Row — accessible >=44px effective touch targets without text truncation */}
+        {/* Action Button Row */}
         <div className="flex items-center gap-1.5 mt-2">
-          <Link
-            href={`/products/${product.id}`}
-            aria-label={`View details for ${product.name}`}
-            className={`flex-1 min-h-[38px] sm:min-h-[44px] flex items-center justify-center text-[10px] sm:text-[11px] font-bold px-2 rounded-xl border border-mocha-border-strong text-mocha-text bg-mocha-panel-high hover:border-mocha-accent hover:text-mocha-accent transition-colors focus-visible:outline-2 focus-visible:outline-mocha-accent ${isHome ? `${styles.action} ${styles.details}` : ""}`}
-          >
-            {isHome ? "View Details" : "Details"}
-          </Link>
+          {isHome && (
+            <Link
+              href={`/products/${product.id}`}
+              aria-label={`View details for ${product.name}`}
+              className={`flex-1 min-h-[38px] sm:min-h-[44px] flex items-center justify-center text-[10px] sm:text-[11px] font-bold px-2 rounded-xl border border-mocha-border-strong text-mocha-text bg-mocha-panel-high hover:border-mocha-accent hover:text-mocha-accent transition-colors focus-visible:outline-2 focus-visible:outline-mocha-accent ${styles.action} ${styles.details}`}
+            >
+              View Details
+            </Link>
+          )}
 
           <button
             type="button"
@@ -119,13 +121,28 @@ export function ProductCard({
                 ? `Maximum stock reached for ${product.name}`
                 : `Add ${product.name} to cart`
             }
-            className={`flex-1 min-h-[38px] sm:min-h-[44px] flex items-center justify-center text-[10px] sm:text-[11px] font-bold px-2 rounded-xl border transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${isHome ? `${styles.action} ${styles.cart}` : ""} ${
+            className={`flex-1 min-h-[38px] sm:min-h-[44px] flex items-center justify-center text-[10px] sm:text-[11px] font-bold px-3 rounded-xl border transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${isHome ? `${styles.action} ${styles.cart}` : ""} ${
               isCartDisabled
                 ? "border-mocha-border/40 text-mocha-text-muted/60 bg-mocha-panel-high/40 cursor-not-allowed opacity-60"
                 : "border-mocha-border-strong text-mocha-accent bg-gradient-to-b from-mocha-panel-raised to-mocha-panel hover:border-mocha-accent hover:brightness-110 active:scale-95 shadow-sm"
             }`}
           >
-            {isOutOfStock ? "Sold Out" : isMaxInCart ? "Max in Cart" : isHome ? "Add to Cart" : "+ Cart"}
+            {isOutOfStock ? (
+              "Sold Out"
+            ) : isMaxInCart ? (
+              "Max in Cart"
+            ) : isHome ? (
+              "Add to Cart"
+            ) : (
+              <span className="flex items-center gap-1.5">
+                <span className="text-sm font-bold leading-none">+</span>
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="21" r="1" />
+                  <circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+              </span>
+            )}
           </button>
 
           {/* Inline Anchored BOM Chooser Popover */}

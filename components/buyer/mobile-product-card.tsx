@@ -65,8 +65,8 @@ export function MobileProductCard({
       </Link>
 
       <div className="p-3 flex flex-col gap-1.5 flex-1">
-        <p className="text-[9px] font-semibold uppercase tracking-wider text-mocha-accent truncate">
-          {product.label}
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-[#89B4FA] truncate">
+          {product.category || "Component"}
         </p>
         <Link
           href={`/products/${product.id}`}
@@ -102,13 +102,26 @@ export function MobileProductCard({
                 ? `Maximum stock reached for ${product.name}`
                 : `Add ${product.name} to cart`
             }
-            className={`flex-1 min-h-[44px] text-xs font-bold flex items-center justify-center gap-1 py-2 px-2 rounded-xl border transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
+            className={`flex-1 min-h-[44px] text-xs font-bold flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
               isCartDisabled
                 ? "border-mocha-border/40 text-mocha-text-muted/60 bg-mocha-panel-high/40 cursor-not-allowed opacity-60"
                 : "border-mocha-border-strong text-mocha-accent bg-gradient-to-b from-mocha-panel-raised to-mocha-panel hover:brightness-110 active:scale-95 shadow-sm"
             }`}
           >
-            {isOutOfStock ? "Sold Out" : isMaxInCart ? "Max in Cart" : "+ Add to Cart"}
+            {isOutOfStock ? (
+              "Sold Out"
+            ) : isMaxInCart ? (
+              "Max in Cart"
+            ) : (
+              <span className="flex items-center gap-1.5">
+                <span className="text-sm font-bold leading-none">+</span>
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="9" cy="21" r="1" />
+                  <circle cx="20" cy="21" r="1" />
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                </svg>
+              </span>
+            )}
           </button>
 
           {onAddToBomProject && bomProjects.length > 0 && (
