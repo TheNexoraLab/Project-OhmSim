@@ -196,9 +196,6 @@ export function ChatClient() {
                   Demo
                 </span>
               </h1>
-              <p className="text-[11px] text-mocha-text-muted mt-0.5">
-                Hardware inquiries & order support
-              </p>
             </div>
 
             <button

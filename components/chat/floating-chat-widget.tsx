@@ -445,7 +445,6 @@ export function FloatingChatWidget() {
                       Online
                     </span>
                   </div>
-                  <p className="text-[10px] text-mocha-text-muted">Technical guidance & store seller inquiry</p>
                 </div>
               </div>
 
