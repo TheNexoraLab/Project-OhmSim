@@ -18,7 +18,7 @@ function getSectionMeta(pathname: string): {
   segmentLabel: string;
 } {
   if (pathname === "/admin") {
-    return { title: "Dashboard", segmentLabel: "Overview & Telemetry" };
+    return { title: "Dashboard", segmentLabel: "Dashboard" };
   }
 
   const matched = ADMIN_NAV_ITEMS.find(

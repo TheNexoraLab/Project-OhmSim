@@ -37,12 +37,12 @@ export function AdminKpiCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-wider text-[#A6ADC8]">
+          <p className="text-xs font-medium text-[#A6ADC8]">
             {title}
           </p>
           <p
             data-kpi-value
-            className="mt-2 text-2xl sm:text-[26px] font-bold font-mono tracking-tight text-[#CDD6F4] truncate"
+            className="mt-1.5 text-2xl sm:text-[26px] font-bold font-mono tracking-tight text-[#CDD6F4] truncate"
           >
             {value}
           </p>
@@ -50,12 +50,7 @@ export function AdminKpiCard({
 
         <div
           aria-hidden="true"
-          className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border"
-          style={{
-            backgroundColor: `${accentColor}1F`,
-            borderColor: `${accentColor}4D`,
-            color: accentColor,
-          }}
+          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#181825] border border-[#313244] text-[#CDD6F4]"
         >
           {icon}
         </div>

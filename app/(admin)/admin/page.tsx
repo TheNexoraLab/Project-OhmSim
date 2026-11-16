@@ -40,34 +40,34 @@ const SEMANTIC_STATUS_TOKENS: Record<
   }
 > = {
   PENDING: {
-    label: "PENDING",
+    label: "Pending",
     text: "#F9E2AF",
-    bg: "rgba(249, 226, 175, 0.12)",
-    border: "rgba(249, 226, 175, 0.32)",
+    bg: "rgba(249, 226, 175, 0.08)",
+    border: "rgba(249, 226, 175, 0.2)",
   },
   PROCESSING: {
-    label: "PROCESSING",
+    label: "Processing",
     text: "#89B4FA",
-    bg: "rgba(137, 180, 250, 0.12)",
-    border: "rgba(137, 180, 250, 0.32)",
+    bg: "rgba(137, 180, 250, 0.08)",
+    border: "rgba(137, 180, 250, 0.2)",
   },
   SHIPPED: {
-    label: "SHIPPED",
+    label: "Shipped",
     text: "#CBA6F7",
-    bg: "rgba(203, 166, 247, 0.12)",
-    border: "rgba(203, 166, 247, 0.32)",
+    bg: "rgba(203, 166, 247, 0.08)",
+    border: "rgba(203, 166, 247, 0.2)",
   },
   DELIVERED: {
-    label: "DELIVERED",
+    label: "Delivered",
     text: "#A6E3A1",
-    bg: "rgba(166, 227, 161, 0.12)",
-    border: "rgba(166, 227, 161, 0.32)",
+    bg: "rgba(166, 227, 161, 0.08)",
+    border: "rgba(166, 227, 161, 0.2)",
   },
   CANCELLED: {
-    label: "CANCELLED",
+    label: "Cancelled",
     text: "#F38BA8",
-    bg: "rgba(243, 139, 168, 0.12)",
-    border: "rgba(243, 139, 168, 0.32)",
+    bg: "rgba(243, 139, 168, 0.08)",
+    border: "rgba(243, 139, 168, 0.2)",
   },
 };
 
@@ -83,7 +83,7 @@ function resolveSemanticStatus(status: ExtendedOrderStatus): {
     case "PENDING":
       return {
         semanticKey: "PENDING",
-        displayLabel: "PENDING",
+        displayLabel: SEMANTIC_STATUS_TOKENS.PENDING.label,
         detailLabel: "Pending Confirmation",
         ...SEMANTIC_STATUS_TOKENS.PENDING,
       };
@@ -93,7 +93,7 @@ function resolveSemanticStatus(status: ExtendedOrderStatus): {
     case "READY_FOR_PICKUP":
       return {
         semanticKey: "PROCESSING",
-        displayLabel: "PROCESSING",
+        displayLabel: SEMANTIC_STATUS_TOKENS.PROCESSING.label,
         detailLabel:
           status === "READY_FOR_PICKUP"
             ? "Ready for Pickup"
@@ -106,7 +106,7 @@ function resolveSemanticStatus(status: ExtendedOrderStatus): {
     case "OUT_FOR_DELIVERY":
       return {
         semanticKey: "SHIPPED",
-        displayLabel: "SHIPPED",
+        displayLabel: SEMANTIC_STATUS_TOKENS.SHIPPED.label,
         detailLabel: "Out for Delivery",
         ...SEMANTIC_STATUS_TOKENS.SHIPPED,
       };
@@ -114,7 +114,7 @@ function resolveSemanticStatus(status: ExtendedOrderStatus): {
     case "COMPLETED":
       return {
         semanticKey: "DELIVERED",
-        displayLabel: "DELIVERED",
+        displayLabel: SEMANTIC_STATUS_TOKENS.DELIVERED.label,
         detailLabel: status === "COMPLETED" ? "Completed" : "Delivered",
         ...SEMANTIC_STATUS_TOKENS.DELIVERED,
       };
@@ -122,7 +122,7 @@ function resolveSemanticStatus(status: ExtendedOrderStatus): {
     default:
       return {
         semanticKey: "CANCELLED",
-        displayLabel: "CANCELLED",
+        displayLabel: SEMANTIC_STATUS_TOKENS.CANCELLED.label,
         detailLabel: "Cancelled",
         ...SEMANTIC_STATUS_TOKENS.CANCELLED,
       };
@@ -230,20 +230,11 @@ export default function AdminDashboardPage() {
       data-testid="admin-dashboard-page"
       className="flex flex-col gap-6 max-w-[1600px] mx-auto w-full"
     >
-      {/* Page Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#313244]">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#313244]">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#89B4FA]/12 text-[#89B4FA] border border-[#89B4FA]/30">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#89B4FA]" />
-              FE-A02 · TELEMETRY CONSOLE
-            </span>
-            <span className="text-xs font-mono text-[#A6ADC8]">
-              Region III Central Luzon
-            </span>
-          </div>
-          <h1 className="mt-2 text-xl sm:text-2xl font-bold text-[#CDD6F4] tracking-tight">
-            Administrator Operations Dashboard
+          <h1 className="text-xl sm:text-2xl font-bold text-[#CDD6F4] tracking-tight">
+            Dashboard
           </h1>
         </div>
 
@@ -252,9 +243,9 @@ export default function AdminDashboardPage() {
             href="/admin/orders"
             variant="surface"
             size="small"
-            className="text-xs font-semibold gap-1.5"
+            className="text-xs font-medium gap-1.5"
           >
-            <span>Order Queue</span>
+            <span>Orders</span>
             <span className="font-mono text-[#89B4FA]">
               ({MOCK_ORDERS.length})
             </span>
@@ -263,7 +254,7 @@ export default function AdminDashboardPage() {
             href="/admin/products"
             variant="accent"
             size="small"
-            className="text-xs font-bold gap-1.5"
+            className="text-xs font-semibold gap-1.5"
           >
             <svg
               aria-hidden="true"
@@ -293,9 +284,9 @@ export default function AdminDashboardPage() {
             dataTestId="kpi-total-revenue"
             title="Total Revenue"
             value={formatCurrency(totalRevenue)}
-            subtitle={`Across ${MOCK_ORDERS.length} recorded orders`}
-            badgeText="GROSS PHP"
-            badgeVariant="primary"
+            subtitle={`${MOCK_ORDERS.length} recorded orders`}
+            badgeText="GROSS"
+            badgeVariant="neutral"
             accentColor="#89B4FA"
             progressPercent={84}
             progressLabel="Gross revenue target progress"
@@ -320,9 +311,9 @@ export default function AdminDashboardPage() {
             dataTestId="kpi-active-orders"
             title="Active Orders"
             value={activeOrders.length}
-            subtitle="Orders in PENDING or PROCESSING state"
+            subtitle="Pending & in progress"
             badgeText={`${activeOrders.length} IN QUEUE`}
-            badgeVariant="secondary"
+            badgeVariant="neutral"
             accentColor="#74C7EC"
             progressPercent={Math.round(
               (activeOrders.length / Math.max(1, MOCK_ORDERS.length)) * 100
@@ -350,13 +341,11 @@ export default function AdminDashboardPage() {
             dataTestId="kpi-low-stock-alerts"
             title="Low Stock Alerts"
             value={baselineLowStockProducts.length}
-            subtitle={`SKUs at/below ${DEFAULT_MIN_STOCK_THRESHOLD} unit threshold`}
+            subtitle={`Under ${DEFAULT_MIN_STOCK_THRESHOLD} units`}
             badgeText={
-              baselineLowStockProducts.length > 0 ? "NEEDS RESTOCK" : "HEALTHY"
+              baselineLowStockProducts.length > 0 ? "RESTOCK" : "HEALTHY"
             }
-            badgeVariant={
-              baselineLowStockProducts.length > 0 ? "warning" : "success"
-            }
+            badgeVariant="neutral"
             accentColor="#F9E2AF"
             progressPercent={Math.round(
               (baselineLowStockProducts.length /
@@ -386,9 +375,9 @@ export default function AdminDashboardPage() {
             dataTestId="kpi-unread-inquiries"
             title="Unread Inquiries"
             value={UNREAD_INQUIRIES_COUNT}
-            subtitle="Support, courier & academic lab threads"
+            subtitle="Support & courier chats"
             badgeText="LIVE CHAT"
-            badgeVariant="success"
+            badgeVariant="neutral"
             accentColor="#94E2D5"
             progressPercent={60}
             progressLabel="Support queue SLA utilization"
@@ -423,44 +412,38 @@ export default function AdminDashboardPage() {
           >
             {/* Panel Header */}
             <div className="px-5 py-4 border-b border-[#313244] flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <div className="flex items-center gap-2">
-                  <h2
-                    id="recent-orders-heading"
-                    className="text-base font-bold text-[#CDD6F4]"
-                  >
-                    Recent Orders Queue
-                  </h2>
-                  <Badge variant="neutral" className="font-mono">
-                    Latest {recentOrders.length}
-                  </Badge>
-                </div>
-                <p className="text-xs text-[#A6ADC8] mt-0.5">
-                  Most recent customer orders across Campus Pickup and Region
-                  III Delivery.
-                </p>
+              <div className="flex items-center gap-2">
+                <h2
+                  id="recent-orders-heading"
+                  className="text-base font-bold text-[#CDD6F4]"
+                >
+                  Recent Orders
+                </h2>
+                <Badge variant="neutral" className="font-mono">
+                  Latest {recentOrders.length}
+                </Badge>
               </div>
 
               <ButtonLink
                 href="/admin/orders"
                 variant="outline"
                 size="compact"
-                className="text-xs font-semibold"
+                className="text-xs font-medium"
               >
                 View All Orders →
               </ButtonLink>
             </div>
 
-            {/* Status Pipeline Summary Bar (CSS/SVG Chart per Rule 2) */}
-            <div className="px-5 py-3 bg-[#181825]/80 border-b border-[#313244] flex flex-col gap-2">
-              <div className="flex items-center justify-between text-[11px] font-mono text-[#A6ADC8]">
-                <span>ORDER STATUS PIPELINE DISTRIBUTION</span>
-                <span>{MOCK_ORDERS.length} TOTAL ORDERS</span>
+            {/* Status Pipeline Summary Bar */}
+            <div className="px-5 py-3 bg-[#181825]/60 border-b border-[#313244] flex flex-col gap-2">
+              <div className="flex items-center justify-between text-xs text-[#A6ADC8]">
+                <span className="font-medium">Order Pipeline</span>
+                <span className="text-xs font-mono text-[#6C7086]">{MOCK_ORDERS.length} total orders</span>
               </div>
 
               <div
                 aria-label="Order status distribution bar"
-                className="w-full h-2 rounded-full bg-[#11111B] overflow-hidden flex border border-[#313244]"
+                className="w-full h-1.5 rounded-full bg-[#11111B] overflow-hidden flex border border-[#313244]"
               >
                 {(
                   Object.keys(SEMANTIC_STATUS_TOKENS) as SemanticStatusKey[]
@@ -475,7 +458,7 @@ export default function AdminDashboardPage() {
                         width: `${widthPct}%`,
                         backgroundColor: SEMANTIC_STATUS_TOKENS[key].text,
                       }}
-                      title={`${key}: ${count}`}
+                      title={`${SEMANTIC_STATUS_TOKENS[key].label}: ${count}`}
                       className="h-full first:rounded-l-full last:rounded-r-full"
                     />
                   );
@@ -490,14 +473,14 @@ export default function AdminDashboardPage() {
                   return (
                     <span
                       key={key}
-                      className="inline-flex items-center gap-1.5 text-[10px] font-mono text-[#BAC2DE]"
+                      className="inline-flex items-center gap-1.5 text-xs text-[#A6ADC8]"
                     >
                       <span
-                        className="w-2 h-2 rounded-full"
+                        className="w-1.5 h-1.5 rounded-full shrink-0"
                         style={{ backgroundColor: token.text }}
                       />
                       <span>{token.label}</span>
-                      <span className="text-[#A6ADC8]">
+                      <span className="text-[#6C7086] font-mono text-[11px]">
                         ({statusDistribution[key]})
                       </span>
                     </span>
@@ -518,12 +501,12 @@ export default function AdminDashboardPage() {
                 className="w-full min-w-[720px] text-left border-collapse"
               >
                 <thead>
-                  <tr className="bg-[#181825] border-b border-[#313244] text-[10px] font-mono font-bold uppercase tracking-wider text-[#A6ADC8]">
+                  <tr className="bg-[#181825] border-b border-[#313244] text-xs font-semibold text-[#A6ADC8]">
                     <th scope="col" className="py-3 pl-5 pr-3">
-                      Order ID
+                      Order
                     </th>
                     <th scope="col" className="py-3 px-3">
-                      Customer Name
+                      Customer
                     </th>
                     <th scope="col" className="py-3 px-3">
                       Date
@@ -564,16 +547,16 @@ export default function AdminDashboardPage() {
                         }`}
                       >
                         {/* Order ID */}
-                        <td className="py-3.5 pl-5 pr-3 font-mono font-bold text-[#CDD6F4] whitespace-nowrap">
+                        <td className="py-3.5 pl-5 pr-3 font-mono font-medium text-[#CDD6F4] whitespace-nowrap">
                           #{order.orderNumber}
                         </td>
 
                         {/* Customer Name */}
                         <td className="py-3.5 px-3">
-                          <div className="font-semibold text-[#CDD6F4]">
+                          <div className="font-medium text-[#CDD6F4]">
                             {order.recipientName}
                           </div>
-                          <div className="text-[11px] font-mono text-[#A6ADC8]">
+                          <div className="text-[11px] text-[#A6ADC8]">
                             {totalUnits} {totalUnits === 1 ? "unit" : "units"} ·{" "}
                             {order.paymentMethod === "COD"
                               ? "COD"
@@ -582,32 +565,53 @@ export default function AdminDashboardPage() {
                         </td>
 
                         {/* Date */}
-                        <td className="py-3.5 px-3 font-mono text-[#BAC2DE] whitespace-nowrap">
+                        <td className="py-3.5 px-3 text-[#BAC2DE] whitespace-nowrap">
                           {formatDate(order.createdAt)}
                         </td>
 
                         {/* Fulfillment */}
                         <td className="py-3.5 px-3 whitespace-nowrap">
-                          <span
-                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-semibold border ${
-                              order.fulfillmentType === "PICKUP"
-                                ? "bg-[#94E2D5]/12 text-[#94E2D5] border-[#94E2D5]/30"
-                                : "bg-[#74C7EC]/12 text-[#74C7EC] border-[#74C7EC]/30"
-                            }`}
-                          >
-                            <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                            {order.fulfillmentType === "PICKUP"
-                              ? "Pickup"
-                              : "Delivery"}
+                          <span className="inline-flex items-center gap-1.5 text-xs text-[#BAC2DE]">
+                            {order.fulfillmentType === "PICKUP" ? (
+                              <>
+                                <svg
+                                  className="w-3.5 h-3.5 text-[#A6ADC8]"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                >
+                                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                  <circle cx="12" cy="10" r="3" />
+                                </svg>
+                                <span>Campus Pickup</span>
+                              </>
+                            ) : (
+                              <>
+                                <svg
+                                  className="w-3.5 h-3.5 text-[#A6ADC8]"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                >
+                                  <rect x="1" y="3" width="15" height="13" />
+                                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                                  <circle cx="5.5" cy="18.5" r="2.5" />
+                                  <circle cx="18.5" cy="18.5" r="2.5" />
+                                </svg>
+                                <span>Delivery</span>
+                              </>
+                            )}
                           </span>
                         </td>
 
                         {/* Amount */}
-                        <td className="py-3.5 px-3 font-mono font-bold text-[#CDD6F4] whitespace-nowrap">
+                        <td className="py-3.5 px-3 font-mono font-medium text-[#CDD6F4] whitespace-nowrap">
                           {formatCurrency(order.totalAmount)}
                         </td>
 
-                        {/* Status Badge (Catppuccin Mocha Semantic Colors) */}
+                        {/* Status Badge */}
                         <td className="py-3.5 px-3 whitespace-nowrap">
                           <span
                             data-status-badge={statusMeta.semanticKey}
@@ -617,10 +621,10 @@ export default function AdminDashboardPage() {
                               color: statusMeta.text,
                               borderColor: statusMeta.border,
                             }}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase border tracking-wide"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border"
                           >
                             <span
-                              className="w-1.5 h-1.5 rounded-full"
+                              className="w-1.5 h-1.5 rounded-full shrink-0"
                               style={{ backgroundColor: statusMeta.text }}
                             />
                             <span>{statusMeta.displayLabel}</span>
@@ -639,7 +643,7 @@ export default function AdminDashboardPage() {
                                 prev === order.id ? null : order.id
                               )
                             }
-                            className="text-xs font-semibold"
+                            className="text-xs font-medium"
                           >
                             View
                           </Button>
@@ -733,19 +737,12 @@ export default function AdminDashboardPage() {
                       id="low-stock-heading"
                       className="text-base font-bold text-[#CDD6F4]"
                     >
-                      Low Stock Alert Panel
+                      Low Stock Alerts
                     </h2>
-                    <Badge variant="warning" className="font-mono">
+                    <Badge variant="neutral" className="font-mono">
                       {baselineLowStockProducts.length} SKUs
                     </Badge>
                   </div>
-                  <p className="text-xs text-[#A6ADC8] mt-0.5">
-                    Filtered items where{" "}
-                    <code className="font-mono text-[#F9E2AF]">
-                      stockQuantity &le; minStockThreshold
-                    </code>
-                    .
-                  </p>
                 </div>
               </div>
 
@@ -769,12 +766,12 @@ export default function AdminDashboardPage() {
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <span className="inline-block font-mono text-[11px] font-bold text-[#F9E2AF] tracking-wide">
-                            {product.sku}
-                          </span>
-                          <h3 className="text-xs font-bold text-[#CDD6F4] leading-snug mt-0.5">
+                          <h3 className="text-xs font-semibold text-[#CDD6F4] leading-snug">
                             {product.name}
                           </h3>
+                          <span className="font-mono text-[11px] text-[#A6ADC8]">
+                            {product.sku}
+                          </span>
                         </div>
 
                         <Button
@@ -783,29 +780,29 @@ export default function AdminDashboardPage() {
                           size="compact"
                           data-testid={`restock-btn-${product.sku}`}
                           onClick={() => handleRestock(product)}
-                          className="text-[11px] font-mono font-bold border-[#F9E2AF]/40 text-[#F9E2AF] hover:border-[#F9E2AF] shrink-0"
+                          className="text-xs font-medium shrink-0"
                         >
-                          Restock
+                          {isRestocked ? "Queued" : "Restock"}
                         </Button>
                       </div>
 
-                      {/* Current Stock vs Minimum Threshold Bar & Tag */}
+                      {/* Current Stock vs Minimum Threshold Bar */}
                       <div className="flex flex-col gap-1.5">
-                        <div className="flex items-center justify-between text-[11px] font-mono">
-                          <span className="text-[#BAC2DE]">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-[#A6ADC8]">
                             Stock:{" "}
                             <strong
                               className={
                                 isRestocked
                                   ? "text-[#A6E3A1]"
-                                  : "text-[#F9E2AF]"
+                                  : "text-[#CDD6F4]"
                               }
                             >
                               {currentStock} units
                             </strong>
                           </span>
-                          <span className="px-2 py-0.5 rounded-md bg-[#1E1E2E] border border-[#313244] text-[#A6ADC8]">
-                            Min Threshold: {minThreshold} units
+                          <span className="text-[11px] text-[#6C7086] font-mono">
+                            Min: {minThreshold}
                           </span>
                         </div>
 
@@ -815,7 +812,7 @@ export default function AdminDashboardPage() {
                           aria-valuenow={currentStock}
                           aria-valuemin={0}
                           aria-valuemax={minThreshold}
-                          className="w-full h-2 rounded-full bg-[#11111B] border border-[#313244] overflow-hidden"
+                          className="w-full h-1.5 rounded-full bg-[#11111B] border border-[#313244] overflow-hidden"
                         >
                           <div
                             className="h-full rounded-full transition-all duration-300"
@@ -825,7 +822,7 @@ export default function AdminDashboardPage() {
                                 ? "#A6E3A1"
                                 : currentStock <= 8
                                 ? "#F38BA8"
-                                : "#F9E2AF",
+                                : "#89B4FA",
                             }}
                           />
                         </div>
@@ -856,44 +853,35 @@ export default function AdminDashboardPage() {
                   id="quick-actions-heading"
                   className="text-base font-bold text-[#CDD6F4]"
                 >
-                  Quick Actions Panel
+                  Quick Actions
                 </h2>
-                <p className="text-xs text-[#A6ADC8] mt-0.5">
-                  Direct shortcuts to core catalog, order, and warehouse
-                  operations.
-                </p>
               </div>
 
-              <div className="flex flex-col gap-2.5">
+              <div className="flex flex-col gap-2">
                 <Link
                   href="/admin/products"
                   data-testid="quick-action-add-product"
-                  className="group flex items-center justify-between gap-3 p-3.5 min-h-[48px] rounded-xl bg-[#181825] border border-[#313244] hover:border-[#89B4FA] transition-all"
+                  className="group flex items-center justify-between gap-3 p-3 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#45475A] hover:bg-[#1E1E2E] transition-all"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className="w-9 h-9 rounded-lg bg-[#89B4FA]/15 border border-[#89B4FA]/30 text-[#89B4FA] flex items-center justify-center shrink-0">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-8 h-8 rounded-lg bg-[#313244]/50 text-[#CDD6F4] flex items-center justify-center shrink-0 group-hover:text-[#89B4FA] transition-colors">
                       <svg
                         className="w-4 h-4"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
-                        strokeWidth="2.2"
+                        strokeWidth="2"
                         strokeLinecap="round"
                       >
                         <line x1="12" y1="5" x2="12" y2="19" />
                         <line x1="5" y1="12" x2="19" y2="12" />
                       </svg>
                     </span>
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
-                        Add Product
-                      </p>
-                      <p className="text-[11px] text-[#A6ADC8] truncate">
-                        Create new SKU, specs &amp; datasheets
-                      </p>
-                    </div>
+                    <span className="text-xs font-semibold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
+                      Add Product
+                    </span>
                   </div>
-                  <span className="font-mono text-xs text-[#89B4FA] group-hover:translate-x-0.5 transition-transform">
+                  <span className="text-xs text-[#6C7086] group-hover:text-[#CDD6F4] group-hover:translate-x-0.5 transition-all">
                     →
                   </span>
                 </Link>
@@ -901,10 +889,10 @@ export default function AdminDashboardPage() {
                 <Link
                   href="/admin/orders"
                   data-testid="quick-action-review-orders"
-                  className="group flex items-center justify-between gap-3 p-3.5 min-h-[48px] rounded-xl bg-[#181825] border border-[#313244] hover:border-[#74C7EC] transition-all"
+                  className="group flex items-center justify-between gap-3 p-3 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#45475A] hover:bg-[#1E1E2E] transition-all"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className="w-9 h-9 rounded-lg bg-[#74C7EC]/15 border border-[#74C7EC]/30 text-[#74C7EC] flex items-center justify-center shrink-0">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-8 h-8 rounded-lg bg-[#313244]/50 text-[#CDD6F4] flex items-center justify-center shrink-0 group-hover:text-[#89B4FA] transition-colors">
                       <svg
                         className="w-4 h-4"
                         viewBox="0 0 24 24"
@@ -920,16 +908,11 @@ export default function AdminDashboardPage() {
                         <line x1="16" y1="17" x2="8" y2="17" />
                       </svg>
                     </span>
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-[#CDD6F4] group-hover:text-[#74C7EC] transition-colors">
-                        Review Orders
-                      </p>
-                      <p className="text-[11px] text-[#A6ADC8] truncate">
-                        Verify Region III COD &amp; Pickup queue
-                      </p>
-                    </div>
+                    <span className="text-xs font-semibold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
+                      Review Orders
+                    </span>
                   </div>
-                  <span className="font-mono text-xs text-[#74C7EC] group-hover:translate-x-0.5 transition-transform">
+                  <span className="text-xs text-[#6C7086] group-hover:text-[#CDD6F4] group-hover:translate-x-0.5 transition-all">
                     →
                   </span>
                 </Link>
@@ -937,10 +920,10 @@ export default function AdminDashboardPage() {
                 <Link
                   href="/admin/inventory"
                   data-testid="quick-action-adjust-inventory"
-                  className="group flex items-center justify-between gap-3 p-3.5 min-h-[48px] rounded-xl bg-[#181825] border border-[#313244] hover:border-[#94E2D5] transition-all"
+                  className="group flex items-center justify-between gap-3 p-3 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#45475A] hover:bg-[#1E1E2E] transition-all"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <span className="w-9 h-9 rounded-lg bg-[#94E2D5]/15 border border-[#94E2D5]/30 text-[#94E2D5] flex items-center justify-center shrink-0">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="w-8 h-8 rounded-lg bg-[#313244]/50 text-[#CDD6F4] flex items-center justify-center shrink-0 group-hover:text-[#89B4FA] transition-colors">
                       <svg
                         className="w-4 h-4"
                         viewBox="0 0 24 24"
@@ -954,16 +937,11 @@ export default function AdminDashboardPage() {
                         <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
                       </svg>
                     </span>
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold text-[#CDD6F4] group-hover:text-[#94E2D5] transition-colors">
-                        Adjust Inventory
-                      </p>
-                      <p className="text-[11px] text-[#A6ADC8] truncate">
-                        Reconcile bin counts &amp; safety stock
-                      </p>
-                    </div>
+                    <span className="text-xs font-semibold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
+                      Adjust Inventory
+                    </span>
                   </div>
-                  <span className="font-mono text-xs text-[#94E2D5] group-hover:translate-x-0.5 transition-transform">
+                  <span className="text-xs text-[#6C7086] group-hover:text-[#CDD6F4] group-hover:translate-x-0.5 transition-all">
                     →
                   </span>
                 </Link>
