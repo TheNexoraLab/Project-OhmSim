@@ -303,10 +303,6 @@ export function ReportsClient() {
           <h1 className="mt-2 text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
             Sales Reports &amp; Liquidation
           </h1>
-          <p className="mt-0.5 text-xs text-[#BAC2DE] sm:text-sm">
-            Analyze gross hardware revenue, Average Order Value (AOV), Region
-            III vs Campus Pickup split, and courier COD remittances.
-          </p>
         </div>
 
         <div className="flex items-center gap-2.5">

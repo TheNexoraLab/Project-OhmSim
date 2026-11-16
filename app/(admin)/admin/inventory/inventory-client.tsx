@@ -550,10 +550,6 @@ export function InventoryClient() {
           <h1 className="mt-2 text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
             Inventory &amp; Stock Control
           </h1>
-          <p className="mt-0.5 text-xs text-[#BAC2DE] sm:text-sm">
-            Track real-time warehouse unit counts, safety stock thresholds, and
-            log restock or audit adjustments.
-          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">

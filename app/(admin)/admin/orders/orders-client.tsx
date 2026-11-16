@@ -802,10 +802,6 @@ export function OrdersClient() {
           <h1 className="mt-2 text-xl sm:text-2xl font-bold text-[#CDD6F4] tracking-tight">
             Admin Order Management
           </h1>
-          <p className="mt-0.5 text-xs sm:text-sm text-[#BAC2DE]">
-            Inspect component line items, assign Region III courier tracking
-            numbers, and advance order fulfillment lifecycles.
-          </p>
           {lastSyncedTime && (
             <div className="mt-1.5 flex items-center gap-1.5 text-[11px] font-mono text-[#A6E3A1]">
               <span className="w-1.5 h-1.5 rounded-full bg-[#A6E3A1]" />

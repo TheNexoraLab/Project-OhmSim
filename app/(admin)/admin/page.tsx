@@ -245,10 +245,6 @@ export default function AdminDashboardPage() {
           <h1 className="mt-2 text-xl sm:text-2xl font-bold text-[#CDD6F4] tracking-tight">
             Administrator Operations Dashboard
           </h1>
-          <p className="mt-0.5 text-xs sm:text-sm text-[#BAC2DE]">
-            Real-time order queue, component stock thresholds, and fulfillment
-            dispatch controls.
-          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 shrink-0">

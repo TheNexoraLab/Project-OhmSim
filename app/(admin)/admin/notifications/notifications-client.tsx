@@ -304,10 +304,6 @@ export function NotificationsClient() {
           <h1 className="mt-2 text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
             Notifications Log
           </h1>
-          <p className="mt-0.5 text-xs text-[#BAC2DE] sm:text-sm">
-            Real-time system feed for low stock warnings, new order placements,
-            Region III courier dispatches, and support chat pings.
-          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">

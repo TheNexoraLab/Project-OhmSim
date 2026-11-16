@@ -131,10 +131,6 @@ export function SettingsClient() {
           <h1 className="mt-2 text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
             Store &amp; Hub Settings
           </h1>
-          <p className="mt-0.5 text-xs text-[#BAC2DE] sm:text-sm">
-            Configure Campus Lab Pickup Hub parameters, Region III shipping fee
-            rules, and administrator security preferences.
-          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
@@ -216,10 +212,6 @@ export function SettingsClient() {
                   BUILDING 3, ROOM 204
                 </Badge>
               </div>
-              <p className="mt-0.5 text-xs text-[#A6ADC8]">
-                Manage Campus Lab Station location, operating hours, and student
-                / faculty pickup instructions.
-              </p>
             </div>
 
             <label className="inline-flex cursor-pointer items-center gap-2.5 rounded-lg border border-[#313244] bg-[#181825] px-3 py-1.5 text-xs">
@@ -319,10 +311,6 @@ export function SettingsClient() {
                   BR-045 / BR-046
                 </Badge>
               </div>
-              <p className="mt-0.5 text-xs text-[#A6ADC8]">
-                Standard Region III courier fee (₱80) and automatic free
-                delivery threshold (₱1,000).
-              </p>
             </div>
           </div>
 
@@ -463,10 +451,6 @@ export function SettingsClient() {
                   ROLE: {adminRole}
                 </span>
               </div>
-              <p className="mt-0.5 text-xs text-[#A6ADC8]">
-                Manage administrator identity, role credentials, and operational
-                alert routing.
-              </p>
             </div>
           </div>
 

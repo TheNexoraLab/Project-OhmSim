@@ -201,10 +201,6 @@ export function CategoriesClient() {
           <h1 className="mt-2 text-xl sm:text-2xl font-bold text-[#CDD6F4] tracking-tight">
             Admin Category Management
           </h1>
-          <p className="mt-0.5 text-xs sm:text-sm text-[#BAC2DE]">
-            Organize component taxonomy, parametric filter groups, and SKU
-            distribution across the catalog.
-          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 shrink-0">

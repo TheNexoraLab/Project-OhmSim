@@ -147,10 +147,6 @@ export function ProductsClient() {
           <h1 className="mt-2 text-xl sm:text-2xl font-bold text-[#CDD6F4] tracking-tight">
             Admin Product Management
           </h1>
-          <p className="mt-0.5 text-xs sm:text-sm text-[#BAC2DE]">
-            Manage hardware SKUs, parametric technical specifications,
-            datasheets, and pricing.
-          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5 shrink-0">

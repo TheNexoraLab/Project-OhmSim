@@ -386,10 +386,6 @@ export function ChatClient() {
           <h1 className="mt-2 text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
             Support Chat Responder
           </h1>
-          <p className="mt-0.5 text-xs text-[#BAC2DE] sm:text-sm">
-            Respond to buyer pinout inquiries, Region III courier coordination,
-            and Campus Lab Station pickup requests.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">
