@@ -175,28 +175,33 @@ export function BuyerHeader() {
       <div className="flex flex-1 items-center gap-2 min-w-0">
         <form
           onSubmit={handleSearchSubmit}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 flex-1 min-w-0 max-w-[160px] lg:max-w-xs bg-mocha-bg border border-mocha-border rounded-small focus-within:border-mocha-border-strong transition-colors min-h-[40px]"
+          className="group flex items-center gap-2 px-3 py-1.5 flex-1 min-w-0 max-w-[200px] lg:max-w-xs bg-[#181825] border border-[#313244] rounded-xl focus-within:border-[#89B4FA] focus-within:ring-2 focus-within:ring-[#89B4FA]/20 transition-all min-h-[38px]"
         >
           <label htmlFor="buyer-desktop-search" className="sr-only">
             Search components or SKU
           </label>
-          <svg className="w-4 h-4 text-mocha-text-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4 text-[#A6ADC8] group-focus-within:text-[#89B4FA] shrink-0 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
             id="buyer-desktop-search"
             type="search"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck="false"
             placeholder="Search components, SKU..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-transparent text-[11px] text-mocha-text placeholder-mocha-text-subtle outline-none min-w-0"
+            style={{ outline: "none", boxShadow: "none" }}
+            className="flex-1 bg-transparent text-xs text-[#CDD6F4] placeholder-[#6C7086] border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none min-w-0 [appearance:textfield] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={handleClearSearch}
               aria-label="Clear search query"
-              className="text-[10px] text-mocha-text-muted hover:text-mocha-text px-1 py-0.5"
+              className="text-xs text-[#A6ADC8] hover:text-[#CDD6F4] px-1 py-0.5 rounded transition-colors"
             >
               ✕
             </button>
