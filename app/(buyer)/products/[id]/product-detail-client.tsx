@@ -154,17 +154,18 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
           </div>
 
           {/* Primary Action Buttons */}
-          <div className="flex flex-col gap-2.5 mt-2">
+          <div className="flex flex-col gap-2.5 mt-3">
+            {/* Primary Action: Add to Cart */}
             <button
               id="product-add-to-cart-btn"
               type="button"
               disabled={isCartDisabled}
               aria-disabled={isCartDisabled}
               onClick={handleAddToCart}
-              className={`w-full min-h-[48px] flex items-center justify-center gap-2 font-bold text-[13px] rounded-xl shadow-lg transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
+              className={`w-full min-h-[46px] flex items-center justify-center gap-2 font-bold text-sm rounded-xl shadow-md transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
                 isCartDisabled
                   ? "border border-mocha-border/40 text-mocha-text-muted bg-mocha-panel-raised/50 cursor-not-allowed opacity-60 shadow-none"
-                  : "bg-gradient-to-r from-mocha-accent to-mocha-accent-secondary text-mocha-bg hover:brightness-105 active:scale-[0.99]"
+                  : "bg-[#89B4FA] hover:bg-[#74c7ec] text-[#11111B] hover:shadow-lg active:scale-[0.99]"
               }`}
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -179,110 +180,113 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                 : `Add ${qty > 1 ? `${qty}× ` : ""}to Cart`}
             </button>
 
-            <Link
-              href="/chat"
-              className="w-full min-h-[44px] flex items-center justify-center gap-2 font-bold text-[12px] bg-transparent border border-mocha-border-strong text-mocha-text-muted hover:text-mocha-text hover:bg-mocha-panel-raised rounded-xl transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent"
-            >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
-              Contact Administrator
-            </Link>
-
-            {/* Anchored + BOM Popover */}
-            <div className="relative">
-              <button
-                ref={bomTriggerRef}
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setBomOpen((v) => !v);
-                }}
-                aria-haspopup="dialog"
-                aria-expanded={bomOpen}
-                aria-label="Add component to BOM project"
-                className={`w-full min-h-[44px] flex items-center justify-between px-4 font-bold text-[12px] rounded-xl border transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
-                  bomOpen
-                    ? "border-mocha-accent-secondary text-mocha-accent-secondary bg-mocha-panel-raised"
-                    : "border-mocha-border-strong text-mocha-accent-secondary bg-gradient-to-b from-mocha-panel-raised to-mocha-panel hover:border-mocha-accent-secondary"
-                }`}
-              >
-                <span className="flex items-center gap-2">
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            {/* Secondary Actions: BOM & Contact Admin in 2-column layout */}
+            <div className="grid grid-cols-2 gap-2.5">
+              <div className="relative">
+                <button
+                  ref={bomTriggerRef}
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setBomOpen((v) => !v);
+                  }}
+                  aria-haspopup="dialog"
+                  aria-expanded={bomOpen}
+                  aria-label="Add component to BOM project"
+                  className={`w-full min-h-[42px] flex items-center justify-center gap-1.5 px-3 font-semibold text-xs rounded-xl border transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
+                    bomOpen
+                      ? "border-[#89B4FA] text-[#89B4FA] bg-[#1E1E2E]"
+                      : "border-[#313244] text-[#CDD6F4] bg-[#181825] hover:border-[#45475A] hover:bg-[#1E1E2E]"
+                  }`}
+                >
+                  <svg className="w-3.5 h-3.5 text-[#89B4FA] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                     <polyline points="14 2 14 8 20 8" />
                     <line x1="12" y1="11" x2="12" y2="17" />
                     <line x1="9" y1="14" x2="15" y2="14" />
                   </svg>
-                  Add to BOM Project
+                  <span className="truncate">Add to BOM</span>
+                  {bomProjects.length > 0 && (
+                    <span className="px-1.5 py-0.2 rounded-full font-mono text-[10px] font-bold bg-[#313244] text-[#BAC2DE] shrink-0">
+                      {bomProjects.length}
+                    </span>
+                  )}
+                </button>
+
+                <BomChooserPopover
+                  isOpen={bomOpen}
+                  onClose={() => setBomOpen(false)}
+                  bomProjects={bomProjects}
+                  onAddToBomProject={(projId) => addToBomProject(projId, product.id)}
+                  triggerRef={bomTriggerRef}
+                  placement="bottom"
+                />
+              </div>
+
+              <Link
+                href="/chat"
+                aria-label="Contact Administrator"
+                className="min-h-[42px] flex items-center justify-center gap-1.5 px-3 font-semibold text-xs border border-[#313244] bg-[#181825] text-[#BAC2DE] hover:text-[#CDD6F4] hover:bg-[#1E1E2E] hover:border-[#45475A] rounded-xl transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent"
+              >
+                <svg className="w-3.5 h-3.5 text-[#A6ADC8] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
+                <span className="truncate">Contact Admin</span>
+              </Link>
+            </div>
+
+            {/* Technical Inquiry & Chat with Seller Actions */}
+            <div className="mt-2 pt-3 border-t border-[#313244] flex flex-col gap-2">
+              <div className="text-[11px] font-semibold text-[#A6ADC8] flex items-center justify-between">
+                <span>Component Support &amp; Advice</span>
+                <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-mono font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                  Online
                 </span>
-                <span className="text-[10px] font-mono text-mocha-text-subtle">
-                  {bomProjects.length} projects
-                </span>
-              </button>
+              </div>
 
-              <BomChooserPopover
-                isOpen={bomOpen}
-                onClose={() => setBomOpen(false)}
-                bomProjects={bomProjects}
-                onAddToBomProject={(projId) => addToBomProject(projId, product.id)}
-                triggerRef={bomTriggerRef}
-                placement="bottom"
-              />
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    chatWidgetStore.open({
+                      mode: "bot",
+                      product: {
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        image: product.image,
+                        category: product.category,
+                      },
+                      prompt: `Can you verify the 3.3V/5V logic level compatibility and recommended pin connections for ${product.name}?`,
+                    });
+                  }}
+                  className="px-3 py-2 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#89B4FA] text-[#CDD6F4] hover:text-[#89B4FA] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
+                >
+                  <span>🤖</span>
+                  <span>Ask OhmBot</span>
+                </button>
 
-              {/* Technical Inquiry & Chat with Seller Actions */}
-              <div className="mt-4 pt-4 border-t border-mocha-border/60 flex flex-col gap-2">
-                <div className="text-[11px] font-semibold text-mocha-text-muted flex items-center justify-between">
-                  <span>Component Support & Advice</span>
-                  <span className="text-[10px] text-emerald-400 flex items-center gap-1 font-mono font-medium">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Online
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      chatWidgetStore.open({
-                        mode: "bot",
-                        product: {
-                          id: product.id,
-                          name: product.name,
-                          price: product.price,
-                          image: product.image,
-                          category: product.category,
-                        },
-                        prompt: `Can you verify the 3.3V/5V logic level compatibility and recommended pin connections for ${product.name}?`,
-                      });
-                    }}
-                    className="px-3 py-2.5 rounded-xl bg-mocha-panel border border-mocha-border hover:border-mocha-accent text-mocha-text hover:text-mocha-accent text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
-                  >
-                    <span>🤖</span>
-                    <span>Ask OhmBot</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      chatWidgetStore.open({
-                        mode: "seller",
-                        product: {
-                          id: product.id,
-                          name: product.name,
-                          price: product.price,
-                          image: product.image,
-                          category: product.category,
-                        },
-                        prompt: `Hello! I would like to inquire regarding availability and bulk order for ${product.name} (SKU: ${product.sku}).`,
-                      });
-                    }}
-                    className="px-3 py-2.5 rounded-xl bg-mocha-panel border border-mocha-border hover:border-mocha-accent text-mocha-text hover:text-mocha-accent text-[11px] font-semibold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
-                  >
-                    <span>👤</span>
-                    <span>Chat to Seller</span>
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    chatWidgetStore.open({
+                      mode: "seller",
+                      product: {
+                        id: product.id,
+                        name: product.name,
+                        price: product.price,
+                        image: product.image,
+                        category: product.category,
+                      },
+                      prompt: `Hello! I would like to inquire regarding availability and bulk order for ${product.name} (SKU: ${product.sku}).`,
+                    });
+                  }}
+                  className="px-3 py-2 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#89B4FA] text-[#CDD6F4] hover:text-[#89B4FA] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
+                >
+                  <span>💬</span>
+                  <span>Chat to Seller</span>
+                </button>
               </div>
             </div>
           </div>
