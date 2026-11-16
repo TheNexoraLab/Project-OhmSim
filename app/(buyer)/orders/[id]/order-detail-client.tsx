@@ -13,6 +13,7 @@ import {
 } from "@/services/order-service";
 import { formatPrice, formatDate } from "@/lib/format";
 import { toast } from "@/components/ui/toast";
+import { chatWidgetStore } from "@/lib/chat/chat-widget-store";
 
 interface OrderDetailClientProps {
   orderId: string;
@@ -454,13 +455,51 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
                     : "Payment will be collected on-site at the campus electronics lab station upon parcel inspection."}
                 </div>
 
-                <div className="p-3 rounded-xl bg-mocha-panel border border-mocha-border text-[11px] text-mocha-text-muted leading-relaxed mt-1 flex items-start gap-2">
-                  <span className="text-mocha-accent text-sm shrink-0 leading-none">ℹ</span>
-                  <div>
-                    <span className="font-bold text-mocha-text block mb-0.5">Order Support</span>
-                    <span>
-                      Need help with this order? Contact support.
-                    </span>
+                <div className="p-3 rounded-xl bg-mocha-panel border border-mocha-border text-[11px] text-mocha-text-muted leading-relaxed mt-1 flex flex-col gap-2">
+                  <div className="flex items-start gap-2">
+                    <span className="text-mocha-accent text-sm shrink-0 leading-none">ℹ</span>
+                    <div>
+                      <span className="font-bold text-mocha-text block mb-0.5">Order Support</span>
+                      <span>
+                        Need help or have delivery questions regarding this order?
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 pt-1 border-t border-mocha-border/60">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        chatWidgetStore.open({
+                          mode: "seller",
+                          order: {
+                            orderNumber: order.orderNumber,
+                            status: order.status,
+                          },
+                          prompt: `Hello! I would like an update regarding my order #${order.orderNumber} (Status: ${order.status}).`,
+                        });
+                      }}
+                      className="px-3 py-1.5 rounded-lg bg-mocha-panel-raised hover:bg-mocha-panel border border-mocha-border hover:border-mocha-accent text-mocha-text hover:text-mocha-accent text-[11px] font-semibold flex items-center gap-1.5 transition-colors"
+                    >
+                      <span>💬</span>
+                      <span>Chat with Seller</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        chatWidgetStore.open({
+                          mode: "bot",
+                          order: {
+                            orderNumber: order.orderNumber,
+                            status: order.status,
+                          },
+                          prompt: `How do I track my delivery and courier waybill for order #${order.orderNumber}?`,
+                        });
+                      }}
+                      className="px-3 py-1.5 rounded-lg bg-mocha-panel-raised hover:bg-mocha-panel border border-mocha-border hover:border-mocha-accent text-mocha-text hover:text-mocha-accent text-[11px] font-semibold flex items-center gap-1.5 transition-colors"
+                    >
+                      <span>🤖</span>
+                      <span>Ask OhmBot</span>
+                    </button>
                   </div>
                 </div>
               </div>

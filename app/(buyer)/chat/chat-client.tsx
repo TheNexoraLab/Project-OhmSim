@@ -16,6 +16,7 @@ import {
 import { getProductByIdSync } from "@/services/catalog-service";
 import { getMockOrderById, ORDER_STATUS_META } from "@/services/order-service";
 import { formatPrice } from "@/lib/format";
+import { INQUIRY_CATEGORIES } from "@/lib/chat/inquiry-chips";
 
 export function ChatClient() {
   const searchParams = useSearchParams();
@@ -34,6 +35,7 @@ export function ChatClient() {
   const [searchConvos, setSearchConvos] = useState("");
   const [isComposing, setIsComposing] = useState(false);
   const [newConvoName, setNewConvoName] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string>("circuits");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -89,6 +91,10 @@ export function ChatClient() {
         c.messages.some((m) => m.text?.toLowerCase().includes(q))
     );
   }, [convos, searchConvos]);
+
+  const activeCategoryData = useMemo(() => {
+    return INQUIRY_CATEGORIES.find((c) => c.id === activeCategory) ?? INQUIRY_CATEGORIES[0];
+  }, [activeCategory]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -544,6 +550,44 @@ export function ChatClient() {
                     </button>
                   </div>
                 )}
+
+                {/* Technical Inquiry Category Pills & Suggestion Chips */}
+                <div className="flex flex-col gap-2 pb-2 mb-1 border-b border-mocha-border/60">
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                    {INQUIRY_CATEGORIES.map((cat) => (
+                      <button
+                        key={cat.id}
+                        type="button"
+                        onClick={() => setActiveCategory(cat.id)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold shrink-0 flex items-center gap-1.5 transition-all ${
+                          activeCategory === cat.id
+                            ? "bg-mocha-accent/15 border border-mocha-accent text-mocha-accent"
+                            : "bg-mocha-panel-raised border border-mocha-border/60 text-mocha-text-muted hover:text-mocha-text"
+                        }`}
+                      >
+                        <span>{cat.icon}</span>
+                        <span>{cat.label}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                    {activeCategoryData.chips.map((chip) => (
+                      <button
+                        key={chip.id}
+                        type="button"
+                        onClick={() => {
+                          setInputText(chip.prompt);
+                        }}
+                        className="px-2.5 py-1 rounded-md text-[11px] bg-mocha-bg/70 hover:bg-mocha-panel-raised border border-mocha-border/60 hover:border-mocha-accent text-mocha-text-muted hover:text-mocha-text transition-colors shrink-0 flex items-center gap-1 max-w-[260px] truncate"
+                        title={chip.prompt}
+                      >
+                        <span>{chip.icon}</span>
+                        <span className="truncate">{chip.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
                 {/* Input Controls */}
                 <div className="flex items-center gap-2">

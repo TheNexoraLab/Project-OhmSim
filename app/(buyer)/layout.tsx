@@ -6,6 +6,7 @@ import { BomProvider } from "@/hooks/use-bom";
 import { BuyerHeader } from "@/components/buyer/buyer-header";
 import { BuyerMobileHeader, BuyerMobileBottomNav } from "@/components/buyer/buyer-mobile-nav";
 import { ToastContainer } from "@/components/ui/toast";
+import { FloatingChatWidget } from "@/components/chat/floating-chat-widget";
 import { chatStore } from "@/services/chat-service";
 import { resetProfileStore } from "@/services/profile-service";
 import { CartFeedbackProvider } from "@/components/buyer/cart-feedback";
@@ -40,6 +41,9 @@ function BuyerShell({ children }: { children: React.ReactNode }) {
 
       {/* Accessible Consolidated Notification Toast System */}
       <ToastContainer />
+
+      {/* Floating 24/7 AI Assistant & Seller Inquiry Widget */}
+      <FloatingChatWidget />
     </div>
   );
 }
