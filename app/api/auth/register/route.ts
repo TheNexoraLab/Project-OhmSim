@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma/client';
 import { hashPassword } from '@/lib/auth/password';
 import { createSessionToken, SESSION_COOKIE_NAME, SESSION_COOKIE_OPTIONS } from '@/lib/auth/session';
+import { signUpWithNeonAuth, getAppOrigin } from '@/lib/auth/neon-auth';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -74,6 +75,18 @@ export async function POST(request: Request) {
         createdAt: true,
       },
     });
+
+    // 6. Register user in Neon Managed Better Auth
+    try {
+      await signUpWithNeonAuth({
+        email: cleanEmail,
+        password,
+        name: fullName.trim(),
+        origin: getAppOrigin(request),
+      });
+    } catch (neonErr) {
+      console.warn('Neon Auth registration sync notice:', neonErr);
+    }
 
     // 6. Create session token & set HttpOnly cookie
     const token = await createSessionToken({
