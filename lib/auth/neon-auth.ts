@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma/client';
 import { hashPassword } from '@/lib/auth/password';
+import { createAuthClient } from '@neondatabase/auth';
 import type { User } from '@prisma/client';
 
 export const DEFAULT_NEON_AUTH_BASE_URL =
@@ -27,14 +28,6 @@ export function getNeonAuthBaseUrl(): string {
  * visits via http://localhost:3000 or http://127.0.0.1:3000.
  */
 export function getAppOrigin(request?: Request): string {
-  if (process.env.NEXT_PUBLIC_APP_URL) {
-    let appUrl = process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
-    if (appUrl.includes('127.0.0.1')) {
-      appUrl = appUrl.replace('127.0.0.1', 'localhost');
-    }
-    return appUrl;
-  }
-
   if (request) {
     const forwardedHost = request.headers.get('x-forwarded-host');
     let host = forwardedHost || request.headers.get('host');
@@ -49,7 +42,66 @@ export function getAppOrigin(request?: Request): string {
     }
   }
 
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    let appUrl = process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
+    if (appUrl.includes('127.0.0.1')) {
+      appUrl = appUrl.replace('127.0.0.1', 'localhost');
+    }
+    return appUrl;
+  }
+
   return 'http://localhost:3000';
+}
+
+/**
+ * Signs up a user via Neon's Managed Better Auth SDK.
+ */
+export async function signUpWithNeonAuth(payload: {
+  email: string;
+  password: string;
+  name: string;
+  origin?: string;
+}): Promise<{ success: boolean; neonUserId?: string; error?: string }> {
+  const baseUrl = getNeonAuthBaseUrl();
+  const client = createAuthClient(baseUrl);
+  const appOrigin = payload.origin || getAppOrigin();
+
+  try {
+    const result = await client.signUp.email(
+      {
+        email: payload.email,
+        password: payload.password,
+        name: payload.name,
+        callbackURL: appOrigin,
+      },
+      {
+        headers: {
+          Origin: appOrigin,
+        },
+      }
+    );
+
+    if (result.error) {
+      return {
+        success: false,
+        error: result.error.message || 'Neon Auth sign-up rejected.',
+      };
+    }
+
+    return {
+      success: true,
+      neonUserId: result.data?.user?.id,
+    };
+  } catch (err: unknown) {
+    return {
+      success: false,
+      error: err instanceof Error ? err.message : 'Failed to connect to Neon Auth service.',
+    };
+  }
 }
 
 export interface SocialInitResult {
