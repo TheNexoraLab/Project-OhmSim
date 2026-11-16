@@ -1,0 +1,18 @@
+meta {
+  name: Dispatch Customer Chat Message
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/conversations/conv-1/messages
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "senderRole": "BUYER",
+    "text": "Hello, do you have stock for ESP32 with external antenna for Pampanga delivery?"
+  }
+}

@@ -1,0 +1,11 @@
+meta {
+  name: List Products Catalog
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/products?search=&category=&inStock=
+  body: none
+  auth: none
+}

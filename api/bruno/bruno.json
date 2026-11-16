@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "OhmSim API Collection",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

@@ -48,6 +48,23 @@ export function CheckoutClient() {
   const [pickupRecipient, setPickupRecipient] = useState("Alex Rivera");
   const [pickupContact, setPickupContact] = useState("09171234567");
 
+  // Payment Channel State
+  const [paymentChannel, setPaymentChannel] = useState<"CASH" | "GCASH" | "MAYA">("CASH");
+  const [paymentRefNumber, setPaymentRefNumber] = useState("");
+  const [paymentSlipFile, setPaymentSlipFile] = useState<{
+    name: string;
+    size: number;
+    previewUrl: string;
+  } | null>(null);
+  const [isSimulatingWebhook, setIsSimulatingWebhook] = useState(false);
+  const [verifiedPaymentData, setVerifiedPaymentData] = useState<{
+    provider: string;
+    transactionId: string;
+    referenceNumber: string;
+    amount: number;
+    verifiedAt: string;
+  } | null>(null);
+
   // General notes & submitting state
   const [orderNotes, setOrderNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -143,6 +160,79 @@ export function CheckoutClient() {
     );
   }
 
+  const handleSlipFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast("Receipt image must be smaller than 5 MB", "warning");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPaymentSlipFile({
+        name: file.name,
+        size: file.size,
+        previewUrl: reader.result as string,
+      });
+      toast(`Attached payment slip: ${file.name}`, "info");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveSlipFile = () => {
+    setPaymentSlipFile(null);
+    toast("Removed attached payment slip", "info");
+  };
+
+  const handleSimulatePaymentWebhook = async () => {
+    if (isSimulatingWebhook) return;
+    setIsSimulatingWebhook(true);
+
+    try {
+      const res = await fetch("/api/payment/simulate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          provider: paymentChannel,
+          amount: grandTotal,
+          referenceNumber: paymentRefNumber.trim() || undefined,
+          customerName:
+            fulfillmentType === "DELIVERY"
+              ? addressMode === "saved"
+                ? activeSavedAddress?.recipientName
+                : newRecipient
+              : pickupRecipient,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setVerifiedPaymentData({
+          provider: data.provider,
+          transactionId: data.transactionId,
+          referenceNumber: data.referenceNumber,
+          amount: data.amount,
+          verifiedAt: data.verifiedAt,
+        });
+        if (!paymentRefNumber.trim()) {
+          setPaymentRefNumber(data.referenceNumber);
+        }
+        toast(
+          `Instant ${data.provider} payment verified via webhook! (Txn: ${data.transactionId})`,
+          "success"
+        );
+      } else {
+        toast("Mock payment webhook failed. Please try again.", "error");
+      }
+    } catch {
+      toast("Error communicating with mock payment gateway.", "error");
+    } finally {
+      setIsSimulatingWebhook(false);
+    }
+  };
+
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -216,6 +306,16 @@ export function CheckoutClient() {
       }
     }
 
+    if (paymentChannel === "GCASH" || paymentChannel === "MAYA") {
+      if (!paymentSlipFile && !verifiedPaymentData && !paymentRefNumber.trim()) {
+        toast(
+          `Please provide ${paymentChannel} payment proof: upload receipt screenshot, enter reference number, or simulate webhook verification.`,
+          "warning"
+        );
+        return;
+      }
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -225,6 +325,20 @@ export function CheckoutClient() {
         quantity: item.qty,
       }));
 
+      let paymentHeader = "";
+      if (paymentChannel === "GCASH" || paymentChannel === "MAYA") {
+        const ref = verifiedPaymentData?.referenceNumber || paymentRefNumber.trim() || "PREPAID";
+        const txn = verifiedPaymentData?.transactionId || `SLIP-${Date.now().toString().slice(-6)}`;
+        const slipStatus = paymentSlipFile
+          ? `Slip: ${paymentSlipFile.name}`
+          : verifiedPaymentData
+          ? "Verified by Webhook"
+          : "Self-Reported";
+        paymentHeader = `[${paymentChannel} PREPAID | Ref: ${ref} | Txn: ${txn} | ${slipStatus}] `;
+      }
+
+      const finalNotes = (paymentHeader + orderNotes.trim()).trim() || undefined;
+
       const result = await createOrder({
         fulfillmentType,
         paymentMethod,
@@ -232,7 +346,7 @@ export function CheckoutClient() {
         deliveryAddress: inlineDeliveryAddress,
         pickupRecipient: fulfillmentType === "PICKUP" ? finalRecipient : undefined,
         pickupPhone: fulfillmentType === "PICKUP" ? finalContact : undefined,
-        notes: orderNotes.trim() || undefined,
+        notes: finalNotes,
         items: orderItemsInput,
         // Fallbacks
         recipientName: finalRecipient,
@@ -636,7 +750,7 @@ export function CheckoutClient() {
               </div>
             )}
 
-            {/* 3. Payment Method */}
+            {/* 3. Payment Method & Digital QR Webhook Polish */}
             <div className="p-5 rounded-2xl bg-mocha-panel border border-mocha-border shadow-sm flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-bold text-mocha-text uppercase tracking-wider flex items-center gap-2">
@@ -646,58 +760,287 @@ export function CheckoutClient() {
                   Payment Method
                 </h2>
                 <span className="text-[11px] font-medium text-mocha-text-subtle">
-                  v1.0 In-Person Policy (BR-047)
+                  Region III &amp; E-Wallet Settlement
                 </span>
               </div>
 
-              {fulfillmentType === "DELIVERY" ? (
-                <div className="p-4 rounded-xl border border-mocha-accent bg-mocha-accent/10 flex items-start justify-between gap-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-mocha-panel flex items-center justify-center text-mocha-accent shrink-0 mt-0.5">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
+              {/* Payment Channel Selection Tabs */}
+              <div className="grid grid-cols-3 gap-2 p-1 rounded-xl bg-mocha-bg border border-mocha-border">
+                <button
+                  type="button"
+                  data-testid="pay-channel-cash-btn"
+                  onClick={() => setPaymentChannel("CASH")}
+                  className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    paymentChannel === "CASH"
+                      ? "bg-mocha-panel-raised text-mocha-accent border border-mocha-accent/40 shadow-xs"
+                      : "text-mocha-text-muted hover:text-mocha-text"
+                  }`}
+                >
+                  <span>💵</span>
+                  <span>{fulfillmentType === "PICKUP" ? "Pay on Pickup" : "COD (Cash)"}</span>
+                </button>
+
+                <button
+                  type="button"
+                  data-testid="pay-channel-gcash-btn"
+                  onClick={() => setPaymentChannel("GCASH")}
+                  className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    paymentChannel === "GCASH"
+                      ? "bg-[#007DFE]/20 text-[#89B4FA] border border-[#007DFE]/50 shadow-xs"
+                      : "text-mocha-text-muted hover:text-mocha-text"
+                  }`}
+                >
+                  <span className="font-black text-[#007DFE]">G</span>
+                  <span>GCash QR</span>
+                </button>
+
+                <button
+                  type="button"
+                  data-testid="pay-channel-maya-btn"
+                  onClick={() => setPaymentChannel("MAYA")}
+                  className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                    paymentChannel === "MAYA"
+                      ? "bg-[#00D665]/20 text-[#A6E3A1] border border-[#00D665]/50 shadow-xs"
+                      : "text-mocha-text-muted hover:text-mocha-text"
+                  }`}
+                >
+                  <span className="font-black text-[#00D665]">M</span>
+                  <span>Maya QR</span>
+                </button>
+              </div>
+
+              {/* Channel A: Traditional Cash Settlement */}
+              {paymentChannel === "CASH" && (
+                <div>
+                  {fulfillmentType === "DELIVERY" ? (
+                    <div className="p-4 rounded-xl border border-mocha-accent bg-mocha-accent/10 flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-mocha-panel flex items-center justify-center text-mocha-accent shrink-0 mt-0.5">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-mocha-text flex items-center gap-2">
+                            Cash on Delivery (COD)
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-mocha-accent/20 text-mocha-accent">
+                              Courier
+                            </span>
+                          </p>
+                          <p className="text-[11px] text-mocha-text-muted mt-0.5">
+                            Hand exact cash of <strong className="text-mocha-text">{formatPrice(grandTotal)}</strong> to the courier rider upon delivery.
+                          </p>
+                        </div>
+                      </div>
+                      <input type="radio" checked readOnly className="accent-[#89B4FA] mt-1" />
                     </div>
-                    <div>
-                      <p className="text-xs font-bold text-mocha-text flex items-center gap-2">
-                        Cash on Delivery (COD)
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-mocha-accent/20 text-mocha-accent">
-                          Courier
-                        </span>
-                      </p>
-                      <p className="text-[11px] text-mocha-text-muted mt-0.5">
-                        Hand exact cash to the delivery rider upon arrival of your parcel.
-                      </p>
+                  ) : (
+                    <div className="p-4 rounded-xl border border-mocha-accent bg-mocha-accent/10 flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-lg bg-mocha-panel flex items-center justify-center text-mocha-accent-secondary shrink-0 mt-0.5">
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-xs font-bold text-mocha-text flex items-center gap-2">
+                            Pay on Pickup
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-mocha-accent-secondary/20 text-mocha-accent-secondary">
+                              Lab Counter
+                            </span>
+                          </p>
+                          <p className="text-[11px] text-mocha-text-muted mt-0.5">
+                            Pay via cash or campus debit at Building 3, Room 204 when collecting your parcel.
+                          </p>
+                        </div>
+                      </div>
+                      <input type="radio" checked readOnly className="accent-[#89B4FA] mt-1" />
                     </div>
-                  </div>
-                  <input type="radio" checked readOnly className="accent-[#89B4FA] mt-1" />
+                  )}
                 </div>
-              ) : (
-                <div className="p-4 rounded-xl border border-mocha-accent bg-mocha-accent/10 flex items-start justify-between gap-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-mocha-panel flex items-center justify-center text-mocha-accent-secondary shrink-0 mt-0.5">
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                      </svg>
+              )}
+
+              {/* Channel B & C: E-Wallet (GCash / Maya) Scan & Upload Slip */}
+              {(paymentChannel === "GCASH" || paymentChannel === "MAYA") && (
+                <div className="flex flex-col gap-4">
+                  {/* Merchant QR Card */}
+                  <div className={`p-4 rounded-xl border ${
+                    paymentChannel === "GCASH"
+                      ? "bg-[#007DFE]/10 border-[#007DFE]/30"
+                      : "bg-[#00D665]/10 border-[#00D665]/30"
+                  } flex flex-col sm:flex-row items-center gap-4`}>
+                    {/* Simulated SVG QR Code */}
+                    <div className="w-28 h-28 bg-white p-2 rounded-xl shadow-md shrink-0 flex flex-col items-center justify-between border border-gray-200">
+                      <div className="flex items-center justify-between w-full">
+                        <div className="w-4 h-4 bg-black border-2 border-black" />
+                        <div className="text-[8px] font-mono font-bold text-gray-700">QR Ph</div>
+                        <div className="w-4 h-4 bg-black border-2 border-black" />
+                      </div>
+                      <div className="font-mono text-[9px] font-black text-center text-gray-900 tracking-wider">
+                        {paymentChannel}·OHMSIM
+                      </div>
+                      <div className="flex items-center justify-between w-full">
+                        <div className="w-4 h-4 bg-black border-2 border-black" />
+                        <div className="w-2 h-2 bg-black" />
+                        <div className="w-4 h-4 bg-black border-2 border-black" />
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs font-bold text-mocha-text flex items-center gap-2">
-                        Pay on Pickup
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-mocha-accent-secondary/20 text-mocha-accent-secondary">
-                          Lab Counter
+
+                    {/* Merchant Details */}
+                    <div className="flex-1 text-center sm:text-left">
+                      <div className="flex items-center justify-center sm:justify-start gap-2">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase font-mono ${
+                          paymentChannel === "GCASH" ? "bg-[#007DFE] text-white" : "bg-[#00D665] text-black"
+                        }`}>
+                          {paymentChannel} MERCHANT
                         </span>
+                        <span className="text-[11px] font-mono text-mocha-text-muted">Direct Settlement</span>
+                      </div>
+                      <p className="text-xs font-bold text-mocha-text mt-1">OHMSIM ELECTRONICS LABS</p>
+                      <p className="text-xs font-mono text-mocha-accent mt-0.5">
+                        {paymentChannel === "GCASH" ? "0917-888-OHMS (6467)" : "0918-999-MAYA (6292)"}
                       </p>
-                      <p className="text-[11px] text-mocha-text-muted mt-0.5">
-                        Pay via cash or campus debit at the Campus Lab station when collecting components.
+                      <p className="text-[11px] text-mocha-text-muted mt-1">
+                        Amount to transfer: <strong className="text-mocha-text font-mono text-xs">{formatPrice(grandTotal)}</strong>
                       </p>
                     </div>
                   </div>
-                  <input type="radio" checked readOnly className="accent-[#89B4FA] mt-1" />
+
+                  {/* Webhook Verification Banner (if verified) */}
+                  {verifiedPaymentData && (
+                    <div
+                      data-testid="webhook-verified-banner"
+                      className="p-3.5 rounded-xl bg-mocha-success/15 border border-mocha-success/40 flex items-center justify-between gap-3 text-xs"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-mocha-success animate-pulse" />
+                        <div>
+                          <p className="font-bold text-mocha-success">
+                            ✓ {verifiedPaymentData.provider} Webhook Verified
+                          </p>
+                          <p className="text-[11px] font-mono text-mocha-text-muted">
+                            Txn: {verifiedPaymentData.transactionId} · Ref: {verifiedPaymentData.referenceNumber}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-mono text-mocha-success bg-mocha-success/20 px-2 py-0.5 rounded-full">
+                        SETTLED
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Reference Number Field */}
+                  <div>
+                    <label className="block text-xs font-semibold text-mocha-text mb-1">
+                      {paymentChannel} Transaction Reference Number
+                    </label>
+                    <input
+                      type="text"
+                      data-testid="payment-ref-input"
+                      value={paymentRefNumber}
+                      onChange={(e) => setPaymentRefNumber(e.target.value)}
+                      placeholder="e.g. 1029 4810 5928 (from SMS receipt)"
+                      className="w-full px-3 py-2 text-xs font-mono rounded-xl bg-mocha-bg border border-mocha-border text-mocha-text placeholder-mocha-text-subtle focus:outline-none focus:border-mocha-accent"
+                    />
+                  </div>
+
+                  {/* Payment Receipt Slip Uploader with Preview */}
+                  <div>
+                    <label className="block text-xs font-semibold text-mocha-text mb-1.5">
+                      Upload Payment Receipt Screenshot / Proof
+                    </label>
+
+                    {paymentSlipFile ? (
+                      <div
+                        data-testid="payment-slip-preview"
+                        className="p-3 rounded-xl bg-mocha-bg border border-mocha-accent/50 flex items-center justify-between gap-3"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          {paymentSlipFile.previewUrl.startsWith("data:image") ? (
+                            <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-mocha-border shrink-0 bg-black/40">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={paymentSlipFile.previewUrl}
+                                alt="Payment slip"
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-12 h-12 rounded-lg bg-mocha-panel flex items-center justify-center text-xs font-mono text-mocha-accent shrink-0">
+                              DOC
+                            </div>
+                          )}
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold text-mocha-text truncate">
+                              {paymentSlipFile.name}
+                            </p>
+                            <p className="text-[10px] font-mono text-mocha-text-muted mt-0.5">
+                              {(paymentSlipFile.size / 1024).toFixed(1)} KB · Attached
+                            </p>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          data-testid="remove-slip-btn"
+                          onClick={handleRemoveSlipFile}
+                          className="px-2.5 py-1 rounded-lg text-xs font-semibold text-mocha-danger hover:bg-mocha-danger/10 transition-colors cursor-pointer"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="flex flex-col items-center justify-center p-4 rounded-xl border border-dashed border-mocha-border hover:border-mocha-accent/60 bg-mocha-bg/50 cursor-pointer transition-colors text-center">
+                        <svg className="w-6 h-6 text-mocha-text-muted mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span className="text-xs font-semibold text-mocha-text">
+                          Click to select receipt screenshot
+                        </span>
+                        <span className="text-[10px] text-mocha-text-muted mt-0.5">
+                          PNG, JPG, WebP up to 5 MB
+                        </span>
+                        <input
+                          type="file"
+                          data-testid="payment-slip-input"
+                          accept="image/*,.pdf"
+                          onChange={handleSlipFileUpload}
+                          className="sr-only"
+                        />
+                      </label>
+                    )}
+                  </div>
+
+                  {/* Instant Mock Payment Webhook Simulator Button */}
+                  <div className="pt-2 border-t border-mocha-border flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <div className="text-[11px] text-mocha-text-muted">
+                      Sandbox Testing Mode: Test automatic verification via API webhook.
+                    </div>
+                    <button
+                      type="button"
+                      data-testid="simulate-payment-webhook-btn"
+                      disabled={isSimulatingWebhook}
+                      onClick={handleSimulatePaymentWebhook}
+                      className="px-3 py-1.5 rounded-xl bg-mocha-panel-raised border border-mocha-accent/30 text-xs font-mono font-bold text-mocha-accent hover:border-mocha-accent transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer disabled:opacity-60"
+                    >
+                      {isSimulatingWebhook ? (
+                        <>
+                          <span className="w-3 h-3 border-2 border-mocha-accent border-t-transparent rounded-full animate-spin" />
+                          <span>Simulating Webhook...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>⚡</span>
+                          <span>Simulate Webhook Approval</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               )}
 
               <p className="text-[10px] text-mocha-text-subtle bg-mocha-bg p-2.5 rounded-lg border border-mocha-border">
-                Rule BR-047 / BR-050: In OhmSim Version 1.0 (MVP), digital payment gateways (credit card, GCash) are excluded. All orders are settled in cash upon fulfillment.
+                Payment Guarantee: Orders placed via COD or verified E-Wallet (GCash / Maya) are immediately allocated from our Region III warehouse with ESD packaging.
               </p>
             </div>
 

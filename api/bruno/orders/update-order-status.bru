@@ -1,0 +1,18 @@
+meta {
+  name: Advance Order Lifecycle (Admin Dispatch)
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/api/orders/o1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "status": "OUT_FOR_DELIVERY",
+    "trackingNumber": "JNT-OHM-998877"
+  }
+}

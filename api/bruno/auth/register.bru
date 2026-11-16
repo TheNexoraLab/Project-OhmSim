@@ -1,0 +1,20 @@
+meta {
+  name: Register New Account
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "new.student@ohmsim.ph",
+    "password": "Password123!",
+    "fullName": "Maria Santos",
+    "contactNumber": "09171234567"
+  }
+}
