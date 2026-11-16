@@ -237,7 +237,7 @@ function CatalogContent() {
           onMinStock={setMinStock}
           bomProjects={bomProjects}
           onAddBomProject={addBomProject}
-          className="hidden md:flex shrink-0 w-64"
+          className="hidden md:flex shrink-0 w-64 sticky top-[80px] self-start"
         />
 
         {/* Mobile Filter Panel (Stacked vertically above grid when open, no horizontal crowding) */}

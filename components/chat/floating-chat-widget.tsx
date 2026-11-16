@@ -298,11 +298,11 @@ export function FloatingChatWidget() {
 
   return (
     <>
-      {/* 1. Proactive Floating Speech Bubble (Flowii Style) */}
+      {/* 1. Proactive Floating Speech Bubble (Flowii Style - Desktop only to prevent mobile occlusion) */}
       {!widgetState.isOpen && showProactiveBubble && !widgetState.bubbleDismissed && (
         <div
           style={{ top: `${Math.max(60, dockY - 90)}px` }}
-          className={`fixed z-40 max-w-[260px] sm:max-w-[300px] flex flex-col items-end gap-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`fixed z-40 max-w-[260px] sm:max-w-[300px] hidden md:flex flex-col items-end gap-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             dockSide === "right" ? "right-12 sm:right-14" : "left-12 sm:left-14 items-start"
           }`}
         >
