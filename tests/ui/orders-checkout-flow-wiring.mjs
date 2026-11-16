@@ -79,10 +79,22 @@ console.log('✔ In-memory order fallbacks and search filters verified.');
 // ----------------------------------------------------
 console.log('\n--- 3. Testing Live Atomic Checkout & Inventory Lock in Neon DB ---');
 
-const buyerUser = await prisma.user.findUnique({
-  where: { email: 'buyer@ohmsim.nexora.ph' },
-});
-assert.ok(buyerUser, 'Seeded buyer account must exist in Neon DB');
+let buyerUser = await prisma.user.findFirst({ where: { role: 'BUYER' } });
+let createdDynamicBuyer = false;
+if (!buyerUser) {
+  buyerUser = await prisma.user.create({
+    data: {
+      email: `test.checkout.buyer.${Date.now()}@ohmsim.ph`,
+      passwordHash: 'dummy',
+      role: 'BUYER',
+      firstName: 'Daniel',
+      lastName: 'Cruz',
+      phone: '09189876543',
+    },
+  });
+  createdDynamicBuyer = true;
+}
+assert.ok(buyerUser, 'Buyer account must exist in Neon DB');
 
 const testProduct = await prisma.product.findUnique({
   where: { sku: 'ESP32-WROOM-32U' },
@@ -243,6 +255,9 @@ console.log('✔ Backend order mapped cleanly to frontend MockOrder interface.')
 console.log('\n--- 6. Cleaning Up Test Order Record ---');
 await prisma.orderItem.deleteMany({ where: { orderId: createdOrder.id } });
 await prisma.order.delete({ where: { id: createdOrder.id } });
-console.log('✔ Test order record cleaned from Neon PostgreSQL database.');
+if (createdDynamicBuyer) {
+  await prisma.user.delete({ where: { id: buyerUser.id } });
+}
+console.log('✔ Test order record and buyer cleaned from Neon PostgreSQL database.');
 
 console.log('\n=== All Step 3 Orders & Checkout Wiring Checks PASSED Successfully ===');
