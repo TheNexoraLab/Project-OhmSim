@@ -25,18 +25,36 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
 
   useEffect(() => {
     let isMounted = true;
-    getOrderById(orderId)
-      .then((liveOrder) => {
-        if (isMounted) {
-          if (liveOrder) setOrder(liveOrder);
-          setIsLoading(false);
-        }
-      })
-      .catch(() => {
-        if (isMounted) setIsLoading(false);
-      });
+
+    const fetchOrder = () => {
+      getOrderById(orderId)
+        .then((liveOrder) => {
+          if (isMounted && liveOrder) {
+            setOrder((prev) => {
+              if (prev && prev.status !== liveOrder.status) {
+                const label = ORDER_STATUS_META[liveOrder.status]?.label || liveOrder.status;
+                toast(`📦 Order #${liveOrder.orderNumber} status updated to: ${label}`, "info");
+              }
+              return liveOrder;
+            });
+            setIsLoading(false);
+          }
+        })
+        .catch(() => {
+          if (isMounted) setIsLoading(false);
+        });
+    };
+
+    fetchOrder();
+
+    // Live sync polling every 8 seconds
+    const interval = setInterval(fetchOrder, 8000);
+    window.addEventListener("focus", fetchOrder);
+
     return () => {
       isMounted = false;
+      clearInterval(interval);
+      window.removeEventListener("focus", fetchOrder);
     };
   }, [orderId]);
 

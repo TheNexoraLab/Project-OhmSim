@@ -25,16 +25,37 @@ export function OrdersClient() {
 
   useEffect(() => {
     let isMounted = true;
-    getOrders()
-      .then((liveOrders) => {
-        if (isMounted && liveOrders.length > 0) {
-          setOrders(liveOrders);
-          setSelectedId((prev) => prev || liveOrders[0]?.id || "");
-        }
-      })
-      .catch(() => {});
+
+    const fetchOrders = () => {
+      getOrders()
+        .then((liveOrders) => {
+          if (isMounted && liveOrders.length > 0) {
+            setOrders((prev) => {
+              const prevMap = new Map(prev.map((o) => [o.id, o.status]));
+              for (const lo of liveOrders) {
+                const prevStatus = prevMap.get(lo.id);
+                if (prevStatus && prevStatus !== lo.status) {
+                  const label = ORDER_STATUS_META[lo.status]?.label || lo.status;
+                  toast(`📦 Order #${lo.orderNumber} updated to: ${label}`, "info");
+                }
+              }
+              return liveOrders;
+            });
+            setSelectedId((prev) => prev || liveOrders[0]?.id || "");
+          }
+        })
+        .catch(() => {});
+    };
+
+    fetchOrders();
+
+    const interval = setInterval(fetchOrders, 8000);
+    window.addEventListener("focus", fetchOrders);
+
     return () => {
       isMounted = false;
+      clearInterval(interval);
+      window.removeEventListener("focus", fetchOrders);
     };
   }, []);
 
