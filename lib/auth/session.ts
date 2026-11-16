@@ -14,7 +14,13 @@ export interface SessionPayload {
 const DEFAULT_SECRET = 'ohmsim_jwt_super_secret_development_fallback_key';
 
 function getSecretKey(): Uint8Array {
-  const secret = process.env.JWT_SECRET || DEFAULT_SECRET;
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('FATAL SECURITY ERROR: JWT_SECRET environment variable must be set in production mode.');
+    }
+    return new TextEncoder().encode(DEFAULT_SECRET);
+  }
   return new TextEncoder().encode(secret);
 }
 
