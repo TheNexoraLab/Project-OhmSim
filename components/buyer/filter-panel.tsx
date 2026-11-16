@@ -36,28 +36,39 @@ export function FilterPanel({
   const controlsId = idPrefix ? `${idPrefix}-parametric-filter-controls` : "parametric-filter-controls";
 
   if (isShrunk) {
+    const isDesktop = className.includes("hidden md:flex");
     return (
       <div
         data-catalog-filter-panel
-        className="shrink-0 flex flex-col items-center py-3 px-2 bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border rounded-[18px] w-12 transition-all"
+        className={`shrink-0 z-20 ${
+          isDesktop
+            ? "hidden md:flex sticky top-1/2 -translate-y-1/2"
+            : "flex sticky top-1/2 -translate-y-1/2"
+        } animate-in fade-in duration-200`}
       >
         <button
           type="button"
           onClick={() => setIsShrunk(false)}
           aria-label="Open filter panel"
           title="Open filter panel"
-          className="w-8 h-8 rounded-xl bg-mocha-panel-raised hover:bg-mocha-accent/15 border border-mocha-border hover:border-mocha-accent/40 text-mocha-accent flex items-center justify-center transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent"
+          className="group flex flex-col items-center py-3.5 px-2 bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border hover:border-mocha-accent/50 rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-        </button>
-        <button
-          type="button"
-          onClick={() => setIsShrunk(false)}
-          className="mt-6 flex flex-col items-center gap-1 text-[10px] font-mono font-bold uppercase tracking-widest text-mocha-text-muted hover:text-mocha-accent [writing-mode:vertical-lr] rotate-180"
-        >
-          Filters
+          <span className="w-8 h-8 rounded-xl bg-mocha-panel hover:bg-mocha-accent/20 border border-mocha-border group-hover:border-mocha-accent/40 text-mocha-accent flex items-center justify-center transition-all mb-3 shadow-xs">
+            <svg
+              className="w-4 h-4 transition-transform group-hover:translate-x-0.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </span>
+          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-mocha-text-muted group-hover:text-mocha-accent [writing-mode:vertical-lr] rotate-180 transition-colors">
+            Filters
+          </span>
         </button>
       </div>
     );
@@ -66,48 +77,55 @@ export function FilterPanel({
   return (
     <div
       data-catalog-filter-panel
-      className={`shrink-0 min-w-0 flex flex-col bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border rounded-[18px] ${
+      className={`shrink-0 min-w-0 flex flex-col bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border rounded-[18px] relative transition-all duration-300 animate-in fade-in zoom-in-[0.99] ${
         className || "w-56"
       }`}
     >
+      {/* Middle Right Edge Shrink Toggle Arrow */}
+      <button
+        type="button"
+        onClick={() => setIsShrunk(true)}
+        aria-label="Shrink filter panel"
+        title="Shrink filter panel"
+        className="hidden md:flex absolute top-1/2 -translate-y-1/2 -right-3.5 z-20 w-7 h-10 rounded-full bg-mocha-panel border border-mocha-border shadow-md hover:border-mocha-accent hover:bg-mocha-panel-raised text-mocha-text-muted hover:text-mocha-accent items-center justify-center transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent group"
+      >
+        <svg
+          className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+
       {/* Parametric Filter Section */}
       <div className="border-b border-mocha-border">
-        <div className="flex items-center justify-between pr-2">
-          <button
-            type="button"
-            onClick={() => setFiltersOpen((o) => !o)}
-            aria-expanded={filtersOpen}
-            aria-controls={controlsId}
-            className="flex-1 min-h-[44px] flex items-center justify-between px-3 py-2.5 text-mocha-text-muted hover:bg-mocha-panel-raised/50 transition-colors focus-visible:outline-2 focus-visible:outline-mocha-accent"
+        <button
+          type="button"
+          onClick={() => setFiltersOpen((o) => !o)}
+          aria-expanded={filtersOpen}
+          aria-controls={controlsId}
+          className="w-full min-h-[44px] flex items-center justify-between px-3.5 py-2.5 text-mocha-text-muted hover:bg-mocha-panel-raised/50 transition-colors focus-visible:outline-2 focus-visible:outline-mocha-accent rounded-t-[18px]"
+        >
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-mocha-text-muted">
+            Parametric Filter
+          </span>
+          <svg
+            className={`w-3.5 h-3.5 text-mocha-text-muted transition-transform duration-200 ${
+              filtersOpen ? "rotate-180" : ""
+            }`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth="2"
           >
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-mocha-text-muted">
-              Parametric Filter
-            </span>
-            <svg
-              className={`w-3.5 h-3.5 text-mocha-text-muted transition-transform duration-200 ${
-                filtersOpen ? "rotate-180" : ""
-              }`}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsShrunk(true)}
-            aria-label="Shrink filter panel"
-            title="Shrink filter panel"
-            className="w-7 h-7 shrink-0 rounded-lg text-mocha-text-muted hover:text-mocha-accent hover:bg-mocha-panel-raised/50 flex items-center justify-center transition-colors focus-visible:outline-2 focus-visible:outline-mocha-accent"
-          >
-            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </button>
-        </div>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
 
         {filtersOpen && (
           // Room for the sliders' 44px hit areas at both track endpoints.
