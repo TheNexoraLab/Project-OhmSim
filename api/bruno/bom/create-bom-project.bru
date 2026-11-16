@@ -1,0 +1,19 @@
+meta {
+  name: Create BOM Project
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/bom
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Robotics Line Follower Prototype",
+    "description": "Embedded robotics capstone prototype with sensors and motor driver",
+    "targetBudget": 4500.00
+  }
+}

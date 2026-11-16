@@ -1,0 +1,11 @@
+meta {
+  name: List Orders
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/orders?page=1&limit=50
+  body: none
+  auth: none
+}

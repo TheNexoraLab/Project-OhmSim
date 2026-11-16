@@ -1,0 +1,33 @@
+meta {
+  name: Create COD Delivery Order (Region III)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/orders
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "fulfillmentType": "DELIVERY",
+    "deliveryAddress": {
+      "recipientName": "Alex Rivera",
+      "phone": "09171234567",
+      "street": "123 Rizal Ave",
+      "barangay": "Dolores",
+      "city": "San Fernando",
+      "province": "Pampanga",
+      "postalCode": "2000"
+    },
+    "notes": "Please deliver during office hours",
+    "items": [
+      {
+        "productId": "560c4078-5127-47ec-85c1-d76d3f80295a",
+        "quantity": 2
+      }
+    ]
+  }
+}

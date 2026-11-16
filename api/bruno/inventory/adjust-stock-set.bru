@@ -1,0 +1,19 @@
+meta {
+  name: Exact Stock Count Audit (SET)
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/api/inventory
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "productId": "560c4078-5127-47ec-85c1-d76d3f80295a",
+    "type": "SET",
+    "quantity": 100
+  }
+}
