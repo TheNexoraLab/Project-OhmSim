@@ -14,6 +14,12 @@ import {
 import { formatPrice, formatDate } from "@/lib/format";
 import { toast } from "@/components/ui/toast";
 import { chatWidgetStore } from "@/lib/chat/chat-widget-store";
+import {
+  DangerCircleIcon,
+  ChatRoundDotsIcon,
+  Printer2Icon,
+  CopyIcon,
+} from "@solar-icons/react/linear";
 
 interface OrderDetailClientProps {
   orderId: string;
@@ -107,11 +113,7 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-12 text-center bg-mocha-bg">
         <div className="w-16 h-16 rounded-2xl bg-mocha-panel border border-mocha-border flex items-center justify-center mb-4 text-mocha-danger">
-          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
+          <DangerCircleIcon size={32} />
         </div>
         <h1 className="text-xl font-bold text-mocha-text mb-1">Order Not Found</h1>
         <p className="text-xs text-mocha-text-muted max-w-sm mb-6">
@@ -194,9 +196,7 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
               href={`/chat?convo=c1&orderRef=${order.orderNumber}`}
               className="px-3.5 py-2 rounded-xl text-xs font-semibold bg-mocha-panel-raised border border-mocha-border text-mocha-text hover:border-mocha-accent hover:text-mocha-accent transition-colors flex items-center gap-1.5 min-h-[44px] focus-visible:outline-2 focus-visible:outline-mocha-accent"
             >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
+              <ChatRoundDotsIcon size={14} className="text-[#89B4FA]" />
               <span>Inquire</span>
             </Link>
 
@@ -205,9 +205,7 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
               onClick={handlePrint}
               className="px-3.5 py-2 rounded-xl text-xs font-bold bg-mocha-panel border border-mocha-border text-mocha-accent hover:border-mocha-accent transition-colors flex items-center gap-1.5 min-h-[44px] focus-visible:outline-2 focus-visible:outline-mocha-accent"
             >
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-              </svg>
+              <Printer2Icon size={14} />
               <span>Invoice</span>
             </button>
           </div>
@@ -236,10 +234,7 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
                     title="Click to copy tracking number"
                   >
                     <span>{order.trackingNo}</span>
-                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" strokeWidth="2" />
-                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" strokeWidth="2" />
-                    </svg>
+                    <CopyIcon size={14} />
                   </button>
                 </div>
               )}

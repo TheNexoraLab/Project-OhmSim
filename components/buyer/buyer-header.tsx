@@ -4,6 +4,18 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  Home2Icon,
+  Widget4Icon,
+  DocumentsIcon,
+  BoxMinimalisticIcon,
+  ChatRoundDotsIcon,
+  MagnifierIcon,
+  BellIcon,
+  UserCircleIcon,
+  CartLarge2Icon,
+  Logout2Icon,
+} from "@solar-icons/react/linear";
 import { useCart } from "@/hooks/use-cart";
 import { useBom } from "@/hooks/use-bom";
 import { toast } from "@/components/ui/toast";
@@ -49,59 +61,32 @@ export function BuyerHeader() {
       href: "/home",
       label: "Home",
       phase: "Batch 1",
-      icon: (
-        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-          <polyline points="9 22 9 12 15 12 15 22" />
-        </svg>
-      ),
+      icon: <Home2Icon size={16} className="shrink-0" />,
     },
     {
       href: "/products",
       label: "Catalog",
       phase: "Batch 1",
-      icon: (
-        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="3" width="7" height="7" rx="1.5" />
-          <rect x="14" y="3" width="7" height="7" rx="1.5" />
-          <rect x="14" y="14" width="7" height="7" rx="1.5" />
-          <rect x="3" y="14" width="7" height="7" rx="1.5" />
-        </svg>
-      ),
+      icon: <Widget4Icon size={16} className="shrink-0" />,
     },
     {
       href: "/bom",
       label: "BOM",
       phase: "Batch 2",
       badge: bomCount,
-      icon: (
-        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-          <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-        </svg>
-      ),
+      icon: <DocumentsIcon size={16} className="shrink-0" />,
     },
     {
       href: "/orders",
       label: "Orders",
       phase: "Batch 3",
-      icon: (
-        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-          <line x1="12" y1="22.08" x2="12" y2="12" />
-        </svg>
-      ),
+      icon: <BoxMinimalisticIcon size={16} className="shrink-0" />,
     },
     {
       href: "/chat",
       label: "Chat",
       phase: "Batch 3",
-      icon: (
-        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-      ),
+      icon: <ChatRoundDotsIcon size={16} className="shrink-0" />,
     },
   ];
 
@@ -186,9 +171,7 @@ export function BuyerHeader() {
           <label htmlFor="buyer-desktop-search" className="sr-only">
             Search components or SKU
           </label>
-          <svg className="w-4 h-4 text-[#A6ADC8] group-focus-within:text-[#89B4FA] shrink-0 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+          <MagnifierIcon size={16} className="text-[#A6ADC8] group-focus-within:text-[#89B4FA] shrink-0 transition-colors" />
           <input
             id="buyer-desktop-search"
             type="search"
@@ -222,9 +205,7 @@ export function BuyerHeader() {
           aria-label="View notifications"
           className="relative min-w-[36px] lg:min-w-[38px] min-h-[36px] lg:min-h-[38px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-          </svg>
+          <BellIcon size={18} />
           {unreadCount > 0 && (
             <span data-notification-count={unreadCount} className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full text-[7.5px] font-bold text-mocha-bg bg-mocha-accent flex items-center justify-center pointer-events-none">
               {unreadCount}
@@ -238,9 +219,7 @@ export function BuyerHeader() {
           aria-current={pathname === "/profile" ? "page" : undefined}
           className="min-w-[36px] lg:min-w-[38px] min-h-[36px] lg:min-h-[38px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-          </svg>
+          <UserCircleIcon size={18} />
         </Link>
 
         <Link
@@ -249,11 +228,7 @@ export function BuyerHeader() {
           className="relative min-w-[36px] lg:min-w-[38px] min-h-[36px] lg:min-h-[38px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
           <CartFeedbackIcon target="desktop">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-              <circle cx="9" cy="21" r="1" />
-              <circle cx="20" cy="21" r="1" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-            </svg>
+            <CartLarge2Icon size={18} />
           </CartFeedbackIcon>
           {cartTotal > 0 && (
             <span data-cart-count={cartTotal} className="absolute top-1.5 right-1.5 w-3.5 h-3.5 rounded-full text-[7.5px] font-extrabold text-mocha-bg bg-mocha-accent flex items-center justify-center shadow-sm pointer-events-none">
@@ -268,11 +243,7 @@ export function BuyerHeader() {
           href="/"
           className={`${styles.exitLink} min-h-[38px] flex items-center gap-1.5 px-2 lg:px-3 py-1.5 rounded-xl text-xs font-semibold text-mocha-text-muted hover:text-mocha-danger transition-all focus-visible:outline-2 focus-visible:outline-mocha-danger`}
         >
-          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
+          <Logout2Icon size={15} className="shrink-0" />
           Exit Store
         </Link>
       </div>

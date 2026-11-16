@@ -12,6 +12,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { toast } from "@/components/ui/toast";
+import {
+  AddIcon,
+  Banknote2Icon,
+  BoxMinimalisticIcon,
+  DangerTriangleIcon,
+  ChatRoundDotsIcon,
+  MapPointIcon,
+  DeliveryIcon,
+  BillListIcon,
+  ArchiveCheckIcon,
+} from "@solar-icons/react/linear";
 
 type SemanticStatusKey =
   | "PENDING"
@@ -256,18 +267,7 @@ export default function AdminDashboardPage() {
             size="small"
             className="text-xs font-semibold gap-1.5"
           >
-            <svg
-              aria-hidden="true"
-              className="w-3.5 h-3.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
+            <AddIcon size={14} className="stroke-[2.5]" />
             <span>Add Product</span>
           </ButtonLink>
         </div>
@@ -290,20 +290,7 @@ export default function AdminDashboardPage() {
             accentColor="#89B4FA"
             progressPercent={84}
             progressLabel="Gross revenue target progress"
-            icon={
-              <svg
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="12" y1="1" x2="12" y2="23" />
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
-            }
+            icon={<Banknote2Icon size={20} />}
           />
 
           {/* Card 2: Active Orders */}
@@ -319,21 +306,7 @@ export default function AdminDashboardPage() {
               (activeOrders.length / Math.max(1, MOCK_ORDERS.length)) * 100
             )}
             progressLabel="Active order ratio"
-            icon={
-              <svg
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                <line x1="12" y1="22.08" x2="12" y2="12" />
-              </svg>
-            }
+            icon={<BoxMinimalisticIcon size={20} />}
           />
 
           {/* Card 3: Low Stock Alerts */}
@@ -353,21 +326,7 @@ export default function AdminDashboardPage() {
                 100
             )}
             progressLabel="Low stock SKU share"
-            icon={
-              <svg
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-              </svg>
-            }
+            icon={<DangerTriangleIcon size={20} />}
           />
 
           {/* Card 4: Unread Inquiries */}
@@ -381,19 +340,7 @@ export default function AdminDashboardPage() {
             accentColor="#94E2D5"
             progressPercent={60}
             progressLabel="Support queue SLA utilization"
-            icon={
-              <svg
-                className="w-5 h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-              </svg>
-            }
+            icon={<ChatRoundDotsIcon size={20} />}
           />
         </div>
       </section>
@@ -574,32 +521,12 @@ export default function AdminDashboardPage() {
                           <span className="inline-flex items-center gap-1.5 text-xs text-[#BAC2DE]">
                             {order.fulfillmentType === "PICKUP" ? (
                               <>
-                                <svg
-                                  className="w-3.5 h-3.5 text-[#A6ADC8]"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                >
-                                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                                  <circle cx="12" cy="10" r="3" />
-                                </svg>
+                                <MapPointIcon size={14} className="text-[#A6ADC8]" />
                                 <span>Campus Pickup</span>
                               </>
                             ) : (
                               <>
-                                <svg
-                                  className="w-3.5 h-3.5 text-[#A6ADC8]"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                >
-                                  <rect x="1" y="3" width="15" height="13" />
-                                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-                                  <circle cx="5.5" cy="18.5" r="2.5" />
-                                  <circle cx="18.5" cy="18.5" r="2.5" />
-                                </svg>
+                                <DeliveryIcon size={14} className="text-[#A6ADC8]" />
                                 <span>Delivery</span>
                               </>
                             )}
@@ -865,17 +792,7 @@ export default function AdminDashboardPage() {
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="w-8 h-8 rounded-lg bg-[#313244]/50 text-[#CDD6F4] flex items-center justify-center shrink-0 group-hover:text-[#89B4FA] transition-colors">
-                      <svg
-                        className="w-4 h-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      >
-                        <line x1="12" y1="5" x2="12" y2="19" />
-                        <line x1="5" y1="12" x2="19" y2="12" />
-                      </svg>
+                      <AddIcon size={16} />
                     </span>
                     <span className="text-xs font-semibold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
                       Add Product
@@ -893,20 +810,7 @@ export default function AdminDashboardPage() {
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="w-8 h-8 rounded-lg bg-[#313244]/50 text-[#CDD6F4] flex items-center justify-center shrink-0 group-hover:text-[#89B4FA] transition-colors">
-                      <svg
-                        className="w-4 h-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                        <polyline points="14 2 14 8 20 8" />
-                        <line x1="16" y1="13" x2="8" y2="13" />
-                        <line x1="16" y1="17" x2="8" y2="17" />
-                      </svg>
+                      <BillListIcon size={16} />
                     </span>
                     <span className="text-xs font-semibold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
                       Review Orders
@@ -924,18 +828,7 @@ export default function AdminDashboardPage() {
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="w-8 h-8 rounded-lg bg-[#313244]/50 text-[#CDD6F4] flex items-center justify-center shrink-0 group-hover:text-[#89B4FA] transition-colors">
-                      <svg
-                        className="w-4 h-4"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-                        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                      </svg>
+                      <ArchiveCheckIcon size={16} />
                     </span>
                     <span className="text-xs font-semibold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
                       Adjust Inventory

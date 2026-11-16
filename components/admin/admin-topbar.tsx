@@ -7,6 +7,11 @@ import { getButtonClasses } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { logout } from "@/services/auth-service";
 import { ADMIN_NAV_ITEMS } from "@/components/admin/admin-sidebar";
+import {
+  HamburgerMenuIcon,
+  ArrowRightUpIcon,
+  Logout2Icon,
+} from "@solar-icons/react/linear";
 
 export interface AdminTopbarProps {
   isMobileMenuOpen?: boolean;
@@ -66,28 +71,11 @@ export function AdminTopbar({
           data-testid="admin-mobile-menu-button"
           className="lg:hidden min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl bg-[#1E1E2E] border border-[#313244] text-[#CDD6F4] hover:border-[#89B4FA] hover:text-[#89B4FA] transition-colors shrink-0"
         >
-          <svg
-            className="w-5 h-5"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            {isMobileMenuOpen ? (
-              <>
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </>
-            ) : (
-              <>
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <line x1="3" y1="12" x2="21" y2="12" />
-                <line x1="3" y1="18" x2="21" y2="18" />
-              </>
-            )}
-          </svg>
+          {isMobileMenuOpen ? (
+            <span className="text-sm font-bold">✕</span>
+          ) : (
+            <HamburgerMenuIcon size={20} />
+          )}
         </button>
 
         <div className="min-w-0 flex items-center gap-2.5">
@@ -131,20 +119,7 @@ export function AdminTopbar({
           )}
         >
           <span>View Storefront</span>
-          <svg
-            aria-hidden="true"
-            className="w-3.5 h-3.5 shrink-0"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-            <polyline points="15 3 21 3 21 9" />
-            <line x1="10" y1="14" x2="21" y2="3" />
-          </svg>
+          <ArrowRightUpIcon size={14} className="shrink-0" />
         </a>
 
         {/* Admin Profile Chip */}
@@ -181,20 +156,7 @@ export function AdminTopbar({
             data-testid="admin-logout-button"
             className="min-w-[44px] min-h-[36px] px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-[#BAC2DE] hover:text-[#F38BA8] hover:bg-[#F38BA8]/12 border border-transparent hover:border-[#F38BA8]/30 transition-colors inline-flex items-center gap-1 cursor-pointer"
           >
-            <svg
-              aria-hidden="true"
-              className="w-3.5 h-3.5 shrink-0"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
+            <Logout2Icon size={14} className="shrink-0" />
             <span className="hidden md:inline">Logout</span>
           </button>
         </div>

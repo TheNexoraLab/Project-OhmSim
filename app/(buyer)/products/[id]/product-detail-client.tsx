@@ -14,6 +14,12 @@ import { MobileProductCard } from "@/components/buyer/mobile-product-card";
 import { BomChooserPopover } from "@/components/buyer/bom-chooser-popover";
 import { useCartFeedback } from "@/components/buyer/cart-feedback";
 import { chatWidgetStore } from "@/lib/chat/chat-widget-store";
+import {
+  CartLarge2Icon,
+  DocumentAddIcon,
+  ChatRoundDotsIcon,
+  ChatLineIcon,
+} from "@solar-icons/react/linear";
 
 interface ProductDetailClientProps {
   product: Product;
@@ -168,11 +174,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                   : "bg-[#89B4FA] hover:bg-[#74c7ec] text-[#11111B] hover:shadow-lg active:scale-[0.99]"
               }`}
             >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 0 1-8 0" />
-              </svg>
+              <CartLarge2Icon size={18} />
               {isOutOfStock
                 ? "Out of Stock"
                 : isMaxInCart
@@ -199,12 +201,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                       : "border-[#313244] text-[#CDD6F4] bg-[#181825] hover:border-[#45475A] hover:bg-[#1E1E2E]"
                   }`}
                 >
-                  <svg className="w-3.5 h-3.5 text-[#89B4FA] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                    <polyline points="14 2 14 8 20 8" />
-                    <line x1="12" y1="11" x2="12" y2="17" />
-                    <line x1="9" y1="14" x2="15" y2="14" />
-                  </svg>
+                  <DocumentAddIcon size={16} className="text-[#89B4FA] shrink-0" />
                   <span className="truncate">Add to BOM</span>
                   {bomProjects.length > 0 && (
                     <span className="px-1.5 py-0.2 rounded-full font-mono text-[10px] font-bold bg-[#313244] text-[#BAC2DE] shrink-0">
@@ -228,9 +225,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                 aria-label="Contact Administrator"
                 className="min-h-[42px] flex items-center justify-center gap-1.5 px-3 font-semibold text-xs border border-[#313244] bg-[#181825] text-[#BAC2DE] hover:text-[#CDD6F4] hover:bg-[#1E1E2E] hover:border-[#45475A] rounded-xl transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent"
               >
-                <svg className="w-3.5 h-3.5 text-[#A6ADC8] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                </svg>
+                <ChatRoundDotsIcon size={16} className="text-[#A6ADC8] shrink-0" />
                 <span className="truncate">Contact Admin</span>
               </Link>
             </div>
@@ -263,7 +258,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                   }}
                   className="px-3 py-2 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#89B4FA] text-[#CDD6F4] hover:text-[#89B4FA] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
                 >
-                  <span>🤖</span>
+                  <ChatRoundDotsIcon size={15} className="text-[#89B4FA]" />
                   <span>Ask OhmBot</span>
                 </button>
 
@@ -284,7 +279,7 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
                   }}
                   className="px-3 py-2 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#89B4FA] text-[#CDD6F4] hover:text-[#89B4FA] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98]"
                 >
-                  <span>💬</span>
+                  <ChatLineIcon size={15} className="text-[#A6ADC8]" />
                   <span>Chat to Seller</span>
                 </button>
               </div>
