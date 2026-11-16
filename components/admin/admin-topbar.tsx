@@ -3,7 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
 import { getButtonClasses } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { logout } from "@/services/auth-service";
@@ -165,12 +164,9 @@ export function AdminTopbar({
               <span className="text-xs font-bold text-[#CDD6F4] leading-none">
                 Admin Nexora
               </span>
-              <Badge
-                variant="secondary"
-                className="text-[9px] font-mono px-1.5 py-0 uppercase"
-              >
+              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded uppercase bg-[#313244] text-[#BAC2DE] font-medium">
                 ROOT
-              </Badge>
+              </span>
             </div>
             <span className="text-[10px] font-mono text-[#A6ADC8] mt-0.5 leading-none">
               ops@nexoralabs.ph

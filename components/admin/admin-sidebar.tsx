@@ -261,7 +261,10 @@ function SidebarContent({
       <div className="p-3.5 m-3 rounded-xl bg-[#1E1E2E] border border-[#313244] shrink-0">
         <div className="flex items-center justify-between text-[11px] font-mono text-[#BAC2DE]">
           <span>REGION III HUB</span>
-          <span className="text-[#A6E3A1] font-bold">ONLINE</span>
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-[#A6E3A1]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#A6E3A1]" />
+            Online
+          </span>
         </div>
         <p className="mt-1 text-[10px] text-[#A6ADC8] leading-relaxed">
           Central Luzon Pickup &amp; COD Fulfillment Terminal

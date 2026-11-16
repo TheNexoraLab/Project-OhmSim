@@ -3,7 +3,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { INITIAL_NOTIFICATIONS } from "@/lib/mocks/notifications";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { toast } from "@/components/ui/toast";
@@ -31,27 +30,6 @@ const NOTIFICATION_TABS: Array<{ id: AdminNotificationTab; label: string }> = [
   { id: "INVENTORY", label: "INVENTORY" },
   { id: "SYSTEM", label: "SYSTEM" },
 ];
-
-const CATEGORY_BADGE_STYLES: Record<
-  AdminNotificationCategory,
-  { color: string; bg: string; border: string }
-> = {
-  ORDERS: {
-    color: "#89B4FA",
-    bg: "rgba(137, 180, 250, 0.12)",
-    border: "rgba(137, 180, 250, 0.3)",
-  },
-  INVENTORY: {
-    color: "#F9E2AF",
-    bg: "rgba(249, 226, 175, 0.12)",
-    border: "rgba(249, 226, 175, 0.3)",
-  },
-  SYSTEM: {
-    color: "#CBA6F7",
-    bg: "rgba(203, 166, 247, 0.12)",
-    border: "rgba(203, 166, 247, 0.3)",
-  },
-};
 
 function buildAdminNotifications(): AdminNotificationEntry[] {
   const fromFixture: AdminNotificationEntry[] = INITIAL_NOTIFICATIONS.map(
@@ -281,47 +259,41 @@ export function NotificationsClient() {
   return (
     <div
       data-testid="admin-notifications-page"
-      className="mx-auto flex w-full max-w-[1600px] flex-col gap-6"
+      className="mx-auto flex w-full max-w-[1600px] flex-col gap-5"
     >
       {/* Header */}
-      <div className="flex flex-col gap-4 border-b border-[#313244] pb-2 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#F9E2AF]/30 bg-[#F9E2AF]/12 px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider text-[#F9E2AF] uppercase">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#F9E2AF]" />
-              OPERATIONAL ALERTS &amp; EVENT LOG
-            </span>
-            {unreadCount > 0 ? (
-              <Badge variant="warning" className="font-mono">
-                {unreadCount} UNREAD
-              </Badge>
-            ) : (
-              <Badge variant="success" className="font-mono">
-                ALL CAUGHT UP
-              </Badge>
-            )}
-          </div>
-          <h1 className="mt-2 text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
+      <div className="flex flex-col gap-4 border-b border-[#313244] pb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <h1 className="text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
             Notifications Log
           </h1>
+          {unreadCount > 0 ? (
+            <span className="rounded-full bg-[#313244] px-2.5 py-0.5 font-mono text-xs font-medium text-[#89B4FA]">
+              {unreadCount} unread
+            </span>
+          ) : (
+            <span className="rounded-full bg-[#181825] px-2.5 py-0.5 font-mono text-xs text-[#6C7086]">
+              All caught up
+            </span>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
             onClick={() => setShowUnreadOnly((prev) => !prev)}
-            className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
+            className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
               showUnreadOnly
-                ? "border-[#89B4FA] bg-[#89B4FA]/14 text-[#89B4FA]"
+                ? "border-[#45475A] bg-[#313244] text-[#CDD6F4]"
                 : "border-[#313244] bg-[#181825] text-[#A6ADC8] hover:text-[#CDD6F4]"
             }`}
           >
-            {showUnreadOnly ? "Unread Only" : "Show Unread Only"}
+            {showUnreadOnly ? "Showing Unread" : "Show Unread Only"}
           </button>
 
           <Button
             type="button"
-            variant="accent"
+            variant="outline"
             size="small"
             disabled={unreadCount === 0}
             onClick={handleMarkAllAsRead}
@@ -332,55 +304,41 @@ export function NotificationsClient() {
       </div>
 
       {/* Category Filter Tabs (ALL, ORDERS, INVENTORY, SYSTEM) */}
-      <Surface
-        variant="panel"
-        className="border border-[#313244] bg-[#1E1E2E] p-4"
+      <div
+        role="tablist"
+        aria-label="Filter notifications by category"
+        className="flex flex-wrap items-center gap-2"
       >
-        <div
-          role="tablist"
-          aria-label="Filter notifications by category"
-          className="flex flex-wrap items-center gap-2"
-        >
-          {NOTIFICATION_TABS.map((tab) => {
-            const isActive = activeTab === tab.id;
-            const count = tabCounts[tab.id];
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                role="tab"
-                aria-selected={isActive}
-                onClick={() => setActiveTab(tab.id)}
-                style={
+        {NOTIFICATION_TABS.map((tab) => {
+          const isActive = activeTab === tab.id;
+          const count = tabCounts[tab.id];
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => setActiveTab(tab.id)}
+              className={`inline-flex items-center gap-2 rounded-lg border px-3.5 py-1.5 text-xs font-medium transition-colors ${
+                isActive
+                  ? "border-[#45475A] bg-[#313244] text-[#CDD6F4]"
+                  : "border-[#313244] bg-[#181825] text-[#A6ADC8] hover:border-[#45475A] hover:text-[#CDD6F4]"
+              }`}
+            >
+              <span>{tab.label}</span>
+              <span
+                className={`rounded-full px-1.5 py-0.2 font-mono text-[10px] ${
                   isActive
-                    ? {
-                        color: "#89B4FA",
-                        backgroundColor: "rgba(137, 180, 250, 0.14)",
-                        borderColor: "rgba(137, 180, 250, 0.45)",
-                      }
-                    : undefined
-                }
-                className={`inline-flex items-center gap-2 rounded-lg border px-3.5 py-1.5 text-xs font-semibold transition-all ${
-                  isActive
-                    ? "shadow-xs"
-                    : "border-[#313244] bg-[#181825] text-[#A6ADC8] hover:border-[#45475A] hover:text-[#CDD6F4]"
+                    ? "bg-[#181825] text-[#CDD6F4]"
+                    : "bg-[#11111B] text-[#6C7086]"
                 }`}
               >
-                <span>{tab.label}</span>
-                <span
-                  className={`rounded-full px-1.5 py-0.2 font-mono text-[11px] ${
-                    isActive
-                      ? "bg-[#89B4FA]/20 text-[#89B4FA]"
-                      : "bg-[#313244]/70 text-[#BAC2DE]"
-                  }`}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </Surface>
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
 
       {/* Operational Alerts Feed */}
       <div className="space-y-3">
@@ -399,63 +357,46 @@ export function NotificationsClient() {
           </Surface>
         ) : (
           filteredNotifications.map((item) => {
-            const catStyle = CATEGORY_BADGE_STYLES[item.category];
-            const severityDotColor =
-              item.severity === "CRITICAL"
-                ? "#F38BA8"
-                : item.severity === "WARNING"
-                  ? "#F9E2AF"
-                  : item.severity === "SUCCESS"
-                    ? "#A6E3A1"
-                    : "#89B4FA";
-
             return (
               <Surface
                 key={item.id}
                 variant="panel"
                 className={`border p-4 transition-colors ${
                   item.read
-                    ? "border-[#313244] bg-[#1E1E2E]/75"
-                    : "border-[#89B4FA]/45 bg-[#1E1E2E]"
+                    ? "border-[#313244]/60 bg-[#181825]/60 hover:border-[#313244]"
+                    : "border-[#313244] bg-[#1E1E2E] hover:border-[#45475A]"
                 }`}
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                  <div className="flex items-start gap-3.5">
+                  <div className="flex items-start gap-3">
                     <span
-                      className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full"
-                      style={{ backgroundColor: severityDotColor }}
+                      className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${
+                        item.read ? "bg-transparent" : "bg-[#89B4FA]"
+                      }`}
                     />
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
-                        <span
-                          className="rounded-md px-2 py-0.5 font-mono text-[10px] font-bold"
-                          style={{
-                            color: catStyle.color,
-                            backgroundColor: catStyle.bg,
-                            border: `1px solid ${catStyle.border}`,
-                          }}
-                        >
+                        <span className="rounded border border-[#313244] bg-[#181825] px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-[#BAC2DE]">
                           {item.category}
                         </span>
                         {item.referenceCode && (
-                          <span className="rounded border border-[#313244] bg-[#181825] px-2 py-0.5 font-mono text-[11px] font-semibold text-[#94E2D5]">
+                          <span className="font-mono text-xs text-[#A6ADC8]">
                             {item.referenceCode}
                           </span>
                         )}
-                        {!item.read && (
-                          <span className="rounded-full bg-[#89B4FA]/20 px-2 py-0.2 font-mono text-[10px] font-bold text-[#89B4FA]">
-                            NEW
-                          </span>
-                        )}
-                        <span className="font-mono text-xs text-[#A6ADC8]">
-                          {item.time} • {item.group}
+                        <span className="font-mono text-xs text-[#6C7086]">
+                          • {item.time} • {item.group}
                         </span>
                       </div>
 
-                      <h2 className="mt-1.5 text-sm font-bold text-[#CDD6F4]">
+                      <h2
+                        className={`mt-1.5 text-sm font-semibold ${
+                          item.read ? "text-[#BAC2DE]" : "text-[#CDD6F4]"
+                        }`}
+                      >
                         {item.title}
                       </h2>
-                      <p className="mt-1 text-xs leading-relaxed text-[#BAC2DE]">
+                      <p className="mt-1 text-xs leading-relaxed text-[#A6ADC8]">
                         {item.body}
                       </p>
                     </div>
@@ -466,7 +407,7 @@ export function NotificationsClient() {
                     <button
                       type="button"
                       onClick={() => handleToggleRead(item.id)}
-                      className="rounded-lg border border-[#313244] bg-[#181825] px-2.5 py-1.5 text-xs font-medium text-[#BAC2DE] transition-colors hover:border-[#45475A] hover:text-[#CDD6F4]"
+                      className="rounded-lg border border-transparent px-2.5 py-1.5 text-xs font-medium text-[#6C7086] transition-colors hover:border-[#313244] hover:text-[#BAC2DE]"
                     >
                       {item.read ? "Mark Unread" : "Mark Read"}
                     </button>
@@ -474,7 +415,7 @@ export function NotificationsClient() {
                     <Link
                       href={item.actionHref}
                       prefetch={false}
-                      className="rounded-lg border border-[#89B4FA]/40 bg-[#89B4FA]/12 px-3 py-1.5 text-xs font-semibold text-[#89B4FA] transition-colors hover:bg-[#89B4FA]/20"
+                      className="rounded-lg border border-[#313244] bg-[#181825] px-3 py-1.5 text-xs font-medium text-[#BAC2DE] transition-colors hover:border-[#45475A] hover:bg-[#313244]/50 hover:text-[#CDD6F4]"
                     >
                       {item.actionLabel} →
                     </Link>
