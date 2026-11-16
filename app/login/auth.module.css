@@ -64,6 +64,57 @@
 .resetIcon { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: var(--radius-pill); color: var(--mocha-success); background: color-mix(in srgb, var(--mocha-success) 18%, transparent); }
 .resetSuccess .previewNote { margin: 0; }
 .email { font-family: var(--font-jetbrains-mono), monospace; overflow-wrap: anywhere; }
+.socialDivider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin: 18px 0 14px;
+  color: var(--mocha-text-subtle);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.socialDivider::before,
+.socialDivider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--mocha-border-strong);
+}
+.googleButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 18px;
+  border-radius: var(--radius-control);
+  background: var(--mocha-bg-secondary);
+  border: 1px solid var(--mocha-border-strong);
+  color: var(--mocha-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 150ms ease;
+  box-shadow: 0 1px 2px rgb(0 0 0 / .2);
+}
+.googleButton:hover:not(:disabled) {
+  border-color: var(--mocha-accent-secondary);
+  background: color-mix(in srgb, var(--mocha-accent-secondary) 8%, var(--mocha-bg-secondary));
+  transform: translateY(-1px);
+}
+.googleButton:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+.googleButton:focus-visible {
+  outline: 2px solid var(--mocha-accent);
+  outline-offset: 3px;
+}
+
 @media (max-width: 767px) {
   .shell { flex-direction: column; }
   .artwork { flex: none; padding: 24px 0 0; }

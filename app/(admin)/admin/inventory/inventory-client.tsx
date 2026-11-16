@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { toast } from "@/components/ui/toast";
+import { exportInventoryToCsv } from "@/services/inventory-service";
 import {
   type AdminProductRecord,
   type StockAdjustmentReason,
@@ -101,7 +102,9 @@ function AdjustStockModalInner({
   const projectedStock =
     adjustmentType === "ADD"
       ? product.stock + parsedQty
-      : Math.max(0, product.stock - parsedQty);
+      : adjustmentType === "REMOVE"
+        ? Math.max(0, product.stock - parsedQty)
+        : parsedQty;
   const projectedStatus = computeStockStatus(
     projectedStock,
     product.minThreshold,
@@ -114,13 +117,20 @@ function AdjustStockModalInner({
       setReason("Restock Shipment");
     } else if (type === "REMOVE" && reason === "Restock Shipment") {
       setReason("Damaged / Defective");
+    } else if (type === "SET") {
+      setReason("Inventory Audit Adjustment");
+      setQuantity(String(product.stock));
     }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!Number.isFinite(parsedQty) || parsedQty <= 0) {
+    if (adjustmentType !== "SET" && (!Number.isFinite(parsedQty) || parsedQty <= 0)) {
       setErrorMessage("Please enter a valid quantity greater than 0.");
+      return;
+    }
+    if (adjustmentType === "SET" && (!Number.isFinite(parsedQty) || parsedQty < 0)) {
+      setErrorMessage("Please enter a valid non-negative stock count.");
       return;
     }
     if (adjustmentType === "REMOVE" && product.stock === 0) {
@@ -137,8 +147,15 @@ function AdjustStockModalInner({
 
     if (result) {
       const updated = result.product;
+      const actionText =
+        adjustmentType === "ADD"
+          ? `Added ${parsedQty} units for`
+          : adjustmentType === "REMOVE"
+            ? `Removed ${parsedQty} units for`
+            : `Set stock to ${parsedQty} units for`;
+
       toast(
-        `${adjustmentType === "ADD" ? "Added" : "Removed"} ${parsedQty} units for ${updated.sku} (${product.stock} → ${updated.stock} units • ${reason}).`,
+        `${actionText} ${updated.sku} (${product.stock} → ${updated.stock} units • ${reason}).`,
         updated.status === "out-of-stock"
           ? "error"
           : updated.status === "low-stock"
@@ -265,28 +282,39 @@ function AdjustStockModalInner({
             <span className="mb-2 block text-xs font-medium text-[#BAC2DE]">
               Select Adjustment Type
             </span>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 onClick={() => handleSelectType("ADD")}
-                className={`flex items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-xs font-semibold transition-all ${
+                className={`flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-all ${
                   adjustmentType === "ADD"
                     ? "border-[#A6E3A1] bg-[#A6E3A1]/14 text-[#A6E3A1]"
                     : "border-[#313244] bg-[#181825] text-[#A6ADC8] hover:border-[#45475A] hover:text-[#CDD6F4]"
                 }`}
               >
-                <span>+ Add Stock (+)</span>
+                <span>+ Add Stock</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleSelectType("REMOVE")}
-                className={`flex items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-xs font-semibold transition-all ${
+                className={`flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-all ${
                   adjustmentType === "REMOVE"
                     ? "border-[#F38BA8] bg-[#F38BA8]/14 text-[#F38BA8]"
                     : "border-[#313244] bg-[#181825] text-[#A6ADC8] hover:border-[#45475A] hover:text-[#CDD6F4]"
                 }`}
               >
-                <span>− Remove Stock (-)</span>
+                <span>− Remove Stock</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelectType("SET")}
+                className={`flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-all ${
+                  adjustmentType === "SET"
+                    ? "border-[#89B4FA] bg-[#89B4FA]/14 text-[#89B4FA]"
+                    : "border-[#313244] bg-[#181825] text-[#A6ADC8] hover:border-[#45475A] hover:text-[#CDD6F4]"
+                }`}
+              >
+                <span>= Set Count</span>
               </button>
             </div>
           </div>
@@ -298,17 +326,17 @@ function AdjustStockModalInner({
                 htmlFor="adj-quantity"
                 className="text-xs font-medium text-[#BAC2DE]"
               >
-                Adjustment Quantity (Units) *
+                {adjustmentType === "SET" ? "Exact Stock Count (Units) *" : "Adjustment Quantity (Units) *"}
               </label>
               <div className="flex items-center gap-1.5">
-                {[5, 10, 25, 50].map((preset) => (
+                {(adjustmentType === "SET" ? [0, 10, 25, 50, 100] : [5, 10, 25, 50]).map((preset) => (
                   <button
                     key={preset}
                     type="button"
                     onClick={() => setQuantity(String(preset))}
                     className="rounded border border-[#313244] bg-[#181825] px-2 py-0.5 font-mono text-[11px] text-[#A6ADC8] transition-colors hover:border-[#89B4FA]/50 hover:text-[#89B4FA]"
                   >
-                    {adjustmentType === "ADD" ? `+${preset}` : `-${preset}`}
+                    {adjustmentType === "ADD" ? `+${preset}` : adjustmentType === "REMOVE" ? `-${preset}` : `${preset}`}
                   </button>
                 ))}
               </div>
@@ -316,7 +344,7 @@ function AdjustStockModalInner({
             <input
               id="adj-quantity"
               type="number"
-              min="1"
+              min="0"
               step="1"
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
@@ -395,9 +423,25 @@ export function InventoryClient() {
   }, []);
 
   const [activeStatusTab, setActiveStatusTab] = useState<StockFilterTab>("ALL");
+  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [adjustingProduct, setAdjustingProduct] =
     useState<AdminProductRecord | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [lastSyncedTime, setLastSyncedTime] = useState<string>("Just now");
+
+  const categories = useMemo(() => {
+    const set = new Set(products.map((p) => p.category));
+    return ["ALL", ...Array.from(set)];
+  }, [products]);
+
+  const handleRefresh = async () => {
+    setIsSyncing(true);
+    await syncAdminCatalogFromApi();
+    setIsSyncing(false);
+    setLastSyncedTime(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+    toast("Warehouse inventory synchronized with live database.", "info");
+  };
 
   // Stock Overview KPI metrics
   const overviewMetrics = useMemo(() => {
@@ -454,6 +498,9 @@ export function InventoryClient() {
       if (activeStatusTab !== "ALL" && liveStatus !== activeStatusTab) {
         return false;
       }
+      if (selectedCategory !== "ALL" && product.category !== selectedCategory) {
+        return false;
+      }
       if (!query) return true;
       return (
         product.sku.toLowerCase().includes(query) ||
@@ -461,7 +508,27 @@ export function InventoryClient() {
         product.category.toLowerCase().includes(query)
       );
     });
-  }, [products, activeStatusTab, searchQuery]);
+  }, [products, activeStatusTab, selectedCategory, searchQuery]);
+
+  const handleExportCsv = () => {
+    if (filteredProducts.length === 0) {
+      toast("No inventory products to export.", "warning");
+      return;
+    }
+    const exportableItems = filteredProducts.map((p) => ({
+      id: p.id,
+      sku: p.sku,
+      name: p.name,
+      category: p.category,
+      stock: p.stock,
+      minThreshold: p.minThreshold,
+      status: computeStockStatus(p.stock, p.minThreshold),
+      price: p.price,
+      updatedAt: p.updatedAt,
+    }));
+    exportInventoryToCsv(exportableItems);
+    toast(`Exported ${exportableItems.length} inventory records to CSV.`, "success");
+  };
 
   return (
     <div
@@ -476,6 +543,9 @@ export function InventoryClient() {
               <span className="h-1.5 w-1.5 rounded-full bg-[#94E2D5]" />
               WAREHOUSE &amp; SAFETY STOCK TELEMETRY
             </span>
+            <span className="font-mono text-[11px] text-[#A6ADC8]">
+              • Last synced: {lastSyncedTime}
+            </span>
           </div>
           <h1 className="mt-2 text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
             Inventory &amp; Stock Control
@@ -486,11 +556,56 @@ export function InventoryClient() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start rounded-xl border border-[#313244] bg-[#181825] px-3.5 py-2 sm:self-auto">
-          <span className="text-xs text-[#A6ADC8]">Est. Stock Valuation:</span>
-          <span className="font-mono text-sm font-bold text-[#94E2D5]">
-            {formatPrice(overviewMetrics.totalInventoryValuation)}
-          </span>
+        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
+          <div className="flex items-center gap-2 rounded-xl border border-[#313244] bg-[#181825] px-3.5 py-2">
+            <span className="text-xs text-[#A6ADC8]">Est. Stock Valuation:</span>
+            <span className="font-mono text-sm font-bold text-[#94E2D5]">
+              {formatPrice(overviewMetrics.totalInventoryValuation)}
+            </span>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="small"
+            disabled={isSyncing}
+            onClick={handleRefresh}
+            className="flex items-center gap-2"
+          >
+            <svg
+              aria-hidden="true"
+              className={`h-3.5 w-3.5 ${isSyncing ? "animate-spin" : ""}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
+            </svg>
+            <span>{isSyncing ? "Syncing..." : "Sync Warehouse"}</span>
+          </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            size="small"
+            onClick={handleExportCsv}
+            className="flex items-center gap-2"
+          >
+            <svg
+              aria-hidden="true"
+              className="h-3.5 w-3.5 text-[#94E2D5]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span>Export Stock CSV</span>
+          </Button>
         </div>
       </div>
 
@@ -641,38 +756,60 @@ export function InventoryClient() {
             })}
           </div>
 
-          {/* Search Input */}
-          <div className="relative w-full lg:max-w-xs">
-            <svg
-              aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[#A6ADC8]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search SKU, product name, category..."
-              aria-label="Search inventory SKUs"
-              className="h-9 w-full rounded-lg border border-[#313244] bg-[#181825] pr-8 pl-10 text-xs text-[#CDD6F4] placeholder-[#A6ADC8] transition-colors focus:border-[#89B4FA] focus:outline-none"
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                onClick={() => setSearchQuery("")}
-                aria-label="Clear search"
-                className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-0.5 text-[#A6ADC8] hover:text-[#CDD6F4]"
+          {/* Filters: Category Selector + Search Input */}
+          <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
+            {/* Category Filter Dropdown */}
+            <div className="relative">
+              <label htmlFor="inventory-cat-filter" className="sr-only">
+                Filter by category
+              </label>
+              <select
+                id="inventory-cat-filter"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="h-9 rounded-lg border border-[#313244] bg-[#181825] px-3 font-mono text-xs text-[#CDD6F4] focus:border-[#89B4FA] focus:outline-none"
               >
-                ✕
-              </button>
-            )}
+                {categories.map((c) => (
+                  <option key={c} value={c}>
+                    {c === "ALL" ? "All Categories" : c}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Search Input */}
+            <div className="relative w-full sm:w-64">
+              <svg
+                aria-hidden="true"
+                className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[#A6ADC8]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search SKU, product, category..."
+                aria-label="Search inventory SKUs"
+                className="h-9 w-full rounded-lg border border-[#313244] bg-[#181825] pr-8 pl-10 text-xs text-[#CDD6F4] placeholder-[#A6ADC8] transition-colors focus:border-[#89B4FA] focus:outline-none"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  aria-label="Clear search"
+                  className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-0.5 text-[#A6ADC8] hover:text-[#CDD6F4]"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </Surface>
