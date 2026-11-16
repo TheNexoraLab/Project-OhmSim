@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma/client';
 import { extractSession } from '@/lib/auth/session';
+import { CANONICAL_CUSTOMERS } from '@/lib/mocks/customers';
 
 function mapPrismaStatusToAdmin(status: string): 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED' {
   switch (status) {
@@ -62,6 +63,15 @@ export async function GET(
     });
 
     if (!user) {
+      const mockCustomer = CANONICAL_CUSTOMERS.find(
+        (c) => c.id === id || c.email.toLowerCase() === id.toLowerCase()
+      );
+      if (mockCustomer) {
+        return NextResponse.json({
+          success: true,
+          data: mockCustomer,
+        });
+      }
       return NextResponse.json(
         { error: 'Customer not found.' },
         { status: 404 }

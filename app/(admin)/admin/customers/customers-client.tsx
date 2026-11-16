@@ -2,59 +2,37 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { INITIAL_ORDERS } from "@/lib/mocks/orders";
-import { PRODUCTS as MOCK_PRODUCTS } from "@/lib/mocks/products";
-import { INITIAL_USER_PROFILE } from "@/lib/mocks/profile";
-import { INITIAL_SAVED_ADDRESSES } from "@/lib/mocks/addresses";
-import { formatDate, formatPrice } from "@/lib/format";
+import {
+  Users,
+  MapPin,
+  GraduationCap,
+  Search,
+  Mail,
+  Phone,
+  RefreshCw,
+  Download,
+  MessageSquare,
+  X,
+  ExternalLink,
+} from "lucide-react";
+import { formatDate } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
+import { toast } from "@/components/ui/toast";
 import { getCustomers } from "@/services/customer-service";
+import {
+  CANONICAL_CUSTOMERS,
+  type AdminCustomerRecord,
+  type CustomerOrderHistoryItem,
+  type AdminOrderStatusDisplay,
+} from "@/lib/mocks/customers";
 
-type AdminOrderStatusDisplay =
-  | "PENDING"
-  | "PROCESSING"
-  | "SHIPPED"
-  | "DELIVERED"
-  | "CANCELLED";
-
-interface CustomerOrderHistoryItem {
-  id: string;
-  orderNumber: string;
-  createdAt: string;
-  fulfillmentType: "DELIVERY" | "PICKUP";
-  paymentMethod: "COD" | "PAY_ON_PICKUP";
-  status: AdminOrderStatusDisplay;
-  totalAmount: number;
-  itemCount: number;
-  primarySkuSummary: string;
-  deliveryAddress: string;
-}
-
-export interface AdminCustomerRecord {
-  id: string;
-  name: string;
-  initials: string;
-  avatarColor: string;
-  email: string;
-  phone: string;
-  affiliation: string;
-  role: string;
-  province:
-    | "Pampanga"
-    | "Bulacan"
-    | "Nueva Ecija"
-    | "Bataan"
-    | "Tarlac"
-    | "Zambales";
-  cityMunicipality: string;
-  defaultAddress: string;
-  campusLabVerified: boolean;
-  activeCentralLuzon: boolean;
-  joinedAt: string;
-  orders: CustomerOrderHistoryItem[];
-}
+export type {
+  AdminCustomerRecord,
+  CustomerOrderHistoryItem,
+  AdminOrderStatusDisplay,
+};
 
 const ORDER_STATUS_STYLES: Record<
   AdminOrderStatusDisplay,
@@ -92,272 +70,22 @@ const ORDER_STATUS_STYLES: Record<
   },
 };
 
-function mapMockStatusToAdmin(status: string): AdminOrderStatusDisplay {
-  switch (status) {
-    case "PENDING":
-      return "PENDING";
-    case "PREPARING":
-      return "PROCESSING";
-    case "OUT_FOR_DELIVERY":
-    case "READY_FOR_PICKUP":
-      return "SHIPPED";
-    case "COMPLETED":
-      return "DELIVERED";
-    case "CANCELLED":
-      return "CANCELLED";
-    default:
-      return "PROCESSING";
-  }
+/**
+ * Format currency without monospace font collisions with the Philippine Peso glyph (₱).
+ */
+export function formatCurrencyDisplay(amount: number) {
+  return (
+    <span className="inline-flex items-baseline">
+      <span className="font-sans font-semibold text-[0.88em] mr-0.5">₱</span>
+      <span className="font-mono">
+        {amount.toLocaleString("en-PH", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </span>
+    </span>
+  );
 }
-
-function buildCustomersDataset(): AdminCustomerRecord[] {
-  const alexDefaultAddr =
-    INITIAL_SAVED_ADDRESSES.find((a) => a.isDefault) ??
-    INITIAL_SAVED_ADDRESSES[0];
-
-  const alexOrders: CustomerOrderHistoryItem[] = INITIAL_ORDERS.map((order) => {
-    const totalUnits = order.items.reduce((acc, item) => acc + item.qty, 0);
-    const firstItem = order.items[0];
-    const summary = firstItem
-      ? `${firstItem.productSku} (${firstItem.qty}x)${
-          order.items.length > 1 ? ` +${order.items.length - 1} more` : ""
-        }`
-      : "Hardware Kit";
-
-    return {
-      id: order.id,
-      orderNumber: `#${order.orderNumber}`,
-      createdAt: order.createdAt,
-      fulfillmentType: order.fulfillmentType,
-      paymentMethod: order.paymentMethod,
-      status: mapMockStatusToAdmin(order.status),
-      totalAmount: order.totalAmount,
-      itemCount: totalUnits,
-      primarySkuSummary: summary,
-      deliveryAddress:
-        order.deliveryAddress ??
-        "Designated Campus Electronics Lab / Store Station",
-    };
-  });
-
-  const esp32 = MOCK_PRODUCTS[0];
-  const uno = MOCK_PRODUCTS[1];
-  const oled = MOCK_PRODUCTS[2];
-  const resKit = MOCK_PRODUCTS[3];
-  const hcsr04 = MOCK_PRODUCTS[4];
-  const dht22 = MOCK_PRODUCTS[5];
-  const l298n = MOCK_PRODUCTS[6];
-
-  return [
-    {
-      id: "cust-alex-rivera",
-      name: `${INITIAL_USER_PROFILE.firstName} ${INITIAL_USER_PROFILE.lastName}`,
-      initials: "AR",
-      avatarColor: "#89B4FA",
-      email: INITIAL_USER_PROFILE.email,
-      phone: INITIAL_USER_PROFILE.mobile,
-      affiliation: INITIAL_USER_PROFILE.company || "MakerSpace PH",
-      role: INITIAL_USER_PROFILE.role || "Electronics Engineer",
-      province: "Pampanga",
-      cityMunicipality: alexDefaultAddr?.cityMunicipality || "San Fernando",
-      defaultAddress: alexDefaultAddr
-        ? `${alexDefaultAddr.streetAddress}, Brgy. ${alexDefaultAddr.barangay}, ${alexDefaultAddr.cityMunicipality}, ${alexDefaultAddr.province}, ${alexDefaultAddr.region}`
-        : "123 Rizal Ave, Dolores, San Fernando, Pampanga, Region III",
-      campusLabVerified: true,
-      activeCentralLuzon: true,
-      joinedAt: "2026-06-12T08:00:00Z",
-      orders: alexOrders,
-    },
-    {
-      id: "cust-camille-santos",
-      name: "Engr. Camille Santos",
-      initials: "CS",
-      avatarColor: "#94E2D5",
-      email: "c.santos@hau-ece-lab.edu.ph",
-      phone: "09183459912",
-      affiliation: "Holy Angel University — ECE Lab",
-      role: "Capstone Lab Coordinator",
-      province: "Pampanga",
-      cityMunicipality: "Angeles City",
-      defaultAddress:
-        "Campus Electronics Lab Station — Building 3, Room 204, Angeles City, Pampanga",
-      campusLabVerified: true,
-      activeCentralLuzon: true,
-      joinedAt: "2026-06-20T10:15:00Z",
-      orders: [
-        {
-          id: "o-cs-1",
-          orderNumber: "#OHM-2026-092",
-          createdAt: "2026-08-29T13:10:00Z",
-          fulfillmentType: "PICKUP",
-          paymentMethod: "PAY_ON_PICKUP",
-          status: "PENDING",
-          totalAmount: (esp32?.price ?? 285) * 4 + (oled?.price ?? 150) * 4,
-          itemCount: 8,
-          primarySkuSummary: `${esp32?.sku ?? "ESP32-WROOM-32U"} (4x) +1 more`,
-          deliveryAddress:
-            "Designated Campus Electronics Lab / Store Station (Building 3, Room 204)",
-        },
-        {
-          id: "o-cs-2",
-          orderNumber: "#OHM-2026-063",
-          createdAt: "2026-08-14T15:40:00Z",
-          fulfillmentType: "PICKUP",
-          paymentMethod: "PAY_ON_PICKUP",
-          status: "DELIVERED",
-          totalAmount: (uno?.price ?? 450) * 3 + (resKit?.price ?? 165) * 2,
-          itemCount: 5,
-          primarySkuSummary: `${uno?.sku ?? "ARD-UNO-R3-COMP"} (3x) +1 more`,
-          deliveryAddress:
-            "Designated Campus Electronics Lab / Store Station (Building 3, Room 204)",
-        },
-      ],
-    },
-    {
-      id: "cust-miguel-delacruz",
-      name: "Miguel Dela Cruz",
-      initials: "MD",
-      avatarColor: "#CBA6F7",
-      email: "miguel.delacruz@bulsu-mechatronics.ph",
-      phone: "09278810345",
-      affiliation: "BulSU Mechatronics & Robotics Society",
-      role: "Embedded Systems Lead",
-      province: "Bulacan",
-      cityMunicipality: "Malolos City",
-      defaultAddress:
-        "Capitol View Park Subd., Brgy. Guinhawa, Malolos City, Bulacan, Region III",
-      campusLabVerified: true,
-      activeCentralLuzon: true,
-      joinedAt: "2026-07-02T09:30:00Z",
-      orders: [
-        {
-          id: "o-md-1",
-          orderNumber: "#OHM-2026-084",
-          createdAt: "2026-08-25T11:20:00Z",
-          fulfillmentType: "DELIVERY",
-          paymentMethod: "COD",
-          status: "DELIVERED",
-          totalAmount: (l298n?.price ?? 120) * 6 + (hcsr04?.price ?? 75) * 6,
-          itemCount: 12,
-          primarySkuSummary: `${l298n?.sku ?? "L298N-DUAL-HBRIDGE"} (6x) +1 more`,
-          deliveryAddress:
-            "Capitol View Park Subd., Brgy. Guinhawa, Malolos City, Bulacan, Region III",
-        },
-        {
-          id: "o-md-2",
-          orderNumber: "#OHM-2026-049",
-          createdAt: "2026-08-04T16:05:00Z",
-          fulfillmentType: "DELIVERY",
-          paymentMethod: "COD",
-          status: "DELIVERED",
-          totalAmount: (uno?.price ?? 450) * 2 + 80,
-          itemCount: 2,
-          primarySkuSummary: `${uno?.sku ?? "ARD-UNO-R3-COMP"} (2x)`,
-          deliveryAddress:
-            "Capitol View Park Subd., Brgy. Guinhawa, Malolos City, Bulacan, Region III",
-        },
-      ],
-    },
-    {
-      id: "cust-jennifer-pangilinan",
-      name: "Jennifer Pangilinan",
-      initials: "JP",
-      avatarColor: "#F9E2AF",
-      email: "jpangilinan@clsu-agritech.org",
-      phone: "09175529088",
-      affiliation: "Nueva Ecija Smart Agri-Telemetry Lab",
-      role: "IoT Instrumentation Researcher",
-      province: "Nueva Ecija",
-      cityMunicipality: "Cabanatuan City",
-      defaultAddress:
-        "789 Maharlika Hwy, Brgy. Sumacab Este, Cabanatuan City, Nueva Ecija, Region III",
-      campusLabVerified: false,
-      activeCentralLuzon: true,
-      joinedAt: "2026-07-14T14:00:00Z",
-      orders: [
-        {
-          id: "o-jp-1",
-          orderNumber: "#OHM-2026-081",
-          createdAt: "2026-08-23T10:00:00Z",
-          fulfillmentType: "DELIVERY",
-          paymentMethod: "COD",
-          status: "SHIPPED",
-          totalAmount: (dht22?.price ?? 210) * 5 + (esp32?.price ?? 285) * 2,
-          itemCount: 7,
-          primarySkuSummary: `${dht22?.sku ?? "DHT22-SENSOR-MOD"} (5x) +1 more`,
-          deliveryAddress:
-            "789 Maharlika Hwy, Brgy. Sumacab Este, Cabanatuan City, Nueva Ecija, Region III",
-        },
-      ],
-    },
-    {
-      id: "cust-kenneth-galang",
-      name: "Kenneth Galang",
-      initials: "KG",
-      avatarColor: "#A6E3A1",
-      email: "k.galang@bpsu-robotics.edu.ph",
-      phone: "09984127760",
-      affiliation: "BPSU Embedded Prototyping Guild",
-      role: "Student Hardware Lead",
-      province: "Bataan",
-      cityMunicipality: "Balanga City",
-      defaultAddress:
-        "Don Manuel Banzon Ave, Brgy. Poblacion, Balanga City, Bataan, Region III",
-      campusLabVerified: true,
-      activeCentralLuzon: true,
-      joinedAt: "2026-07-22T11:45:00Z",
-      orders: [
-        {
-          id: "o-kg-1",
-          orderNumber: "#OHM-2026-069",
-          createdAt: "2026-08-18T09:15:00Z",
-          fulfillmentType: "DELIVERY",
-          paymentMethod: "COD",
-          status: "DELIVERED",
-          totalAmount: (esp32?.price ?? 285) * 3 + (resKit?.price ?? 165) + 80,
-          itemCount: 4,
-          primarySkuSummary: `${esp32?.sku ?? "ESP32-WROOM-32U"} (3x) +1 more`,
-          deliveryAddress:
-            "Don Manuel Banzon Ave, Brgy. Poblacion, Balanga City, Bataan, Region III",
-        },
-      ],
-    },
-    {
-      id: "cust-trisha-mendoza",
-      name: "Trisha Mendoza",
-      initials: "TM",
-      avatarColor: "#74C7EC",
-      email: "trisha.mendoza@tsu-automation.ph",
-      phone: "09156093321",
-      affiliation: "Tarlac Industrial PCB Fab Studio",
-      role: "Hardware Test Engineer",
-      province: "Tarlac",
-      cityMunicipality: "Tarlac City",
-      defaultAddress:
-        "Romulo Blvd, Brgy. San Vicente, Tarlac City, Tarlac, Region III",
-      campusLabVerified: false,
-      activeCentralLuzon: true,
-      joinedAt: "2026-08-01T13:20:00Z",
-      orders: [
-        {
-          id: "o-tm-1",
-          orderNumber: "#OHM-2026-077",
-          createdAt: "2026-08-22T17:30:00Z",
-          fulfillmentType: "DELIVERY",
-          paymentMethod: "COD",
-          status: "PROCESSING",
-          totalAmount: (oled?.price ?? 150) * 4 + (hcsr04?.price ?? 75) * 4 + 80,
-          itemCount: 8,
-          primarySkuSummary: `${oled?.sku ?? "OLED-096-I2C-BLU"} (4x) +1 more`,
-          deliveryAddress:
-            "Romulo Blvd, Brgy. San Vicente, Tarlac City, Tarlac, Region III",
-        },
-      ],
-    },
-  ];
-}
-
-const INITIAL_CUSTOMERS = buildCustomersDataset();
 
 type CustomerSegmentFilter = "ALL" | "CAMPUS_VERIFIED" | "REGION_III";
 
@@ -385,19 +113,24 @@ function CustomerDetailDrawer({
     .filter((o) => o.status !== "CANCELLED")
     .reduce((sum, o) => sum + o.totalAmount, 0);
 
+  const nonCancelledCount = customer.orders.filter(
+    (o) => o.status !== "CANCELLED"
+  ).length;
+  const aov = nonCancelledCount > 0 ? validSpend / nonCancelledCount : 0;
+
   return (
-    <div className="fixed inset-0 z-50 flex justify-end bg-black/75 backdrop-blur-xs">
+    <div className="fixed inset-0 z-50 flex justify-end bg-black/75 backdrop-blur-xs animate-in fade-in duration-200">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="customer-drawer-title"
-        className="flex h-full w-full max-w-2xl flex-col border-l border-[#45475A] bg-[#1E1E2E] shadow-2xl"
+        className="flex h-full w-full max-w-2xl flex-col border-l border-[#45475A] bg-[#1E1E2E] shadow-2xl animate-in slide-in-from-right duration-250"
       >
         {/* Drawer Header */}
         <div className="flex items-center justify-between border-b border-[#313244] bg-[#181825] px-6 py-4">
           <div className="flex items-center gap-3.5">
             <div
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-bold text-[#11111B]"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-extrabold text-[#11111B] shadow-xs"
               style={{ backgroundColor: customer.avatarColor }}
             >
               {customer.initials}
@@ -411,12 +144,12 @@ function CustomerDetailDrawer({
                   {customer.name}
                 </h2>
                 {customer.campusLabVerified && (
-                  <span className="rounded-full border border-[#94E2D5]/30 bg-[#94E2D5]/12 px-2 py-0.5 font-mono text-[10px] font-semibold text-[#94E2D5]">
+                  <span className="rounded-full border border-[#94E2D5]/35 bg-[#94E2D5]/15 px-2 py-0.5 font-mono text-[10px] font-bold text-[#94E2D5]">
                     CAMPUS LAB VERIFIED
                   </span>
                 )}
               </div>
-              <p className="text-xs text-[#A6ADC8]">
+              <p className="text-xs text-[#A6ADC8] mt-0.5">
                 {customer.affiliation} • {customer.role}
               </p>
             </div>
@@ -428,32 +161,38 @@ function CustomerDetailDrawer({
             aria-label="Close customer drawer"
             className="rounded-lg border border-transparent p-1.5 text-[#A6ADC8] transition-colors hover:border-[#313244] hover:bg-[#1E1E2E] hover:text-[#CDD6F4]"
           >
-            ✕
+            <X size={18} />
           </button>
         </div>
 
         {/* Drawer Body */}
-        <div className="flex-1 space-y-6 overflow-y-auto p-6">
+        <div className="flex-1 space-y-5 overflow-y-auto p-6">
           {/* Contact & Default Delivery Address Cards */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <div className="rounded-xl border border-[#313244] bg-[#181825] p-4">
-              <p className="text-[11px] font-semibold tracking-wider text-[#A6ADC8] uppercase">
+              <p className="text-[10px] font-bold tracking-wider text-[#A6ADC8] uppercase">
                 Customer Contact Details
               </p>
-              <div className="mt-3 space-y-2 text-xs">
+              <div className="mt-3 space-y-2.5 text-xs">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[#A6ADC8]">Email:</span>
-                  <span className="font-mono text-[#CDD6F4]">
+                  <span className="text-[#A6ADC8] flex items-center gap-1.5">
+                    <Mail size={12} />
+                    <span>Email:</span>
+                  </span>
+                  <span className="font-mono text-[#CDD6F4] text-[11px] truncate">
                     {customer.email}
                   </span>
                 </div>
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[#A6ADC8]">Mobile (SMS/COD):</span>
-                  <span className="font-mono text-[#89B4FA]">
+                  <span className="text-[#A6ADC8] flex items-center gap-1.5">
+                    <Phone size={12} />
+                    <span>Mobile (COD):</span>
+                  </span>
+                  <span className="font-mono text-[#89B4FA] text-[11px]">
                     {customer.phone}
                   </span>
                 </div>
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center justify-between gap-2 border-t border-[#313244]/60 pt-2 text-[11px]">
                   <span className="text-[#A6ADC8]">Member Since:</span>
                   <span className="text-[#BAC2DE]">
                     {formatDate(customer.joinedAt)}
@@ -464,17 +203,19 @@ function CustomerDetailDrawer({
 
             <div className="rounded-xl border border-[#313244] bg-[#181825] p-4">
               <div className="flex items-center justify-between">
-                <p className="text-[11px] font-semibold tracking-wider text-[#A6ADC8] uppercase">
-                  Default Delivery / Hub Address
+                <p className="text-[10px] font-bold tracking-wider text-[#A6ADC8] uppercase flex items-center gap-1.5">
+                  <MapPin size={12} />
+                  <span>Campus Lab / Delivery Hub</span>
                 </p>
-                <span className="rounded border border-[#89B4FA]/30 bg-[#89B4FA]/12 px-1.5 py-0.5 font-mono text-[10px] text-[#89B4FA]">
+                <span className="rounded-full border border-[#89B4FA]/30 bg-[#89B4FA]/15 px-2 py-0.5 font-mono text-[9.5px] font-bold text-[#89B4FA]">
                   {customer.province}
                 </span>
               </div>
               <p className="mt-2.5 text-xs leading-relaxed text-[#CDD6F4]">
                 {customer.defaultAddress}
               </p>
-              <p className="mt-2 font-mono text-[11px] text-[#94E2D5]">
+              <p className="mt-2.5 font-mono text-[10px] text-[#94E2D5] flex items-center gap-1 border-t border-[#313244]/60 pt-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#94E2D5]" />
                 Region III Central Luzon Coverage Verified
               </p>
             </div>
@@ -483,37 +224,27 @@ function CustomerDetailDrawer({
           {/* Spend & Order Summary Strip */}
           <div className="grid grid-cols-3 gap-3 rounded-xl border border-[#313244] bg-[#11111B] p-4 text-center">
             <div>
-              <p className="text-[10px] font-semibold tracking-wider text-[#A6ADC8] uppercase">
-                Total Orders Placed
+              <p className="text-[10px] font-bold tracking-wider text-[#A6ADC8] uppercase">
+                Orders Placed
               </p>
-              <p className="mt-1 font-mono text-lg font-bold text-[#CDD6F4]">
+              <p className="mt-1 font-mono text-xl font-bold text-[#CDD6F4]">
                 {customer.orders.length}
               </p>
             </div>
             <div>
-              <p className="text-[10px] font-semibold tracking-wider text-[#A6ADC8] uppercase">
+              <p className="text-[10px] font-bold tracking-wider text-[#A6ADC8] uppercase">
                 Lifetime Spend
               </p>
-              <p className="mt-1 font-mono text-lg font-bold text-[#A6E3A1]">
-                {formatPrice(validSpend)}
+              <p className="mt-1 font-bold text-xl text-[#A6E3A1]">
+                {formatCurrencyDisplay(validSpend)}
               </p>
             </div>
             <div>
-              <p className="text-[10px] font-semibold tracking-wider text-[#A6ADC8] uppercase">
+              <p className="text-[10px] font-bold tracking-wider text-[#A6ADC8] uppercase">
                 Avg. Order Value
               </p>
-              <p className="mt-1 font-mono text-lg font-bold text-[#89B4FA]">
-                {formatPrice(
-                  customer.orders.length > 0
-                    ? validSpend /
-                        Math.max(
-                          1,
-                          customer.orders.filter(
-                            (o) => o.status !== "CANCELLED",
-                          ).length,
-                        )
-                    : 0,
-                )}
+              <p className="mt-1 font-bold text-xl text-[#89B4FA]">
+                {formatCurrencyDisplay(aov)}
               </p>
             </div>
           </div>
@@ -521,74 +252,82 @@ function CustomerDetailDrawer({
           {/* Order History List */}
           <div>
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-[#CDD6F4]">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#CDD6F4]">
                 Customer Order History ({customer.orders.length})
               </h3>
               <Link
                 href="/admin/orders"
                 prefetch={false}
-                className="text-xs font-semibold text-[#89B4FA] hover:underline"
+                className="text-xs font-semibold text-[#89B4FA] hover:underline flex items-center gap-1"
               >
-                Open Full Orders Manager →
+                <span>Open Orders Manager</span>
+                <ExternalLink size={12} />
               </Link>
             </div>
 
-            <div className="space-y-3">
-              {customer.orders.map((order) => {
-                const badgeStyle = ORDER_STATUS_STYLES[order.status];
-                return (
-                  <div
-                    key={order.id}
-                    className="rounded-xl border border-[#313244] bg-[#181825] p-4 transition-colors hover:border-[#45475A]"
-                  >
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex items-center gap-2.5">
-                        <span className="font-mono text-sm font-bold text-[#89B4FA]">
-                          {order.orderNumber}
-                        </span>
-                        <span
-                          className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono text-[11px] font-semibold"
-                          style={{
-                            color: badgeStyle.color,
-                            backgroundColor: badgeStyle.bg,
-                            border: `1px solid ${badgeStyle.border}`,
-                          }}
-                        >
+            <div className="space-y-2.5">
+              {customer.orders.length === 0 ? (
+                <div className="rounded-xl border border-[#313244] bg-[#181825] p-6 text-center text-xs text-[#A6ADC8]">
+                  No orders recorded yet for this customer account.
+                </div>
+              ) : (
+                customer.orders.map((order) => {
+                  const badgeStyle = ORDER_STATUS_STYLES[order.status];
+                  return (
+                    <div
+                      key={order.id}
+                      className="rounded-xl border border-[#313244] bg-[#181825] p-3.5 transition-colors hover:border-[#45475A]"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-xs font-bold text-[#89B4FA]">
+                            {order.orderNumber}
+                          </span>
                           <span
-                            className="h-1.5 w-1.5 rounded-full"
-                            style={{ backgroundColor: badgeStyle.color }}
-                          />
-                          {badgeStyle.label}
+                            className="inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-mono text-[10px] font-bold uppercase"
+                            style={{
+                              color: badgeStyle.color,
+                              backgroundColor: badgeStyle.bg,
+                              border: `1px solid ${badgeStyle.border}`,
+                            }}
+                          >
+                            <span
+                              className="h-1.5 w-1.5 rounded-full"
+                              style={{ backgroundColor: badgeStyle.color }}
+                            />
+                            {badgeStyle.label}
+                          </span>
+                        </div>
+
+                        <span className="font-bold text-xs text-[#CDD6F4]">
+                          {formatCurrencyDisplay(order.totalAmount)}
                         </span>
                       </div>
 
-                      <span className="font-mono text-sm font-bold text-[#CDD6F4]">
-                        {formatPrice(order.totalAmount)}
-                      </span>
-                    </div>
+                      <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-[#BAC2DE]">
+                        <span>{order.primarySkuSummary}</span>
+                        <span className="text-[11px] text-[#A6ADC8]">
+                          {formatDate(order.createdAt)}
+                        </span>
+                      </div>
 
-                    <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-xs text-[#BAC2DE]">
-                      <span>{order.primarySkuSummary}</span>
-                      <span className="text-[#A6ADC8]">
-                        {formatDate(order.createdAt)}
-                      </span>
+                      <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 border-t border-[#313244]/70 pt-2 text-[11px] text-[#A6ADC8]">
+                        <span className="flex items-center gap-1">
+                          <MapPin size={10} className="text-[#94E2D5]" />
+                          <span>
+                            {order.fulfillmentType === "PICKUP"
+                              ? "Campus Lab Station (Bldg 3, Rm 204)"
+                              : "Region III Delivery"}
+                          </span>
+                        </span>
+                        <span className="font-mono text-[10.5px] text-[#BAC2DE]">
+                          {order.paymentMethod === "COD" ? "COD" : "Pay on Pickup"}
+                        </span>
+                      </div>
                     </div>
-
-                    <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 border-t border-[#313244]/70 pt-2.5 text-[11px] text-[#A6ADC8]">
-                      <span>
-                        {order.fulfillmentType === "PICKUP"
-                          ? "Store / Lab Pickup (₱0.00)"
-                          : "Region III Delivery"}
-                      </span>
-                      <span className="font-mono text-[#BAC2DE]">
-                        {order.paymentMethod === "COD"
-                          ? "Cash on Delivery (COD)"
-                          : "Pay on Pickup"}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           </div>
         </div>
@@ -598,15 +337,17 @@ function CustomerDetailDrawer({
           <Link
             href="/admin/chat"
             prefetch={false}
-            className="text-xs font-semibold text-[#94E2D5] hover:underline"
+            className="text-xs font-semibold text-[#89B4FA] hover:underline flex items-center gap-1.5"
           >
-            Message Buyer in Support Chat →
+            <MessageSquare size={13} />
+            <span>Message Buyer in Support Chat</span>
           </Link>
           <Button
             type="button"
             variant="outline"
-            size="small"
+            size="compact"
             onClick={onClose}
+            className="text-xs font-semibold px-3 h-8"
           >
             Close Inspector
           </Button>
@@ -617,20 +358,21 @@ function CustomerDetailDrawer({
 }
 
 export function CustomersClient() {
-  const [customers, setCustomers] = useState<AdminCustomerRecord[]>(INITIAL_CUSTOMERS);
+  const [customers, setCustomers] = useState<AdminCustomerRecord[]>(CANONICAL_CUSTOMERS);
   const [searchQuery, setSearchQuery] = useState("");
-  const [segmentFilter, setSegmentFilter] =
-    useState<CustomerSegmentFilter>("ALL");
-  const [selectedCustomer, setSelectedCustomer] =
-    useState<AdminCustomerRecord | null>(null);
+  const [segmentFilter, setSegmentFilter] = useState<CustomerSegmentFilter>("ALL");
+  const [selectedCustomer, setSelectedCustomer] = useState<AdminCustomerRecord | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     let ignore = false;
-    getCustomers().then((live) => {
-      if (!ignore && live && live.length > 0) {
-        setCustomers(live);
-      }
-    });
+    getCustomers()
+      .then((live) => {
+        if (!ignore && live && live.length > 0) {
+          setCustomers(live);
+        }
+      })
+      .catch(() => {});
     return () => {
       ignore = true;
     };
@@ -638,12 +380,8 @@ export function CustomersClient() {
 
   const overviewStats = useMemo(() => {
     const totalBuyers = customers.length;
-    const activeCentralLuzon = customers.filter(
-      (c) => c.activeCentralLuzon,
-    ).length;
-    const campusLabVerified = customers.filter(
-      (c) => c.campusLabVerified,
-    ).length;
+    const activeCentralLuzon = customers.filter((c) => c.activeCentralLuzon).length;
+    const campusLabVerified = customers.filter((c) => c.campusLabVerified).length;
 
     return {
       totalBuyers,
@@ -655,10 +393,7 @@ export function CustomersClient() {
   const filteredCustomers = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     return customers.filter((customer) => {
-      if (
-        segmentFilter === "CAMPUS_VERIFIED" &&
-        !customer.campusLabVerified
-      ) {
+      if (segmentFilter === "CAMPUS_VERIFIED" && !customer.campusLabVerified) {
         return false;
       }
       if (segmentFilter === "REGION_III" && !customer.activeCentralLuzon) {
@@ -670,161 +405,259 @@ export function CustomersClient() {
         customer.email.toLowerCase().includes(q) ||
         customer.province.toLowerCase().includes(q) ||
         customer.cityMunicipality.toLowerCase().includes(q) ||
-        customer.affiliation.toLowerCase().includes(q)
+        customer.affiliation.toLowerCase().includes(q) ||
+        customer.role.toLowerCase().includes(q)
       );
     });
   }, [searchQuery, segmentFilter, customers]);
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    try {
+      const live = await getCustomers();
+      if (live && live.length > 0) {
+        setCustomers(live);
+      }
+    } catch {
+      // Keep existing customers on error
+    } finally {
+      setIsRefreshing(false);
+      toast(
+        "Customer database and regional account records synchronized.",
+        "success"
+      );
+    }
+  };
+
+  const handleExportCsv = () => {
+    const headers = [
+      "Customer ID",
+      "Name",
+      "Email",
+      "Phone",
+      "Affiliation",
+      "Role",
+      "Province",
+      "City",
+      "Campus Lab Verified",
+      "Total Orders",
+      "Lifetime Spend (PHP)",
+    ];
+
+    const rows = filteredCustomers.map((c) => {
+      const spend = c.orders
+        .filter((o) => o.status !== "CANCELLED")
+        .reduce((sum, o) => sum + o.totalAmount, 0);
+      return [
+        `"${c.id}"`,
+        `"${c.name}"`,
+        `"${c.email}"`,
+        `"${c.phone}"`,
+        `"${c.affiliation}"`,
+        `"${c.role}"`,
+        `"${c.province}"`,
+        `"${c.cityMunicipality}"`,
+        `"${c.campusLabVerified ? "Yes" : "No"}"`,
+        c.orders.length,
+        spend.toFixed(2),
+      ].join(",");
+    });
+
+    const csvContent = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", "ohmsim_customers_directory.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast(
+      `Exported ${filteredCustomers.length} customer records to CSV.`,
+      "success"
+    );
+  };
+
   return (
-    <div
-      data-testid="admin-customers-page"
-      className="mx-auto flex w-full max-w-[1600px] flex-col gap-6"
-    >
-      {/* Page Header */}
-      <div className="flex flex-col gap-4 border-b border-[#313244] pb-2 sm:flex-row sm:items-center sm:justify-between">
+    <div data-testid="admin-customers-page" className="flex flex-col gap-5 w-full">
+      {/* 1. Page Header */}
+      <div className="admin-page-header flex flex-col gap-3 pb-1 border-b border-[#313244] sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[#89B4FA]/30 bg-[#89B4FA]/12 px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider text-[#89B4FA] uppercase">
               <span className="h-1.5 w-1.5 rounded-full bg-[#89B4FA]" />
-              CENTRAL LUZON BUYER DIRECTORY
+              FE-A04 · BUYER &amp; LAB DIRECTORY
+            </span>
+            <span className="text-xs text-[#A6ADC8] hidden md:inline">
+              Central Luzon Hardware Engineers &amp; University Research Labs
             </span>
           </div>
-          <h1 className="mt-2 text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
+          <h1 className="mt-1.5 text-xl sm:text-2xl font-bold tracking-tight text-[#CDD6F4]">
             Customers &amp; Lab Accounts
           </h1>
         </div>
+
+        <div className="flex items-center gap-2">
+          <Button
+            type="button"
+            variant="surface"
+            size="compact"
+            onClick={handleExportCsv}
+            className="text-xs font-semibold gap-1.5 h-8"
+          >
+            <Download size={13} />
+            <span>Export Directory CSV</span>
+          </Button>
+
+          <Button
+            type="button"
+            variant="surface"
+            size="compact"
+            onClick={handleRefresh}
+            className="text-xs font-semibold gap-1.5 h-8"
+          >
+            <RefreshCw size={13} className={isRefreshing ? "animate-spin" : ""} />
+            <span>Sync Directory</span>
+          </Button>
+        </div>
       </div>
 
-      {/* Customer Overview Cards (3 Cards) */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Surface
-          variant="panel"
-          className="border border-[#313244] bg-[#1E1E2E] p-4"
-        >
+      {/* 2. Customer Overview Stat Cards (3 Cards) */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {/* Card 1: Total Registered Buyers */}
+        <Surface variant="panel" className="border border-[#313244] bg-[#1E1E2E] p-4 rounded-xl">
           <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-semibold tracking-wider text-[#A6ADC8] uppercase">
-                Total Registered Buyers
-              </p>
-              <p className="mt-2 font-mono text-2xl font-bold text-[#CDD6F4]">
-                {overviewStats.totalBuyers}
-              </p>
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-lg bg-[#89B4FA]/12 border border-[#89B4FA]/25 flex items-center justify-center text-[#89B4FA]">
+                <Users size={17} />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold tracking-wider text-[#A6ADC8] uppercase">
+                  Total Registered Buyers
+                </p>
+                <p className="font-mono text-2xl font-bold text-[#CDD6F4] mt-0.5">
+                  {overviewStats.totalBuyers}
+                </p>
+              </div>
             </div>
-            <Badge variant="primary" className="font-mono">
+            <Badge variant="primary" className="font-mono text-[10px] uppercase">
               ACCOUNTS
             </Badge>
           </div>
-          <p className="mt-3 text-xs text-[#A6ADC8]">
+          <p className="mt-3 text-xs text-[#A6ADC8] border-t border-[#313244]/60 pt-2.5">
             Verified individual engineers, students &amp; university labs
           </p>
         </Surface>
 
-        <Surface
-          variant="panel"
-          className="border border-[#313244] bg-[#1E1E2E] p-4"
-        >
+        {/* Card 2: Active Central Luzon Accounts */}
+        <Surface variant="panel" className="border border-[#313244] bg-[#1E1E2E] p-4 rounded-xl">
           <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-semibold tracking-wider text-[#A6ADC8] uppercase">
-                Active Central Luzon Accounts
-              </p>
-              <p className="mt-2 font-mono text-2xl font-bold text-[#89B4FA]">
-                {overviewStats.activeCentralLuzon}
-              </p>
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-lg bg-[#89B4FA]/12 border border-[#89B4FA]/25 flex items-center justify-center text-[#89B4FA]">
+                <MapPin size={17} />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold tracking-wider text-[#A6ADC8] uppercase">
+                  Active Central Luzon
+                </p>
+                <p className="font-mono text-2xl font-bold text-[#89B4FA] mt-0.5">
+                  {overviewStats.activeCentralLuzon}
+                </p>
+              </div>
             </div>
-            <Badge variant="secondary" className="font-mono">
+            <Badge variant="secondary" className="font-mono text-[10px] uppercase">
               REGION III
             </Badge>
           </div>
-          <p className="mt-3 text-xs text-[#A6ADC8]">
+          <p className="mt-3 text-xs text-[#A6ADC8] border-t border-[#313244]/60 pt-2.5">
             Pampanga, Bulacan, Nueva Ecija, Bataan &amp; Tarlac coverage
           </p>
         </Surface>
 
-        <Surface
-          variant="panel"
-          className="border border-[#313244] bg-[#1E1E2E] p-4"
-        >
+        {/* Card 3: Campus Lab Verified */}
+        <Surface variant="panel" className="border border-[#313244] bg-[#1E1E2E] p-4 rounded-xl">
           <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-semibold tracking-wider text-[#A6ADC8] uppercase">
-                Campus Lab Verified
-              </p>
-              <p className="mt-2 font-mono text-2xl font-bold text-[#94E2D5]">
-                {overviewStats.campusLabVerified}
-              </p>
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-lg bg-[#94E2D5]/12 border border-[#94E2D5]/25 flex items-center justify-center text-[#94E2D5]">
+                <GraduationCap size={17} />
+              </div>
+              <div>
+                <p className="text-[11px] font-bold tracking-wider text-[#A6ADC8] uppercase">
+                  Campus Lab Verified
+                </p>
+                <p className="font-mono text-2xl font-bold text-[#94E2D5] mt-0.5">
+                  {overviewStats.campusLabVerified}
+                </p>
+              </div>
             </div>
-            <Badge variant="success" className="font-mono">
+            <Badge variant="success" className="font-mono text-[10px] uppercase">
               LAB VERIFIED
             </Badge>
           </div>
-          <p className="mt-3 text-xs text-[#A6ADC8]">
+          <p className="mt-3 text-xs text-[#A6ADC8] border-t border-[#313244]/60 pt-2.5">
             Eligible for Building 3, Room 204 Store / Lab Station pickup
           </p>
         </Surface>
       </div>
 
-      {/* Search & Segment Filter Bar */}
-      <Surface
-        variant="panel"
-        className="border border-[#313244] bg-[#1E1E2E] p-4"
-      >
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-wrap items-center gap-2">
-            {(
-              [
-                { id: "ALL", label: "All Registered Buyers" },
-                { id: "CAMPUS_VERIFIED", label: "Campus Lab Verified" },
-                { id: "REGION_III", label: "Central Luzon (Region III)" },
-              ] as const
-            ).map((tab) => {
+      {/* 3. Search & Segment Filter Bar (Matching Orders & Catalog Sleek Segmented Control) */}
+      <Surface variant="panel" className="border border-[#313244] bg-[#1E1E2E] p-3 rounded-xl">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="inline-flex items-center gap-1 p-1 bg-[#181825] border border-[#313244] rounded-xl overflow-x-auto no-scrollbar">
+            {[
+              { id: "ALL", label: "All Buyers", count: customers.length },
+              {
+                id: "CAMPUS_VERIFIED",
+                label: "Campus Lab Verified",
+                count: overviewStats.campusLabVerified,
+              },
+              {
+                id: "REGION_III",
+                label: "Central Luzon (Region III)",
+                count: overviewStats.activeCentralLuzon,
+              },
+            ].map((tab) => {
               const isActive = segmentFilter === tab.id;
               return (
                 <button
                   key={tab.id}
                   type="button"
-                  onClick={() => setSegmentFilter(tab.id)}
-                  style={
+                  onClick={() => setSegmentFilter(tab.id as CustomerSegmentFilter)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                     isActive
-                      ? {
-                          color: "#89B4FA",
-                          backgroundColor: "rgba(137, 180, 250, 0.14)",
-                          borderColor: "rgba(137, 180, 250, 0.45)",
-                        }
-                      : undefined
-                  }
-                  className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all ${
-                    isActive
-                      ? "shadow-xs"
-                      : "border-[#313244] bg-[#181825] text-[#A6ADC8] hover:border-[#45475A] hover:text-[#CDD6F4]"
+                      ? "bg-[#89B4FA] text-[#11111B] shadow-xs"
+                      : "text-[#A6ADC8] hover:text-[#CDD6F4] hover:bg-[#1E1E2E]"
                   }`}
                 >
-                  {tab.label}
+                  <span>{tab.label}</span>
+                  <span
+                    className={`px-1.5 py-0.2 rounded-full text-[10px] font-mono font-bold ${
+                      isActive
+                        ? "bg-[#11111B]/20 text-[#11111B]"
+                        : "bg-[#313244] text-[#BAC2DE]"
+                    }`}
+                  >
+                    {tab.count}
+                  </span>
                 </button>
               );
             })}
           </div>
 
-          <div className="relative w-full lg:max-w-sm">
-            <svg
-              aria-hidden="true"
-              className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[#A6ADC8]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
+          <div className="relative w-full md:max-w-xs">
+            <Search
+              size={14}
+              className="text-[#A6ADC8] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+            />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by Name, Email, or City/Province..."
-              aria-label="Search customers by Name, Email, or City/Province"
-              className="h-9 w-full rounded-lg border border-[#313244] bg-[#181825] pr-8 pl-10 text-xs text-[#CDD6F4] placeholder-[#A6ADC8] transition-colors focus:border-[#89B4FA] focus:outline-none"
+              placeholder="Search name, email, lab, or city..."
+              aria-label="Search customers"
+              className="h-8.5 w-full rounded-lg border border-[#313244] bg-[#181825] pr-8 pl-9 text-xs text-[#CDD6F4] placeholder-[#A6ADC8] transition-colors focus:border-[#89B4FA] focus:outline-none"
             />
             {searchQuery && (
               <button
@@ -833,43 +666,51 @@ export function CustomersClient() {
                 aria-label="Clear search"
                 className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-0.5 text-[#A6ADC8] hover:text-[#CDD6F4]"
               >
-                ✕
+                <X size={12} />
               </button>
             )}
           </div>
         </div>
       </Surface>
 
-      {/* Customers Master Table */}
+      {/* 4. Customers Master Table */}
       <Surface
         variant="panel"
-        className="overflow-hidden border border-[#313244] bg-[#1E1E2E] p-0"
+        className="overflow-hidden border border-[#313244] bg-[#1E1E2E] rounded-xl shadow-md p-0"
       >
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-[#313244] bg-[#181825] text-[11px] font-semibold tracking-wider text-[#A6ADC8] uppercase">
-                <th className="px-4 py-3.5">Customer Name &amp; Avatar</th>
-                <th className="px-4 py-3.5">Email</th>
-                <th className="px-4 py-3.5">Phone</th>
-                <th className="px-4 py-3.5">
-                  Region III Province / Campus Address
+              <tr className="bg-[#181825] border-b border-[#313244] text-[10px] font-bold uppercase tracking-wider text-[#A6ADC8]">
+                <th scope="col" className="py-3 pl-4 pr-2">
+                  Customer
                 </th>
-                <th className="px-4 py-3.5 text-center">Total Orders Placed</th>
-                <th className="px-4 py-3.5 text-right">Total Lifetime Spend</th>
-                <th className="px-4 py-3.5 text-right">Actions</th>
+                <th scope="col" className="py-3 px-2.5">
+                  Contact
+                </th>
+                <th scope="col" className="py-3 px-2.5">
+                  Location &amp; Campus Lab
+                </th>
+                <th scope="col" className="py-3 px-2 text-center">
+                  Orders
+                </th>
+                <th scope="col" className="py-3 px-2.5 text-right">
+                  Lifetime Spend
+                </th>
+                <th scope="col" className="py-3 pl-1.5 pr-3.5 text-right">
+                  Action
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#313244]/60 text-sm">
+            <tbody className="divide-y divide-[#313244]/60 text-xs">
               {filteredCustomers.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center">
+                  <td colSpan={6} className="px-6 py-12 text-center">
                     <p className="text-sm font-semibold text-[#CDD6F4]">
                       No matching customers found
                     </p>
                     <p className="mt-1 text-xs text-[#A6ADC8]">
-                      Try clearing your search filter or selecting All
-                      Registered Buyers.
+                      Try adjusting your search query or selecting &quot;All Buyers&quot;.
                     </p>
                   </td>
                 </tr>
@@ -883,92 +724,120 @@ export function CustomersClient() {
                     <tr
                       key={customer.id}
                       onClick={() => setSelectedCustomer(customer)}
-                      className="cursor-pointer transition-colors hover:bg-[#181825]/80"
+                      className="cursor-pointer transition-colors hover:bg-[#181825]/70"
                     >
-                      {/* Customer Name & Avatar */}
-                      <td className="px-4 py-3.5">
-                        <div className="flex items-center gap-3">
+                      {/* 1. Customer */}
+                      <td className="py-3.5 pl-4 pr-2">
+                        <div className="flex items-center gap-2.5">
                           <div
-                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-bold text-[#11111B]"
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-mono text-xs font-extrabold text-[#11111B] shadow-xs"
                             style={{ backgroundColor: customer.avatarColor }}
                           >
                             {customer.initials}
                           </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-semibold text-[#CDD6F4]">
+                          <div className="min-w-0 max-w-[175px]">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-semibold text-xs text-[#CDD6F4] truncate">
                                 {customer.name}
                               </span>
                               {customer.campusLabVerified && (
-                                <span className="rounded border border-[#94E2D5]/30 bg-[#94E2D5]/10 px-1.5 py-0.2 font-mono text-[10px] font-semibold text-[#94E2D5]">
+                                <span className="rounded-full border border-[#94E2D5]/35 bg-[#94E2D5]/15 px-1.5 py-0.2 font-mono text-[8.5px] font-bold text-[#94E2D5] shrink-0">
                                   LAB
                                 </span>
                               )}
                             </div>
-                            <p className="text-xs text-[#A6ADC8]">
+                            <p
+                              className="text-[11px] text-[#A6ADC8] truncate mt-0.5"
+                              title={customer.affiliation}
+                            >
                               {customer.affiliation}
                             </p>
                           </div>
                         </div>
                       </td>
 
-                      {/* Email */}
-                      <td className="px-4 py-3.5 whitespace-nowrap">
-                        <span className="font-mono text-xs text-[#BAC2DE]">
-                          {customer.email}
-                        </span>
+                      {/* 2. Contact */}
+                      <td className="py-3.5 px-2.5 whitespace-nowrap">
+                        <div className="flex flex-col gap-0.5 max-w-[190px]">
+                          <div className="flex items-center gap-1.5 text-xs text-[#BAC2DE]">
+                            <Mail size={12} className="text-[#A6ADC8] shrink-0" />
+                            <span
+                              className="font-mono text-[11px] truncate"
+                              title={customer.email}
+                            >
+                              {customer.email}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-[11px] text-[#89B4FA]">
+                            <Phone size={11} className="text-[#89B4FA]/70 shrink-0" />
+                            <span className="font-mono text-[10px]">
+                              {customer.phone}
+                            </span>
+                          </div>
+                        </div>
                       </td>
 
-                      {/* Phone */}
-                      <td className="px-4 py-3.5 whitespace-nowrap">
-                        <span className="font-mono text-xs text-[#89B4FA]">
-                          {customer.phone}
-                        </span>
-                      </td>
-
-                      {/* Region III Province / Campus Address */}
-                      <td className="px-4 py-3.5">
-                        <div className="max-w-xs">
+                      {/* 3. Location & Campus Lab */}
+                      <td className="py-3.5 px-2.5">
+                        <div className="flex flex-col gap-0.5 max-w-[230px]">
                           <div className="flex items-center gap-1.5">
-                            <span className="rounded border border-[#313244] bg-[#181825] px-2 py-0.5 font-mono text-[11px] font-semibold text-[#89B4FA]">
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[9.5px] font-semibold bg-[#89B4FA]/15 text-[#89B4FA] border border-[#89B4FA]/30 shrink-0">
+                              <MapPin size={9} />
                               {customer.province}
                             </span>
-                            <span className="text-xs font-medium text-[#CDD6F4]">
+                            <span className="text-xs font-medium text-[#CDD6F4] truncate">
                               {customer.cityMunicipality}
                             </span>
                           </div>
-                          <p className="mt-1 truncate text-xs text-[#A6ADC8]">
+                          <p
+                            className="text-[11px] text-[#A6ADC8] truncate"
+                            title={customer.defaultAddress}
+                          >
                             {customer.defaultAddress}
                           </p>
                         </div>
                       </td>
 
-                      {/* Total Orders Placed */}
-                      <td className="px-4 py-3.5 text-center whitespace-nowrap">
-                        <span className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-[#313244] bg-[#181825] px-2 font-mono text-xs font-bold text-[#CDD6F4]">
+                      {/* 4. Orders */}
+                      <td className="py-3.5 px-2 text-center whitespace-nowrap">
+                        <span className="inline-flex items-center justify-center rounded-full border border-[#313244] bg-[#181825] px-2 py-0.5 font-mono text-xs font-bold text-[#CDD6F4]">
                           {customer.orders.length}
                         </span>
                       </td>
 
-                      {/* Total Lifetime Spend */}
-                      <td className="px-4 py-3.5 text-right whitespace-nowrap">
-                        <span className="font-mono text-sm font-bold text-[#A6E3A1]">
-                          {formatPrice(lifetimeSpend)}
-                        </span>
+                      {/* 5. Lifetime Spend */}
+                      <td className="py-3.5 px-2.5 text-right whitespace-nowrap">
+                        <div className="font-bold text-xs text-[#A6E3A1]">
+                          {formatCurrencyDisplay(lifetimeSpend)}
+                        </div>
+                        <div className="text-[10px] text-[#A6ADC8] mt-0.5">
+                          {customer.orders.length > 0 ? "Lifetime total" : "No orders yet"}
+                        </div>
                       </td>
 
-                      {/* Actions */}
+                      {/* 6. Action */}
                       <td
-                        className="px-4 py-3.5 text-right whitespace-nowrap"
+                        className="py-3.5 pl-1.5 pr-3.5 text-right whitespace-nowrap"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Button
-                          variant="outline"
-                          size="small"
-                          onClick={() => setSelectedCustomer(customer)}
-                        >
-                          View History
-                        </Button>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="compact"
+                            onClick={() => setSelectedCustomer(customer)}
+                            className="text-xs font-semibold px-2.5 h-7"
+                          >
+                            Inspect
+                          </Button>
+                          <Link
+                            href="/admin/chat"
+                            title={`Chat with ${customer.name}`}
+                            className="inline-flex items-center justify-center w-7 h-7 rounded-lg border border-[#313244] bg-[#181825] text-[#89B4FA] hover:text-[#CDD6F4] hover:bg-[#1E1E2E] hover:border-[#89B4FA]/40 transition-colors"
+                          >
+                            <MessageSquare size={12} />
+                          </Link>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -979,7 +848,7 @@ export function CustomersClient() {
         </div>
       </Surface>
 
-      {/* Customer Detail Drawer */}
+      {/* 5. Customer Detail Drawer */}
       <CustomerDetailDrawer
         customer={selectedCustomer}
         onClose={() => setSelectedCustomer(null)}

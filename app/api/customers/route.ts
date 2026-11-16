@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma/client';
 import { extractSession } from '@/lib/auth/session';
+import { CANONICAL_CUSTOMERS, type AdminCustomerRecord } from '@/lib/mocks/customers';
 
 const AVATAR_COLORS = [
   '#89B4FA', '#A6E3A1', '#F9E2AF', '#CBA6F7', '#F38BA8',
@@ -47,6 +48,11 @@ export async function GET(request: Request) {
     }
 
     const users = await prisma.user.findMany({
+      where: {
+        role: {
+          not: 'ADMIN',
+        },
+      },
       include: {
         addresses: {
           orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }],
@@ -71,7 +77,7 @@ export async function GET(request: Request) {
       orderBy: { createdAt: 'desc' },
     });
 
-    const customers = users.map((user) => {
+    const liveCustomers: AdminCustomerRecord[] = users.map((user) => {
       const defaultAddr = user.addresses.find((a) => a.isDefault) || user.addresses[0];
       const initials = `${user.firstName[0] || 'U'}${user.lastName[0] || 'S'}`.toUpperCase();
       const province = (defaultAddr?.province || 'Pampanga') as
@@ -115,9 +121,9 @@ export async function GET(request: Request) {
         initials,
         avatarColor: getAvatarColor(user.email),
         email: user.email,
-        phone: user.phone || '09XXXXXXXXX',
-        affiliation: user.role === 'ADMIN' ? 'OhmSim Operations Hub' : 'Campus Electronics Lab Lead',
-        role: user.role === 'ADMIN' ? 'Platform Administrator' : 'Hardware Developer',
+        phone: user.phone || '+63 917 000 0000',
+        affiliation: 'Central Luzon Maker / Researcher',
+        role: 'Hardware Developer',
         province,
         cityMunicipality: defaultAddr?.city || 'Angeles City',
         defaultAddress: defaultAddr
@@ -130,9 +136,16 @@ export async function GET(request: Request) {
       };
     });
 
+    // Merge live DB customers with canonical directory without duplicate emails
+    const liveEmails = new Set(liveCustomers.map((c) => c.email.toLowerCase()));
+    const finalCustomers = [
+      ...liveCustomers,
+      ...CANONICAL_CUSTOMERS.filter((c) => !liveEmails.has(c.email.toLowerCase())),
+    ];
+
     return NextResponse.json({
       success: true,
-      data: customers,
+      data: finalCustomers,
     });
   } catch (error) {
     console.error('Error fetching customers:', error);
