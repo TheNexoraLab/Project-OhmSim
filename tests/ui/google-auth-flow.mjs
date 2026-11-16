@@ -10,6 +10,7 @@ try {
 const { prisma } = await import('../../lib/prisma/client.ts');
 const {
   getNeonAuthBaseUrl,
+  getAppOrigin,
   initiateGoogleSocialLogin,
   syncNeonUserToOhmSim,
 } = await import('../../lib/auth/neon-auth.ts');
@@ -41,10 +42,19 @@ assert.ok(Array.isArray(jwksData.keys) && jwksData.keys.length > 0, 'Neon Auth m
 console.log('✔ Neon Auth service and JWKS verified online.');
 
 // ----------------------------------------------------
-// 2. Testing Google OAuth Initiation via Neon Auth
+// 2. Testing Google OAuth Initiation via Neon Auth & Origin Normalization
 // ----------------------------------------------------
-console.log('\n--- 2. Testing Google OAuth Initiation via Neon Auth ---');
-const testCallback = 'http://localhost:3000/api/auth/callback/neon';
+console.log('\n--- 2. Testing Google OAuth Initiation & Origin Normalization ---');
+
+// Verify that 127.0.0.1 host headers are normalized to localhost
+const mockIpReq = new Request('http://127.0.0.1:3000/api/auth/google', {
+  headers: { host: '127.0.0.1:3000' },
+});
+const normalizedOrigin = getAppOrigin(mockIpReq);
+assert.equal(normalizedOrigin, 'http://localhost:3000', '127.0.0.1 must be normalized to localhost for Neon Auth compatibility');
+console.log('✔ 127.0.0.1 host normalized to localhost:', normalizedOrigin);
+
+const testCallback = `${normalizedOrigin}/api/auth/callback/neon`;
 const initResult = await initiateGoogleSocialLogin(testCallback);
 
 assert.equal(initResult.success, true, 'Social login initiation must succeed');

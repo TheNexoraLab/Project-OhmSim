@@ -80,7 +80,12 @@ export function AuthExperience() {
   const [notice, setNotice] = useState<string>(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      return params.get("error") || "";
+      const rawError = params.get("error");
+      if (!rawError) return "";
+      if (rawError.includes("INVALID_CALLBACKURL") || rawError.includes("Invalid callbackURL")) {
+        return "Authentication domain mismatch: Please access OhmSim at http://localhost:3000 (127.0.0.1 is not an allowed callback domain in Neon Auth).";
+      }
+      return rawError;
     }
     return "";
   });

@@ -19,19 +19,32 @@ export function getNeonAuthBaseUrl(): string {
 /**
  * Determines the application origin URL (e.g., https://ohmsim.ph or http://localhost:3000)
  * based on incoming request headers or environment configuration.
+ *
+ * NOTE: Neon Auth (Managed Better Auth) enforces a trusted domain allowlist.
+ * While `localhost` and its wildcard ports are allowed by default, `127.0.0.1` is rejected
+ * with HTTP 403 INVALID_CALLBACKURL. This helper automatically normalizes `127.0.0.1`
+ * to `localhost` to guarantee seamless OAuth redirects regardless of whether the user
+ * visits via http://localhost:3000 or http://127.0.0.1:3000.
  */
 export function getAppOrigin(request?: Request): string {
   if (process.env.NEXT_PUBLIC_APP_URL) {
-    return process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
+    let appUrl = process.env.NEXT_PUBLIC_APP_URL.replace(/\/$/, '');
+    if (appUrl.includes('127.0.0.1')) {
+      appUrl = appUrl.replace('127.0.0.1', 'localhost');
+    }
+    return appUrl;
   }
 
   if (request) {
     const forwardedHost = request.headers.get('x-forwarded-host');
-    const host = forwardedHost || request.headers.get('host');
+    let host = forwardedHost || request.headers.get('host');
     if (host) {
+      if (host.startsWith('127.0.0.1')) {
+        host = host.replace('127.0.0.1', 'localhost');
+      }
       const forwardedProto = request.headers.get('x-forwarded-proto');
       const proto =
-        forwardedProto || (host.startsWith('localhost') || host.startsWith('127.0.0.1') ? 'http' : 'https');
+        forwardedProto || (host.startsWith('localhost') ? 'http' : 'https');
       return `${proto}://${host}`;
     }
   }
