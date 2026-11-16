@@ -91,37 +91,30 @@ export function AdminTopbar({
           </svg>
         </button>
 
-        <div className="min-w-0">
+        <div className="min-w-0 flex items-center gap-2.5">
           <nav
             aria-label="Breadcrumb"
-            className="flex items-center gap-1.5 text-[11px] font-mono text-[#A6ADC8]"
+            className="flex items-center gap-2 text-xs sm:text-sm font-medium"
           >
             <Link
               href="/admin"
-              className="hover:text-[#89B4FA] transition-colors rounded-xs"
+              className="text-[#A6ADC8] hover:text-[#89B4FA] transition-colors rounded-xs"
             >
               Admin
             </Link>
-            <span aria-hidden="true" className="text-[#45475A]">
+            <span aria-hidden="true" className="text-[#45475A] font-normal">
               /
             </span>
-            <span className="text-[#89B4FA] font-semibold truncate">
+            <span className="text-[#CDD6F4] font-bold tracking-tight truncate">
               {title}
-            </span>
-            <span
-              aria-hidden="true"
-              className="hidden md:inline text-[#45475A]"
-            >
-              ·
-            </span>
-            <span className="hidden md:inline text-[#BAC2DE] truncate">
-              {segmentLabel}
             </span>
           </nav>
 
-          <p className="text-sm sm:text-base font-bold text-[#CDD6F4] leading-tight truncate">
-            {title}
-          </p>
+          {segmentLabel && segmentLabel !== title && (
+            <span className="hidden md:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#1E1E2E] border border-[#313244] text-[10px] font-mono font-medium text-[#A6ADC8]">
+              {segmentLabel}
+            </span>
+          )}
         </div>
       </div>
 
