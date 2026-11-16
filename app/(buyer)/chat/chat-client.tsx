@@ -17,6 +17,7 @@ import { getProductByIdSync } from "@/services/catalog-service";
 import { getMockOrderById, ORDER_STATUS_META } from "@/services/order-service";
 import { formatPrice } from "@/lib/format";
 import { INQUIRY_CATEGORIES } from "@/lib/chat/inquiry-chips";
+import { ChatFormattedText } from "@/components/chat/chat-formatted-text";
 
 export function ChatClient() {
   const searchParams = useSearchParams();
@@ -469,7 +470,7 @@ export function ChatClient() {
                         }`}
                       >
                         {/* Text */}
-                        {msg.text && <p className="whitespace-pre-wrap break-words">{msg.text}</p>}
+                        {msg.text && <ChatFormattedText content={msg.text} isUser={isBuyer} />}
 
                         {/* Attachment */}
                         {msg.attachment && (

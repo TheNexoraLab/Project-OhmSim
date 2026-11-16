@@ -13,6 +13,7 @@ import {
 } from "@/services/chat-service";
 import type { ChatConversation } from "@/types/chat";
 import { getProductByIdSync } from "@/services/catalog-service";
+import { ChatFormattedText } from "./chat-formatted-text";
 
 interface LocalBotMessage {
   id: string;
@@ -424,20 +425,28 @@ export function FloatingChatWidget() {
                       msg.from === "user" ? "ml-auto items-end" : "mr-auto items-start"
                     }`}
                   >
-                    <div className="flex items-center gap-1 text-[9px] text-mocha-text-subtle px-1">
-                      <span>{msg.from === "user" ? "You" : "OhmBot AI"}</span>
-                      <span>•</span>
-                      <span>{msg.time}</span>
+                    <div className="flex items-center gap-1.5 text-[10px] text-mocha-text-muted px-1 mb-0.5">
+                      {msg.from === "user" ? (
+                        <span className="font-semibold text-mocha-text">You</span>
+                      ) : (
+                        <span className="flex items-center gap-1 font-semibold text-mocha-accent">
+                          <span>⚡</span>
+                          <span>OhmBot AI</span>
+                          <span className="text-[8px] font-mono px-1 py-0.2 rounded bg-mocha-accent/15 border border-mocha-accent/20">BOT</span>
+                        </span>
+                      )}
+                      <span className="text-mocha-text-subtle">•</span>
+                      <span className="text-[10px] text-mocha-text-subtle font-mono">{msg.time}</span>
                     </div>
 
                     <div
-                      className={`p-3 rounded-2xl leading-relaxed whitespace-pre-wrap break-words ${
+                      className={`p-3 rounded-2xl shadow-sm ${
                         msg.from === "user"
-                          ? "bg-gradient-to-r from-mocha-accent to-mocha-accent-secondary text-mocha-bg font-medium rounded-tr-sm shadow-md"
-                          : "bg-mocha-panel-raised border border-mocha-border text-mocha-text rounded-tl-sm shadow-sm"
+                          ? "bg-gradient-to-r from-mocha-accent to-mocha-accent-secondary text-mocha-bg font-medium rounded-tr-sm"
+                          : "bg-mocha-panel-raised border border-mocha-border text-mocha-text rounded-tl-sm"
                       }`}
                     >
-                      {msg.text}
+                      <ChatFormattedText content={msg.text} isUser={msg.from === "user"} />
                     </div>
 
                     {/* Action button inside message */}
@@ -494,20 +503,28 @@ export function FloatingChatWidget() {
                       m.from === "buyer" ? "ml-auto items-end" : "mr-auto items-start"
                     }`}
                   >
-                    <div className="flex items-center gap-1 text-[9px] text-mocha-text-subtle px-1">
-                      <span>{m.from === "buyer" ? "You" : "Store Staff"}</span>
-                      <span>•</span>
-                      <span>{m.time}</span>
+                    <div className="flex items-center gap-1.5 text-[10px] text-mocha-text-muted px-1 mb-0.5">
+                      {m.from === "buyer" ? (
+                        <span className="font-semibold text-mocha-text">You</span>
+                      ) : (
+                        <span className="flex items-center gap-1 font-semibold text-emerald-400">
+                          <span>👤</span>
+                          <span>Store Staff</span>
+                          <span className="text-[8px] font-mono px-1 py-0.2 rounded bg-emerald-500/15 border border-emerald-500/20">STAFF</span>
+                        </span>
+                      )}
+                      <span className="text-mocha-text-subtle">•</span>
+                      <span className="text-[10px] text-mocha-text-subtle font-mono">{m.time}</span>
                     </div>
 
                     <div
-                      className={`p-3 rounded-2xl leading-relaxed whitespace-pre-wrap break-words ${
+                      className={`p-3 rounded-2xl shadow-sm ${
                         m.from === "buyer"
-                          ? "bg-gradient-to-r from-mocha-accent to-mocha-accent-secondary text-mocha-bg font-medium rounded-tr-sm shadow-md"
-                          : "bg-mocha-panel-raised border border-mocha-border text-mocha-text rounded-tl-sm shadow-sm"
+                          ? "bg-gradient-to-r from-mocha-accent to-mocha-accent-secondary text-mocha-bg font-medium rounded-tr-sm"
+                          : "bg-mocha-panel-raised border border-mocha-border text-mocha-text rounded-tl-sm"
                       }`}
                     >
-                      {m.text}
+                      {m.text && <ChatFormattedText content={m.text} isUser={m.from === "buyer"} />}
                     </div>
                   </div>
                 ))}
