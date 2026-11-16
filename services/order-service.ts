@@ -502,6 +502,40 @@ export async function updateOrderStatus(
   }
 }
 
+export async function batchUpdateOrderStatus(
+  orderIds: string[],
+  params: {
+    status: OrderStatus;
+    trackingNumberPrefix?: string;
+  }
+): Promise<{ successCount: number; failedCount: number; errors: string[] }> {
+  let successCount = 0;
+  let failedCount = 0;
+  const errors: string[] = [];
+
+  for (let i = 0; i < orderIds.length; i++) {
+    const id = orderIds[i];
+    const trackingNumber =
+      params.trackingNumberPrefix && (params.status === "OUT_FOR_DELIVERY" || params.status === "READY_FOR_PICKUP")
+        ? `${params.trackingNumberPrefix}-${Date.now().toString().slice(-6)}-${i + 1}`
+        : undefined;
+
+    const res = await updateOrderStatus(id, {
+      status: params.status,
+      trackingNumber,
+    });
+
+    if (res.success) {
+      successCount++;
+    } else {
+      failedCount++;
+      if (res.error) errors.push(res.error);
+    }
+  }
+
+  return { successCount, failedCount, errors };
+}
+
 export function filterMockOrders(
   query?: string,
   statusFilter?: OrderStatus | "ALL"
