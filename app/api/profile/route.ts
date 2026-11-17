@@ -103,7 +103,7 @@ export async function PATCH(request: Request) {
   try {
     const session = await extractSession(request);
     const body = await request.json();
-    const { firstName, lastName, phone, mobile, userId: bodyUserId } = body;
+    const { firstName, lastName, phone, mobile, email, userId: bodyUserId } = body;
 
     let userId: string;
     if (session) {
@@ -118,6 +118,20 @@ export async function PATCH(request: Request) {
     }
 
     const updateData: Record<string, string> = {};
+
+    if (email !== undefined) {
+      const cleanEmail = email.trim().toLowerCase();
+      if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+        return NextResponse.json({ error: 'A valid email address is required.' }, { status: 400 });
+      }
+      const existing = await prisma.user.findFirst({
+        where: { email: cleanEmail, NOT: { id: userId } },
+      });
+      if (existing) {
+        return NextResponse.json({ error: 'This email address is already in use by another account.' }, { status: 409 });
+      }
+      updateData.email = cleanEmail;
+    }
 
     if (firstName !== undefined) {
       if (!firstName.trim()) {

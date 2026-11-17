@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma/client';
 import { extractSession } from '@/lib/auth/session';
+import { PRODUCTS } from '@/lib/mocks/products';
 import {
   isValidRegion3Province,
   getCanonicalRegion3Province,
@@ -35,6 +36,7 @@ interface CreateOrderBody {
   deliveryAddress?: InlineAddressInput;
   pickupRecipient?: string;
   pickupPhone?: string;
+  studentOrGovId?: string;
   notes?: string;
   userId?: string;
 }
@@ -350,21 +352,43 @@ export async function POST(request: Request) {
 
     // 4. ACID-Compliant Transaction: Lock Stock, Decrement, Create Order & Items
     const result = await prisma.$transaction(async (tx) => {
-      // A. Fetch all products
+      // A. Fetch all products (supporting database UUIDs, SKUs, and mock numeric IDs)
       const productIds = consolidatedItems.map((i) => i.productId);
-      const products = await tx.product.findMany({
-        where: { id: { in: productIds } },
+      const mockSkus = productIds.map((id) => {
+        const mock = PRODUCTS.find((p) => p.id === id || p.sku.toLowerCase() === id.toLowerCase());
+        return mock ? mock.sku : id;
       });
 
-      if (products.length !== productIds.length) {
-        const foundIds = new Set(products.map((p) => p.id));
-        const missing = productIds.find((id) => !foundIds.has(id));
-        throw new Error(`PRODUCT_NOT_FOUND:${missing}`);
+      const products = await tx.product.findMany({
+        where: {
+          OR: [
+            { id: { in: productIds } },
+            { sku: { in: productIds } },
+            { sku: { in: mockSkus } },
+          ],
+        },
+      });
+
+      // Map each consolidated item to its database product
+      const itemProductMap = new Map<string, typeof products[0]>();
+      for (const item of consolidatedItems) {
+        const mock = PRODUCTS.find((p) => p.id === item.productId || p.sku.toLowerCase() === item.productId.toLowerCase());
+        const match = products.find(
+          (p) =>
+            p.id === item.productId ||
+            p.sku.toLowerCase() === item.productId.toLowerCase() ||
+            (mock && p.sku.toLowerCase() === mock.sku.toLowerCase())
+        );
+
+        if (!match) {
+          throw new Error(`PRODUCT_NOT_FOUND:${item.productId}`);
+        }
+        itemProductMap.set(item.productId, match);
       }
 
       // B. Verify inventory stock sufficiency for all items
       for (const item of consolidatedItems) {
-        const product = products.find((p) => p.id === item.productId)!;
+        const product = itemProductMap.get(item.productId)!;
         if (product.stockQuantity < item.quantity) {
           throw new Error(
             `INSUFFICIENT_STOCK:${product.name}:${product.sku}:${product.stockQuantity}:${item.quantity}`
@@ -375,7 +399,7 @@ export async function POST(request: Request) {
       // C. Calculate Subtotal, Delivery Fee & Total Amount
       let subtotal = 0;
       for (const item of consolidatedItems) {
-        const product = products.find((p) => p.id === item.productId)!;
+        const product = itemProductMap.get(item.productId)!;
         subtotal += Number(product.price) * item.quantity;
       }
 
@@ -384,8 +408,9 @@ export async function POST(request: Request) {
 
       // D. Decrement stock atomically
       for (const item of consolidatedItems) {
+        const product = itemProductMap.get(item.productId)!;
         await tx.product.update({
-          where: { id: item.productId },
+          where: { id: product.id },
           data: {
             stockQuantity: {
               decrement: item.quantity,
@@ -423,6 +448,10 @@ export async function POST(request: Request) {
         const pickupNote = `Pickup Recipient: ${pickupRecipient.trim()} (${pickupPhone || 'No contact provided'})`;
         orderNotes = orderNotes ? `${orderNotes} | ${pickupNote}` : pickupNote;
       }
+      if (body.studentOrGovId?.trim()) {
+        const idNote = `Student/Gov ID: ${body.studentOrGovId.trim()}`;
+        orderNotes = orderNotes ? `${orderNotes} | ${idNote}` : idNote;
+      }
 
       // G. Create Order and OrderItems
       const createdOrder = await tx.order.create({
@@ -439,9 +468,9 @@ export async function POST(request: Request) {
           notes: orderNotes,
           items: {
             create: consolidatedItems.map((item) => {
-              const prod = products.find((p) => p.id === item.productId)!;
+              const prod = itemProductMap.get(item.productId)!;
               return {
-                productId: item.productId,
+                productId: prod.id,
                 quantity: item.quantity,
                 unitPrice: prod.price,
                 bomProjectId: item.bomProjectId || null,

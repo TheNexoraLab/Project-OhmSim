@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     const isFeatured = searchParams.get('isFeatured') === 'true';
     const sortParam = searchParams.get('sort') || 'newest';
     const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
-    const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20', 10)));
+    const limit = Math.min(500, Math.max(1, parseInt(searchParams.get('limit') || '300', 10)));
     const skip = (page - 1) * limit;
 
     // Build Prisma query filter

@@ -174,9 +174,9 @@ export async function PATCH(request: Request, { params }: RouteParams) {
             { status: 403 }
           );
         }
-        if (existingOrder.status !== 'PENDING') {
+        if (existingOrder.status !== 'PENDING' && existingOrder.status !== 'PROCESSING') {
           return NextResponse.json(
-            { error: `Cannot cancel an order that is already '${existingOrder.status}'. Only PENDING orders may be cancelled by the customer.` },
+            { error: `Cannot cancel an order that is already '${existingOrder.status}'. Only PENDING and PREPARING orders may be cancelled by the customer.` },
             { status: 400 }
           );
         }

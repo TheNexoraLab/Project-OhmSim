@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma/client';
 import type { StockStatus } from '@/types/product';
+import { PRODUCTS } from '@/lib/mocks/products';
 
 function determineStockStatus(stock: number, minThreshold: number): StockStatus {
   if (stock <= 0) return 'out-of-stock';
@@ -17,9 +18,9 @@ export async function GET(request: Request, { params }: RouteParams) {
     const { id } = await params;
 
     // Search by ID or SKU
-    const product = await prisma.product.findFirst({
+    let product = await prisma.product.findFirst({
       where: {
-        OR: [{ id }, { sku: id.toUpperCase() }],
+        OR: [{ id }, { sku: id.toUpperCase() }, { sku: id }],
       },
       include: {
         category: {
@@ -28,7 +29,47 @@ export async function GET(request: Request, { params }: RouteParams) {
       },
     });
 
+    const mock = PRODUCTS.find((p) => p.id === id || p.sku.toLowerCase() === id.toLowerCase());
+
+    if (!product && mock) {
+      product = await prisma.product.findFirst({
+        where: { sku: mock.sku },
+        include: {
+          category: {
+            select: { id: true, name: true, slug: true },
+          },
+        },
+      });
+    }
+
     if (!product) {
+      if (mock) {
+        return NextResponse.json({
+          product: {
+            id: mock.id,
+            sku: mock.sku,
+            name: mock.name,
+            label: mock.label || mock.name,
+            brand: mock.brand || 'Generic',
+            categoryId: 'cat-mcu',
+            category: mock.category,
+            categorySlug: mock.category.toLowerCase().replace(/\s+/g, '-'),
+            price: mock.price,
+            stock: mock.stock,
+            status: mock.status,
+            minThreshold: 15,
+            image: mock.image,
+            images: mock.images || [mock.image],
+            specs: mock.specs || {},
+            about: mock.about,
+            shortDescription: mock.label || mock.name,
+            datasheetUrl: '',
+            isFeatured: true,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+        });
+      }
       return NextResponse.json({ error: `Product '${id}' not found.` }, { status: 404 });
     }
 
