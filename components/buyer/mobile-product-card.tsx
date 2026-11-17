@@ -8,6 +8,7 @@ import { ShoppingCart } from "lucide-react";
 import { StockBadge } from "@/components/ui/badge";
 import { BomChooserPopover } from "./bom-chooser-popover";
 import { useCartFeedback } from "./cart-feedback";
+import styles from "./mobile-product-card.module.css";
 
 interface MobileProductCardProps {
   product: Product;
@@ -39,7 +40,7 @@ export function MobileProductCard({
   const isCartDisabled = isOutOfStock || isMaxInCart;
 
   return (
-    <div data-cart-source className="relative min-w-0 flex flex-col bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border rounded-[22px] shadow-[0_12px_30px_rgba(0,0,0,0.14)]">
+    <div data-cart-source className={`${styles.card} relative min-w-0 flex flex-col bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border rounded-[22px] shadow-[0_12px_30px_rgba(0,0,0,0.14)]`}>
       <Link
         href={`/products/${product.id}`}
         aria-label={`View details for ${product.name}`}
@@ -88,7 +89,7 @@ export function MobileProductCard({
           </span>
         </div>
 
-        <div className="flex items-center gap-1.5 mt-2">
+        <div className={`${styles.actions} flex items-center gap-1.5 mt-2`}>
           <button
             type="button"
             onClick={event => {

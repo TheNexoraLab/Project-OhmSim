@@ -114,6 +114,17 @@ main {
   min-width: 0;
 }
 
+/* Keep phone form controls readable without the browser zooming on focus. */
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]),
+  select,
+  textarea {
+    font-size: 16px;
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
 /* Canonical Focus Outline */
 :focus-visible {
   outline: 2px solid var(--mocha-accent);

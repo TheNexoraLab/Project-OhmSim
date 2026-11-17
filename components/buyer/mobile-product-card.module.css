@@ -1,0 +1,17 @@
+.card > a:first-child {
+  height: auto;
+  aspect-ratio: 1;
+}
+
+/* Keep both actions reachable on compact phones, even for sold-out labels. */
+@media (max-width: 359px) {
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions > *,
+  .actions > div > button {
+    width: 100%;
+  }
+}

@@ -11,6 +11,7 @@ import { getSavedAddresses, createOrder } from "@/services/order-service";
 import { formatPrice } from "@/lib/format";
 import { toast } from "@/components/ui/toast";
 import { PaymentQr } from "@/components/buyer/payment-qr";
+import { usePaymentSettings } from "@/lib/settings/payment-settings";
 import {
   REGION_3_PROVINCES,
   type FulfillmentType,
@@ -51,6 +52,7 @@ export function CheckoutClient() {
   const [studentOrGovId, setStudentOrGovId] = useState("");
 
   // Payment Channel State
+  const { settings: paymentSettings } = usePaymentSettings();
   const [paymentChannel, setPaymentChannel] = useState<"CASH" | "GCASH" | "MAYA">("CASH");
   const [paymentRefNumber, setPaymentRefNumber] = useState("");
   const [paymentSlipFile, setPaymentSlipFile] = useState<{
@@ -795,33 +797,37 @@ export function CheckoutClient() {
                   <span>{fulfillmentType === "PICKUP" ? "Pay on Pickup" : "COD (Cash)"}</span>
                 </button>
 
-                <button
-                  type="button"
-                  data-testid="pay-channel-gcash-btn"
-                  onClick={() => setPaymentChannel("GCASH")}
-                  className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                    paymentChannel === "GCASH"
-                      ? "bg-[#007DFE]/20 text-[#89B4FA] border border-[#007DFE]/50 shadow-xs"
-                      : "text-mocha-text-muted hover:text-mocha-text"
-                  }`}
-                >
-                  <span className="font-black text-[#007DFE]">G</span>
-                  <span>GCash QR</span>
-                </button>
+                {paymentSettings.gcash.enabled && (
+                  <button
+                    type="button"
+                    data-testid="pay-channel-gcash-btn"
+                    onClick={() => setPaymentChannel("GCASH")}
+                    className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      paymentChannel === "GCASH"
+                        ? "bg-[#007DFE]/20 text-[#89B4FA] border border-[#007DFE]/50 shadow-xs"
+                        : "text-mocha-text-muted hover:text-mocha-text"
+                    }`}
+                  >
+                    <span className="font-black text-[#007DFE]">G</span>
+                    <span>GCash QR</span>
+                  </button>
+                )}
 
-                <button
-                  type="button"
-                  data-testid="pay-channel-maya-btn"
-                  onClick={() => setPaymentChannel("MAYA")}
-                  className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                    paymentChannel === "MAYA"
-                      ? "bg-[#00D665]/20 text-[#A6E3A1] border border-[#00D665]/50 shadow-xs"
-                      : "text-mocha-text-muted hover:text-mocha-text"
-                  }`}
-                >
-                  <span className="font-black text-[#00D665]">M</span>
-                  <span>Maya QR</span>
-                </button>
+                {paymentSettings.maya.enabled && (
+                  <button
+                    type="button"
+                    data-testid="pay-channel-maya-btn"
+                    onClick={() => setPaymentChannel("MAYA")}
+                    className={`py-2 px-3 rounded-lg text-xs font-semibold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      paymentChannel === "MAYA"
+                        ? "bg-[#00D665]/20 text-[#A6E3A1] border border-[#00D665]/50 shadow-xs"
+                        : "text-mocha-text-muted hover:text-mocha-text"
+                    }`}
+                  >
+                    <span className="font-black text-[#00D665]">M</span>
+                    <span>Maya QR</span>
+                  </button>
+                )}
               </div>
 
               {/* Channel A: Traditional Cash Settlement */}

@@ -1,26 +1,29 @@
 "use client";
 
 import React, { useState } from "react";
-import { Copy, Check, Download, ExternalLink } from "lucide-react";
+import { Copy, Check, Download, QrCode } from "lucide-react";
 import { toast } from "@/components/ui/toast";
+import { usePaymentSettings } from "@/lib/settings/payment-settings";
 
 interface PaymentQrProps {
   channel: "GCASH" | "MAYA";
   amount: number;
+  customQrImageUrl?: string | null;
+  merchantName?: string;
+  merchantNumber?: string;
 }
 
-// Deterministic 25x25 QR matrix pattern for authentic visual rendering
+// Deterministic 25x25 QR matrix pattern for fallback visual rendering
 function generateQrMatrix(seed: string): boolean[][] {
   const size = 25;
   const matrix: boolean[][] = Array.from({ length: size }, () => Array(size).fill(false));
 
-  // Helper to draw a 7x7 finder pattern
   const drawFinder = (startRow: number, startCol: number) => {
     for (let r = 0; r < 7; r++) {
       for (let c = 0; c < 7; c++) {
         if (
-          r === 0 || r === 6 || c === 0 || c === 6 || // Outer ring
-          (r >= 2 && r <= 4 && c >= 2 && c <= 4)      // Inner 3x3 block
+          r === 0 || r === 6 || c === 0 || c === 6 ||
+          (r >= 2 && r <= 4 && c >= 2 && c <= 4)
         ) {
           matrix[startRow + r][startCol + c] = true;
         }
@@ -59,7 +62,6 @@ function generateQrMatrix(seed: string): boolean[][] {
 
   for (let r = 0; r < size; r++) {
     for (let c = 0; c < size; c++) {
-      // Skip finder zones & separators
       if (r < 8 && c < 8) continue;
       if (r < 8 && c >= size - 8) continue;
       if (r >= size - 8 && c < 8) continue;
@@ -74,18 +76,29 @@ function generateQrMatrix(seed: string): boolean[][] {
   return matrix;
 }
 
-export function PaymentQr({ channel, amount }: PaymentQrProps) {
+export function PaymentQr({
+  channel,
+  amount,
+  customQrImageUrl: overrideQr,
+  merchantName: overrideName,
+  merchantNumber: overrideNumber,
+}: PaymentQrProps) {
   const [copied, setCopied] = useState(false);
+  const { settings } = usePaymentSettings();
 
   const isGcash = channel === "GCASH";
   const brandName = isGcash ? "GCash" : "Maya";
   const brandColor = isGcash ? "#007DFE" : "#00D665";
-  const merchantNumber = isGcash ? "0917 588 6467" : "0918 599 6292";
-  const cleanNumber = merchantNumber.replace(/\s+/g, "");
+
+  const channelConfig = isGcash ? settings.gcash : settings.maya;
+  const activeQrImage = overrideQr !== undefined ? overrideQr : channelConfig.customQrImageUrl;
+  const activeMerchantName = overrideName || channelConfig.accountName || settings.merchantName || "OHMSIM ELECTRONICS LABS";
+  const activeMerchantNumber = overrideNumber || channelConfig.accountNumber || (isGcash ? "0917 588 6467" : "0918 599 6292");
+  const cleanNumber = activeMerchantNumber.replace(/\s+/g, "");
 
   const matrix = React.useMemo(() => {
-    return generateQrMatrix(`${channel}-OHMSIM-${amount}`);
-  }, [channel, amount]);
+    return generateQrMatrix(`${channel}-${activeMerchantNumber}-${amount}`);
+  }, [channel, activeMerchantNumber, amount]);
 
   const handleCopyNumber = async () => {
     try {
@@ -93,14 +106,27 @@ export function PaymentQr({ channel, amount }: PaymentQrProps) {
         await navigator.clipboard.writeText(cleanNumber);
       }
       setCopied(true);
-      toast(`Copied ${brandName} merchant number (${merchantNumber})`, "info");
+      toast(`Copied ${brandName} merchant number (${activeMerchantNumber})`, "info");
       setTimeout(() => setCopied(false), 2500);
     } catch {
-      toast(`Merchant Number: ${merchantNumber}`, "info");
+      toast(`Merchant Number: ${activeMerchantNumber}`, "info");
     }
   };
 
   const handleDownloadQr = () => {
+    if (activeQrImage) {
+      // Direct download of uploaded custom QR image
+      const a = document.createElement("a");
+      a.href = activeQrImage;
+      a.download = `OhmSim-${channel}-Store-QR-${amount.toFixed(0)}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast(`Downloaded official ${brandName} store QR code`, "info");
+      return;
+    }
+
+    // Fallback: download the generated SVG voucher
     const svgEl = document.getElementById(`payment-qr-${channel.toLowerCase()}`);
     if (!svgEl) return;
     const svgData = new XMLSerializer().serializeToString(svgEl);
@@ -138,43 +164,58 @@ export function PaymentQr({ channel, amount }: PaymentQrProps) {
             <span className="text-[10px] font-bold font-mono text-gray-800">QR Ph</span>
           </div>
           <span className="text-[8px] font-mono text-gray-600 uppercase font-semibold">
-            BSP Verified
+            {activeQrImage ? "Admin Uploaded QR" : "BSP Verified"}
           </span>
         </div>
 
-        {/* Scalable SVG QR Code */}
-        <div className="relative w-36 h-36 sm:w-40 sm:h-40 flex items-center justify-center bg-white">
-          <svg
-            id={`payment-qr-${channel.toLowerCase()}`}
-            viewBox="0 0 25 25"
-            className="w-full h-full"
-            shapeRendering="crispEdges"
-          >
-            <rect width="25" height="25" fill="#ffffff" />
-            {matrix.map((row, r) =>
-              row.map((cell, c) =>
-                cell ? (
-                  <rect
-                    key={`${r}-${c}`}
-                    x={c}
-                    y={r}
-                    width="1"
-                    height="1"
-                    fill="#11111b"
-                  />
-                ) : null
-              )
-            )}
-          </svg>
-
-          {/* Centered Brand Emblem */}
-          <div
-            className="absolute inset-0 m-auto w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-xs shadow-md border-2 border-white"
-            style={{ backgroundColor: brandColor }}
-          >
-            {isGcash ? "G" : "M"}
+        {/* Display Container: Either Uploaded Image or Scalable Vector QR */}
+        {activeQrImage ? (
+          <div className="relative w-36 h-36 sm:w-40 sm:h-40 flex items-center justify-center bg-white p-1 rounded-xl overflow-hidden border border-gray-100 group">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={activeQrImage}
+              alt={`${brandName} Store Payment QR`}
+              className="w-full h-full object-contain rounded-lg"
+            />
+            <div className="absolute bottom-1 right-1 bg-black/60 rounded px-1 text-[8px] font-mono text-white flex items-center gap-0.5">
+              <QrCode size={10} />
+              <span>Official QR</span>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="relative w-36 h-36 sm:w-40 sm:h-40 flex items-center justify-center bg-white">
+            <svg
+              id={`payment-qr-${channel.toLowerCase()}`}
+              viewBox="0 0 25 25"
+              className="w-full h-full"
+              shapeRendering="crispEdges"
+            >
+              <rect width="25" height="25" fill="#ffffff" />
+              {matrix.map((row, r) =>
+                row.map((cell, c) =>
+                  cell ? (
+                    <rect
+                      key={`${r}-${c}`}
+                      x={c}
+                      y={r}
+                      width="1"
+                      height="1"
+                      fill="#11111b"
+                    />
+                  ) : null
+                )
+              )}
+            </svg>
+
+            {/* Centered Brand Emblem */}
+            <div
+              className="absolute inset-0 m-auto w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-xs shadow-md border-2 border-white"
+              style={{ backgroundColor: brandColor }}
+            >
+              {isGcash ? "G" : "M"}
+            </div>
+          </div>
+        )}
 
         {/* Footer of QR Ph */}
         <p className="text-[9px] font-mono font-bold text-gray-700 mt-2 tracking-wide">
@@ -193,14 +234,14 @@ export function PaymentQr({ channel, amount }: PaymentQrProps) {
               {brandName} Merchant Account
             </span>
             <span className="text-[11px] font-mono text-mocha-text-muted">
-              Active E-Wallet
+              {activeQrImage ? "Verified Admin QR" : "Active E-Wallet"}
             </span>
           </div>
           <h3 className="text-sm font-bold text-mocha-text">
-            OHMSIM ELECTRONICS LABS
+            {activeMerchantName}
           </h3>
           <p className="text-xs text-mocha-text-muted mt-0.5">
-            Region III Electrical &amp; IoT Engineering Fulfillment
+            {settings.merchantSubtext || "Region III Electrical & IoT Engineering Fulfillment"}
           </p>
         </div>
 
@@ -211,7 +252,7 @@ export function PaymentQr({ channel, amount }: PaymentQrProps) {
               Recipient Mobile Number
             </p>
             <p className="text-sm font-bold font-mono text-mocha-accent">
-              {merchantNumber}
+              {activeMerchantNumber}
             </p>
           </div>
           <button
@@ -244,7 +285,7 @@ export function PaymentQr({ channel, amount }: PaymentQrProps) {
             className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-mocha-panel border border-mocha-border text-mocha-text hover:text-mocha-accent hover:border-mocha-accent transition-colors flex items-center gap-1.5 min-h-[36px]"
           >
             <Download size={13} />
-            <span>Download QR Ph</span>
+            <span>{activeQrImage ? "Download Uploaded QR" : "Download QR Ph"}</span>
           </button>
           <span className="text-[11px] text-mocha-text-muted">
             Scan using any {brandName} or QR Ph enabled banking app.
