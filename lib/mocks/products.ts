@@ -161,8 +161,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 180,
     status: "in-stock",
-    image: "/images/products/pushbutton-switch.jpg",
-    images: ["/images/products/pushbutton-switch.jpg","/images/products/toggle-switch-spdt.jpg","/images/products/emergency-stop-button.jpg"],
+    image: "/images/products/toggle-switch-spdt.jpg",
+    images: ["/images/products/toggle-switch-spdt.jpg","/images/products/pushbutton-switch.jpg","/images/products/emergency-stop-button.jpg"],
     specs: {
           "Feature 1": "SPDT snap action with roller lever (5A 125VAC)"
     },
@@ -631,8 +631,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 320,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/ic-lm7805.jpg",
+    images: ["/images/products/ic-lm7805.jpg","/images/products/transistor-bc547.jpg","/images/products/capacitor-electrolytic.jpg"],
     specs: {
           "Feature 1": "1.5A positive fixed linear regulator TO-220"
     },
@@ -747,8 +747,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 130,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-microsd-spi.jpg",
+    images: ["/images/products/module-microsd-spi.jpg","/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "Onboard 3.3V LDO regulator and level shifter"
     },
@@ -785,8 +785,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 220,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-logic-level-converter.jpg",
+    images: ["/images/products/module-logic-level-converter.jpg","/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "Bidirectional 3.3V to 5.0V signal shifter"
     },
@@ -804,8 +804,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 130,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-relay-5v.jpg",
+    images: ["/images/products/module-relay-5v.jpg","/images/products/driver-tb6612.jpg","/images/products/transistor-bc547.jpg"],
     specs: {
           "Feature 1": "4-channel photocoupler galvanic isolation"
     },
@@ -1225,8 +1225,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 90,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/enclosure-box-abs.jpg",
+    images: ["/images/products/enclosure-box-abs.jpg","/images/products/hardware-m3-screws.jpg","/images/products/perfboard-pcb.jpg"],
     specs: {
           "Feature 1": "210×297mm protective peelable film",
           "Feature 2": "laser-cut grade"
@@ -1245,8 +1245,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 120,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/enclosure-box-abs.jpg",
+    images: ["/images/products/enclosure-box-abs.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
     specs: {
           "Feature 1": "High-density lightweight structural prototyping sheet"
     },
@@ -1302,8 +1302,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 95,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/mechanical-rack-pinion.jpg",
+    images: ["/images/products/mechanical-rack-pinion.jpg","/images/products/stepper-nema17.jpg","/images/products/ball-bearing-608zz.jpg"],
     specs: {
           "Feature 1": "Lightweight pivot rod with M3 threaded eyelets"
     },
@@ -1359,8 +1359,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 130,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/ball-bearing-608zz.jpg",
+    images: ["/images/products/ball-bearing-608zz.jpg","/images/products/stepper-nema17.jpg","/images/products/hardware-m3-screws.jpg"],
     specs: {
           "Feature 1": "Solid brass coupler with 4× set screws"
     },
@@ -1378,8 +1378,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 120,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/ball-bearing-608zz.jpg",
+    images: ["/images/products/ball-bearing-608zz.jpg","/images/products/stepper-nema17.jpg","/images/products/hardware-m3-screws.jpg"],
     specs: {
           "Feature 1": "Aluminum helical beam coupler for steppers"
     },
@@ -1568,8 +1568,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 120,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/enclosure-box-abs.jpg",
+    images: ["/images/products/enclosure-box-abs.jpg","/images/products/hardware-m3-screws.jpg","/images/products/mechanical-rack-pinion.jpg"],
     specs: {
           "Feature 1": "96mm aluminum handle with M4 mounting screws"
     },
@@ -1625,8 +1625,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 200,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/enclosure-box-abs.jpg",
+    images: ["/images/products/enclosure-box-abs.jpg","/images/products/hardware-m3-screws.jpg","/images/products/perfboard-pcb.jpg"],
     specs: {
           "Feature 1": "10mm × 3m heavy-duty industrial mounting tape"
     },
@@ -1663,8 +1663,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 95,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/converter-buck-lm2596.jpg",
+    images: ["/images/products/converter-buck-lm2596.jpg","/images/products/connectors-terminal-block.jpg","/images/products/connectors-xt60.jpg"],
     specs: {
           "Feature 1": "Multi-rail screw terminal distribution hub"
     },
@@ -1743,7 +1743,7 @@ export const PRODUCTS: Product[] = [
     stock: 300,
     status: "in-stock",
     image: "/images/products/pushbutton-switch.jpg",
-    images: ["/images/products/pushbutton-switch.jpg","/images/products/toggle-switch-spdt.jpg","/images/products/emergency-stop-button.jpg"],
+    images: ["/images/products/pushbutton-switch.jpg","/images/products/tactile-switch-6mm.jpg","/images/products/emergency-stop-button.jpg"],
     specs: {
           "Feature 1": "Tactile push button switch with round colored caps"
     },
@@ -1799,8 +1799,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 350,
     status: "in-stock",
-    image: "/images/products/pushbutton-switch.jpg",
-    images: ["/images/products/pushbutton-switch.jpg","/images/products/toggle-switch-spdt.jpg","/images/products/emergency-stop-button.jpg"],
+    image: "/images/products/switch-slide-spdt.jpg",
+    images: ["/images/products/switch-slide-spdt.jpg","/images/products/toggle-switch-spdt.jpg","/images/products/pushbutton-switch.jpg"],
     specs: {
           "Feature 1": "3-pin PCB horizontal mini slide switch"
     },
@@ -2011,8 +2011,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 300,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/jumper-wires-ribbon.jpg",
+    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/solder-wire-spool.jpg","/images/products/tool-soldering-iron-station.jpg"],
     specs: {
           "Feature 1": "Flame-retardant polyolefin tubing (2/3/4/6mm)"
     },
@@ -2030,8 +2030,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 220,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/fuse-glass.jpg",
+    images: ["/images/products/fuse-glass.jpg","/images/products/connectors-terminal-block.jpg","/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "Screw-type waterproof in-line fuse holder"
     },
@@ -2049,8 +2049,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 350,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/fuse-glass.jpg",
+    images: ["/images/products/fuse-glass.jpg","/images/products/connectors-terminal-block.jpg","/images/products/hardware-m3-screws.jpg"],
     specs: {
           "Feature 1": "Fast-blow glass tube cartridge fuses"
     },
@@ -2144,8 +2144,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 600,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/capacitor-electrolytic.jpg",
+    images: ["/images/products/capacitor-electrolytic.jpg","/images/products/capacitor-ceramic.jpg","/images/products/resistor-kit-600.jpg"],
     specs: {
           "Feature 1": "Radial lead electrolytic decoupling capacitor"
     },
@@ -2163,8 +2163,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 650,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/capacitor-electrolytic.jpg",
+    images: ["/images/products/capacitor-electrolytic.jpg","/images/products/capacitor-ceramic.jpg","/images/products/resistor-kit-600.jpg"],
     specs: {
           "Feature 1": "Power filtering and bypass capacitor"
     },
@@ -2182,8 +2182,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 400,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/capacitor-electrolytic.jpg",
+    images: ["/images/products/capacitor-electrolytic.jpg","/images/products/capacitor-ceramic.jpg","/images/products/resistor-kit-600.jpg"],
     specs: {
           "Feature 1": "High-capacity bulk reservoir capacitor for motors"
     },
@@ -2201,8 +2201,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 900,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/capacitor-ceramic.jpg",
+    images: ["/images/products/capacitor-ceramic.jpg","/images/products/capacitor-electrolytic.jpg","/images/products/resistor-kit-600.jpg"],
     specs: {
           "Feature 1": "100nF monolithic ceramic noise filter capacitor"
     },
@@ -2220,8 +2220,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 320,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/solder-wire-spool.jpg",
+    images: ["/images/products/solder-wire-spool.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
     specs: {
           "Feature 1": "Flame-retardant 600V certified insulation tape"
     },
@@ -2534,8 +2534,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 95,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-mcp23017-expander.jpg",
+    images: ["/images/products/module-mcp23017-expander.jpg","/images/products/module-logic-level-converter.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "Expands 2 I2C pins to 16 quasi-bidirectional I/O pins"
     },
@@ -2553,8 +2553,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 90,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-mcp23017-expander.jpg",
+    images: ["/images/products/module-mcp23017-expander.jpg","/images/products/ic-74hc595.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "16-bit remote bidirectional I/O port with interrupt output DIP-28"
     },
@@ -2592,8 +2592,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 40,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/camera-rpi-v2.jpg",
+    images: ["/images/products/camera-rpi-v2.jpg","/images/products/raspberry-pi-4b.jpg","/images/products/raspberry-pi-5.jpg"],
     specs: {
           "Feature 1": "5MP OV5647 fish-eye 175° lens with dual adjustable IR LED illuminators"
     },
@@ -2766,8 +2766,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 110,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-bme280-temp.jpg",
+    images: ["/images/products/sensor-bme280-temp.jpg","/images/products/dht22-sensor-module.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "High-accuracy atmospheric pressure sensor ±1 hPa (altitude estimation)"
     },
@@ -2830,8 +2830,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 80,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-gas-mq2.jpg",
+    images: ["/images/products/sensor-gas-mq2.jpg","/images/products/sensor-gas-mq2-angle2.jpg","/images/products/sensor-gas-mq2-angle3.jpg"],
     specs: {
           "Feature 1": "High sensitivity to ethanol gas",
           "Feature 2": "suitable for breathalyzer capstones"
@@ -2850,8 +2850,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 75,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-gas-mq2-angle2.jpg",
+    images: ["/images/products/sensor-gas-mq2-angle2.jpg","/images/products/sensor-gas-mq2.jpg","/images/products/sensor-gas-mq2-angle3.jpg"],
     specs: {
           "Feature 1": "High sensitivity to CO toxic gas",
           "Feature 2": "high-low cycle temperature drive"
@@ -2870,8 +2870,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 85,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-gas-mq2-angle3.jpg",
+    images: ["/images/products/sensor-gas-mq2-angle3.jpg","/images/products/sensor-gas-mq2.jpg","/images/products/sensor-gas-mq2-angle2.jpg"],
     specs: {
           "Feature 1": "Detects NH3",
           "Feature 2": "NOx",
@@ -2894,8 +2894,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 60,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-touch-ttp223.jpg",
+    images: ["/images/products/sensor-touch-ttp223.jpg","/images/products/led-ring-neopixel.jpg","/images/products/sensor-mpu6050-gyro.jpg"],
     specs: {
           "Feature 1": "Programmable color light-to-frequency converter with 4 white LEDs"
     },
@@ -2913,8 +2913,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 65,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-mpu6050-gyro.jpg",
+    images: ["/images/products/sensor-mpu6050-gyro.jpg","/images/products/sensor-ir-obstacle.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "940nm VCSEL laser ranging up to 2 meters independent of object color"
     },
@@ -2932,8 +2932,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 55,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-mpu6050-gyro.jpg",
+    images: ["/images/products/sensor-mpu6050-gyro.jpg","/images/products/sensor-touch-ttp223.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "Up/down/left/right gesture swipe detection + ambient light sensor"
     },
@@ -2951,8 +2951,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 200,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-soil-moisture.jpg",
+    images: ["/images/products/sensor-soil-moisture.jpg","/images/products/sensor-touch-ttp223.jpg","/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "Dual fork probe with potentiometer-adjusted LM393 comparator board"
     },
@@ -2989,8 +2989,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 50,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-mpu6050-gyro.jpg",
+    images: ["/images/products/sensor-mpu6050-gyro.jpg","/images/products/sensor-touch-ttp223.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "High-sensitivity biosensor with red/IR LEDs and photodetector for SpO2"
     },
@@ -3008,8 +3008,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 160,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-reed-switch.jpg",
+    images: ["/images/products/sensor-reed-switch.jpg","/images/products/transistor-bc547.jpg","/images/products/sensor-touch-ttp223.jpg"],
     specs: {
           "Feature 1": "Non-contact magnetic polarity detection switch module"
     },
@@ -3046,8 +3046,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 150,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-ir-obstacle.jpg",
+    images: ["/images/products/sensor-ir-obstacle.jpg","/images/products/sensor-ir-breakbeam.jpg","/images/products/sensor-touch-ttp223.jpg"],
     specs: {
           "Feature 1": "760nm–1100nm infrared wavelength flame detector (60° angle)"
     },
@@ -3065,8 +3065,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 160,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-touch-ttp223.jpg",
+    images: ["/images/products/sensor-touch-ttp223.jpg","/images/products/sensor-sound-ky038.jpg","/images/products/buzzer-piezo-5v.jpg"],
     specs: {
           "Feature 1": "Normally closed spring vibration sensor for anti-theft & impact alarms"
     },
@@ -3084,8 +3084,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 90,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-tp4056-charger.jpg",
+    images: ["/images/products/module-tp4056-charger.jpg","/images/products/sensor-mpu6050-gyro.jpg","/images/products/connectors-terminal-block.jpg"],
     specs: {
           "Feature 1": "Hall-effect linear current sensor",
           "Feature 2": "100mV/A sensitivity",
@@ -3105,8 +3105,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 75,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-mpu6050-gyro.jpg",
+    images: ["/images/products/sensor-mpu6050-gyro.jpg","/images/products/module-tp4056-charger.jpg","/images/products/module-logic-level-converter.jpg"],
     specs: {
           "Feature 1": "Measures voltage up to +26VDC and bidirectional current across shunt"
     },
@@ -3124,8 +3124,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 60,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/sensor-ir-breakbeam.jpg",
+    images: ["/images/products/sensor-ir-breakbeam.jpg","/images/products/sensor-ir-obstacle.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "Optical reflective optical wheel speed pickup sensor"
     },
@@ -3164,8 +3164,8 @@ export const PRODUCTS: Product[] = [
     resistance: 1000,
     stock: 90,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-nrf24l01-pa-lna.jpg",
+    images: ["/images/products/module-nrf24l01-pa-lna.jpg","/images/products/module-esp8266-esp01.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "Power amplified + low-noise amp with 2dBi external whip antenna"
     },
@@ -3183,8 +3183,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 110,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-bluetooth-hc05.jpg",
+    images: ["/images/products/module-bluetooth-hc05.jpg","/images/products/module-usb-ttl-ch340.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "Classic Bluetooth V2.0+EDR master/slave transceiver with button"
     },
@@ -3202,8 +3202,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 90,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-bluetooth-hc05.jpg",
+    images: ["/images/products/module-bluetooth-hc05.jpg","/images/products/module-usb-ttl-ch340.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "Dedicated slave Bluetooth module for smartphone Arduino control"
     },
@@ -3240,8 +3240,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 60,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-gsm-sim800l.jpg",
+    images: ["/images/products/module-gsm-sim800l.jpg","/images/products/battery-18650-cell.jpg","/images/products/module-tp4056-charger.jpg"],
     specs: {
           "Feature 1": "Quad-band 850/900/1800/1900MHz for SMS",
           "Feature 2": "voice",
@@ -3261,8 +3261,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 70,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-microsd-spi.jpg",
+    images: ["/images/products/module-microsd-spi.jpg","/images/products/module-usb-ttl-ch340.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "50-channel u-blox positioning engine",
           "Feature 2": "EEPROM data backup",
@@ -3301,8 +3301,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 45,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-ethernet-w5500.jpg",
+    images: ["/images/products/module-ethernet-w5500.jpg","/images/products/module-usb-ttl-ch340.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "Hardwired TCP/IP embedded Ethernet controller (10/100 Mbps RJ45)"
     },
@@ -3320,8 +3320,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 40,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/module-nrf24l01-pa-lna.jpg",
+    images: ["/images/products/module-nrf24l01-pa-lna.jpg","/images/products/module-esp8266-esp01.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "Ultra-long range spread spectrum communication module (>3km)"
     },
@@ -3577,8 +3577,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 85,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/converter-buck-lm2596.jpg",
+    images: ["/images/products/converter-buck-lm2596.jpg","/images/products/converter-boost-mt3608.jpg","/images/products/connectors-terminal-block.jpg"],
     specs: {
           "Feature 1": "High efficiency 5A adjustable voltage & constant current battery charger"
     },
@@ -3615,8 +3615,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 250,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/ic-74hc595.jpg",
+    images: ["/images/products/ic-74hc595.jpg","/images/products/ne555-timer-ic.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "8-bit serial-in",
           "Feature 2": "parallel-out register for expanding MCU output pins"
@@ -3635,8 +3635,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 220,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/ic-74hc595.jpg",
+    images: ["/images/products/ic-74hc595.jpg","/images/products/ne555-timer-ic.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "10-output decoded counter for LED sequencers and chasers"
     },
@@ -3753,8 +3753,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 200,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/ic-audio-amp.jpg",
+    images: ["/images/products/ic-audio-amp.jpg","/images/products/ne555-timer-ic.jpg","/images/products/buzzer-piezo-5v.jpg"],
     specs: {
           "Feature 1": "4V–12V low-power audio amp DIP-8 with internal 20x gain"
     },
@@ -3772,8 +3772,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 240,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/ic-audio-amp.jpg",
+    images: ["/images/products/ic-audio-amp.jpg","/images/products/ne555-timer-ic.jpg","/images/products/transistor-bc547.jpg"],
     specs: {
           "Feature 1": "High-precision dual comparator with open-collector output"
     },
@@ -3791,8 +3791,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 160,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/ic-audio-amp.jpg",
+    images: ["/images/products/ic-audio-amp.jpg","/images/products/ne555-timer-ic.jpg","/images/products/transistor-bc547.jpg"],
     specs: {
           "Feature 1": "High-fidelity audio dual operational amplifier"
     },
@@ -3810,8 +3810,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 300,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/crystal-oscillator-16mhz.jpg",
+    images: ["/images/products/crystal-oscillator-16mhz.jpg","/images/products/capacitor-ceramic.jpg","/images/products/transistor-bc547.jpg"],
     specs: {
           "Feature 1": "Standard quartz crystal resonator for ATmega328P circuits"
     },
@@ -3829,8 +3829,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 140,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/keypad-membrane-4x4.jpg",
+    images: ["/images/products/keypad-membrane-4x4.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "Ultra-thin flexible matrix keypad with adhesive backing and 8-pin header"
     },
@@ -3848,8 +3848,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 130,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/joystick-ps2-module.jpg",
+    images: ["/images/products/joystick-ps2-module.jpg","/images/products/rotary-encoder-ec11.jpg","/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "X/Y dual 10k potentiometers with momentary center push button"
     },
@@ -3867,8 +3867,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 120,
     status: "in-stock",
-    image: "/images/products/pushbutton-switch.jpg",
-    images: ["/images/products/pushbutton-switch.jpg","/images/products/toggle-switch-spdt.jpg","/images/products/emergency-stop-button.jpg"],
+    image: "/images/products/rotary-encoder-ec11.jpg",
+    images: ["/images/products/rotary-encoder-ec11.jpg","/images/products/potentiometer-wh148.jpg","/images/products/pushbutton-switch.jpg"],
     specs: {
           "Feature 1": "360° infinite incremental digital rotation with detents"
     },
@@ -3886,8 +3886,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 220,
     status: "in-stock",
-    image: "/images/products/pushbutton-switch.jpg",
-    images: ["/images/products/pushbutton-switch.jpg","/images/products/toggle-switch-spdt.jpg","/images/products/emergency-stop-button.jpg"],
+    image: "/images/products/dip-switch-4pos.jpg",
+    images: ["/images/products/dip-switch-4pos.jpg","/images/products/dip-switch-8pos.jpg","/images/products/tactile-switch-6mm.jpg"],
     specs: {
           "Feature 1": "Standard slide DIP switch for PCB configuration"
     },
@@ -3905,8 +3905,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 200,
     status: "in-stock",
-    image: "/images/products/pushbutton-switch.jpg",
-    images: ["/images/products/pushbutton-switch.jpg","/images/products/toggle-switch-spdt.jpg","/images/products/emergency-stop-button.jpg"],
+    image: "/images/products/dip-switch-8pos.jpg",
+    images: ["/images/products/dip-switch-8pos.jpg","/images/products/dip-switch-4pos.jpg","/images/products/tactile-switch-6mm.jpg"],
     specs: {
           "Feature 1": "8-circuit SPST slide DIP switch for binary addressing"
     },
@@ -3924,8 +3924,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 250,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/connectors-terminal-block.jpg",
+    images: ["/images/products/connectors-terminal-block.jpg","/images/products/power-supply-adapter.jpg","/images/products/connectors-xt60.jpg"],
     specs: {
           "Feature 1": "5.5×2.1mm metal threaded chassis mount DC jack with nut"
     },
@@ -3943,8 +3943,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 220,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/connectors-terminal-block.jpg",
+    images: ["/images/products/connectors-terminal-block.jpg","/images/products/module-tp4056-charger.jpg","/images/products/module-usb-ttl-ch340.jpg"],
     specs: {
           "Feature 1": "2.54mm breakout board for USB-C power injection & CC pins"
     },
@@ -3962,8 +3962,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 180,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/connectors-xt60.jpg",
+    images: ["/images/products/connectors-xt60.jpg","/images/products/battery-18650-cell.jpg","/images/products/connectors-terminal-block.jpg"],
     specs: {
           "Feature 1": "Gold-plated 60A continuous power connector with heat shrink"
     },
@@ -4022,8 +4022,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 45,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/tool-logic-analyzer.jpg",
+    images: ["/images/products/tool-logic-analyzer.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/module-usb-ttl-ch340.jpg"],
     specs: {
           "Feature 1": "Decodes I2C",
           "Feature 2": "SPI",
@@ -4140,8 +4140,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 65,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/tool-tweezers-esd.jpg",
+    images: ["/images/products/tool-tweezers-esd.jpg","/images/products/tool-digital-caliper.jpg","/images/products/tool-esd-wrist-strap.jpg"],
     specs: {
           "Feature 1": "Non-magnetic stainless steel tweezers set (curved",
           "Feature 2": "straight",
@@ -4199,8 +4199,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 40,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/tool-helping-hands.jpg",
+    images: ["/images/products/tool-helping-hands.jpg","/images/products/tool-soldering-iron-station.jpg","/images/products/tool-soldering-iron-station-angle3.jpg"],
     specs: {
           "Feature 1": "Cast-iron weighted base with dual alligator clips and 2.5x glass lens"
     },
@@ -4218,8 +4218,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 90,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/solder-wire-spool.jpg",
+    images: ["/images/products/solder-wire-spool.jpg","/images/products/tool-soldering-iron-station.jpg","/images/products/perfboard-pcb.jpg"],
     specs: {
           "Feature 1": "Resists up to 260°C",
           "Feature 2": "ideal for heat bed masking & PCB insulation"
@@ -4238,8 +4238,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 110,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/cooling-fan-4010.jpg",
+    images: ["/images/products/cooling-fan-4010.jpg","/images/products/enclosure-box-abs.jpg","/images/products/ic-lm7805.jpg"],
     specs: {
           "Feature 1": "Syringe dispenser for heatsinks on L298N",
           "Feature 2": "MOSFETs",
@@ -4259,8 +4259,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 150,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/tool-esd-wrist-strap.jpg",
+    images: ["/images/products/tool-esd-wrist-strap.jpg","/images/products/tool-tweezers-esd.jpg","/images/products/hardware-m3-screws.jpg"],
     specs: {
           "Feature 1": "Coiled ground cord with alligator clip to protect sensitive ICs from ESD"
     },
@@ -4278,8 +4278,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 70,
     status: "in-stock",
-    image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/solder-wire-spool.jpg",
+    images: ["/images/products/solder-wire-spool.jpg","/images/products/tool-soldering-iron-station.jpg","/images/products/tool-soldering-iron-station-angle2.jpg"],
     specs: {
           "Feature 1": "Sn99.3 Cu0.7 high-grade solder wire for clean",
           "Feature 2": "RoHS-compliant joints"
