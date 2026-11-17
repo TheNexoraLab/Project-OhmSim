@@ -33,7 +33,7 @@ export function AdminKpiCard({
     <Surface
       variant="panel"
       data-testid={dataTestId}
-      className="p-5 bg-[#1E1E2E] border border-[#313244] hover:border-[#45475A] transition-colors flex flex-col justify-between gap-4 shadow-[0_8px_24px_rgba(0,0,0,0.22)]"
+      className="min-w-0 p-3 sm:p-5 bg-[#1E1E2E] border border-[#313244] hover:border-[#45475A] transition-colors flex flex-col justify-between gap-3 sm:gap-4 shadow-[0_8px_24px_rgba(0,0,0,0.22)]"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
@@ -42,7 +42,7 @@ export function AdminKpiCard({
           </p>
           <p
             data-kpi-value
-            className="mt-1.5 text-2xl sm:text-[26px] font-bold font-mono tracking-tight text-[#CDD6F4] truncate"
+            className="mt-1.5 text-lg sm:text-[26px] font-bold font-mono tracking-tight text-[#CDD6F4] break-words"
           >
             {value}
           </p>
@@ -50,7 +50,7 @@ export function AdminKpiCard({
 
         <div
           aria-hidden="true"
-          className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-[#181825] border border-[#313244] text-[#CDD6F4]"
+          className="w-9 h-9 rounded-xl hidden sm:flex items-center justify-center shrink-0 bg-[#181825] border border-[#313244] text-[#CDD6F4]"
         >
           {icon}
         </div>
@@ -74,8 +74,8 @@ export function AdminKpiCard({
           />
         </div>
 
-        <div className="flex items-center justify-between gap-2 pt-0.5">
-          <span className="text-xs text-[#BAC2DE] truncate">{subtitle}</span>
+        <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5">
+          <span className="text-xs text-[#BAC2DE]">{subtitle}</span>
           {badgeText && (
             <Badge variant={badgeVariant} className="shrink-0 font-mono">
               {badgeText}

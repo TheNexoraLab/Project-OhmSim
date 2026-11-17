@@ -41,7 +41,17 @@ export function BuyerMobileHeader() {
       </Link>
 
       <div className="flex items-center gap-1">
-        {pathname !== "/chat" && <button type="button" aria-label="Open OhmSim assistant" onClick={() => chatWidgetStore.toggle()} className="min-w-[44px] min-h-[44px] flex items-center justify-center text-mocha-accent rounded-xl"><CircleHelp size={20} aria-hidden="true" /></button>}
+        {pathname !== "/chat" && (
+          <button
+            type="button"
+            data-chat-launcher
+            aria-label="Open OhmSim assistant"
+            onClick={() => chatWidgetStore.toggle()}
+            className="min-w-[44px] min-h-[44px] flex items-center justify-center text-mocha-accent rounded-xl"
+          >
+            <CircleHelp size={20} aria-hidden="true" />
+          </button>
+        )}
         <Link
           href="/products"
           aria-label="Search catalog"

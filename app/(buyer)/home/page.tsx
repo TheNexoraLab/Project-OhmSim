@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { useCart } from "@/hooks/use-cart";
 import { useBom } from "@/hooks/use-bom";
 import {
@@ -42,16 +43,19 @@ export default function BuyerHomePage() {
   const stats = [
     {
       label: "Products Available",
+      href: "/products",
       value: allProducts.length,
       color: "text-mocha-accent",
     },
     {
       label: "Cart Items",
+      href: "/cart",
       value: cartTotal,
       color: "text-mocha-accent",
     },
     {
       label: "BOM Projects",
+      href: "/bom",
       value: bomProjects.length,
       color: "text-mocha-accent-secondary",
     },
@@ -72,8 +76,9 @@ export default function BuyerHomePage() {
       {/* 3 Metric Cards Grid (No Carousel) */}
       <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5">
         {stats.map((s) => (
-          <div
+          <Link
             key={s.label}
+            href={s.href}
             id={`metric-${s.label.toLowerCase().replace(/\s+/g, "-")}`}
             className="min-w-0 p-2.5 sm:p-4 rounded-xl bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border shadow-[0_12px_30px_rgba(0,0,0,0.14)]"
           >
@@ -81,7 +86,7 @@ export default function BuyerHomePage() {
               {s.value}
             </p>
             <p className="text-[11px] mt-1 text-mocha-text-muted">{s.label}</p>
-          </div>
+          </Link>
         ))}
       </div>
 

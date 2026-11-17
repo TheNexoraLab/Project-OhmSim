@@ -153,6 +153,7 @@ export function CartClient() {
                   >
                     {/* Bundle Header */}
                     <div
+                      data-mobile-bundle-header
                       className="flex items-center gap-3 px-4 py-3 select-none"
                       style={{
                         background: palette.bg,

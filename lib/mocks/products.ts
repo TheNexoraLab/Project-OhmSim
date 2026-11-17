@@ -19,7 +19,7 @@ export const PRODUCTS: Product[] = [
     stock: 140,
     status: "in-stock",
     image: "/images/products/esp32-wroom-32u.jpg",
-    images: ["/images/products/esp32-wroom-32u.jpg","/images/products/esp32-cam.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/esp32-wroom-32u.jpg"],
     specs: {
           "Feature 1": "Dual-core 240MHz",
           "Feature 2": "4MB Flash",
@@ -40,7 +40,7 @@ export const PRODUCTS: Product[] = [
     stock: 85,
     status: "in-stock",
     image: "/images/products/arduino-uno-r3.jpg",
-    images: ["/images/products/arduino-uno-r3.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/arduino-uno-r3.jpg"],
     specs: {
           "Feature 1": "ATmega328P 16MHz",
           "Feature 2": "14 Digital I/O",
@@ -62,7 +62,7 @@ export const PRODUCTS: Product[] = [
     stock: 60,
     status: "in-stock",
     image: "/images/products/esp32-cam.jpg",
-    images: ["/images/products/esp32-cam.jpg","/images/products/module-microsd-spi.jpg","/images/products/module-usb-ttl-ch340.jpg"],
+    images: ["/images/products/esp32-cam.jpg"],
     specs: {
           "Feature 1": "Includes 2MP OV2640 camera + TF card slot"
     },
@@ -81,7 +81,7 @@ export const PRODUCTS: Product[] = [
     stock: 210,
     status: "in-stock",
     image: "/images/products/sensor-ir-obstacle.jpg",
-    images: ["/images/products/sensor-ir-obstacle.jpg","/images/products/sensor-ir-breakbeam.jpg","/images/products/hc-sr04-ultrasonic.jpg"],
+    images: ["/images/products/sensor-ir-obstacle.jpg"],
     specs: {
           "Feature 1": "3-wire digital output",
           "Feature 2": "LM393 comparator",
@@ -101,8 +101,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 120,
     status: "in-stock",
-    image: "/images/products/sensor-ir-obstacle.jpg",
-    images: ["/images/products/sensor-ir-obstacle.jpg","/images/products/sensor-ir-breakbeam.jpg","/images/products/hc-sr04-ultrasonic.jpg"],
+    image: "/images/products/sensor-ir-breakbeam.jpg",
+    images: ["/images/products/sensor-ir-breakbeam.jpg"],
     specs: {
           "Feature 1": "Optical slotted switch for pill/object counting"
     },
@@ -121,7 +121,7 @@ export const PRODUCTS: Product[] = [
     stock: 200,
     status: "in-stock",
     image: "/images/products/hc-sr04-ultrasonic.jpg",
-    images: ["/images/products/hc-sr04-ultrasonic.jpg","/images/products/sensor-ir-obstacle.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/hc-sr04-ultrasonic.jpg"],
     specs: {
           "Feature 1": "2cm–400cm range",
           "Feature 2": "5V DC",
@@ -142,7 +142,7 @@ export const PRODUCTS: Product[] = [
     stock: 75,
     status: "in-stock",
     image: "/images/products/sensor-loadcell-5kg.jpg",
-    images: ["/images/products/sensor-loadcell-5kg.jpg","/images/products/hardware-m3-screws.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/sensor-loadcell-5kg.jpg"],
     specs: {
           "Feature 1": "4-wire strain gauge bar",
           "Feature 2": "1.0±0.15mV/V output"
@@ -162,7 +162,7 @@ export const PRODUCTS: Product[] = [
     stock: 180,
     status: "in-stock",
     image: "/images/products/toggle-switch-spdt.jpg",
-    images: ["/images/products/toggle-switch-spdt.jpg","/images/products/pushbutton-switch.jpg","/images/products/emergency-stop-button.jpg"],
+    images: ["/images/products/toggle-switch-spdt.jpg"],
     specs: {
           "Feature 1": "SPDT snap action with roller lever (5A 125VAC)"
     },
@@ -181,7 +181,7 @@ export const PRODUCTS: Product[] = [
     stock: 140,
     status: "in-stock",
     image: "/images/products/sensor-reed-switch.jpg",
-    images: ["/images/products/sensor-reed-switch.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/sensor-reed-switch.jpg"],
     specs: {
           "Feature 1": "Normally open reed switch with digital comparator"
     },
@@ -200,7 +200,7 @@ export const PRODUCTS: Product[] = [
     stock: 70,
     status: "in-stock",
     image: "/images/products/dht22-sensor-module.jpg",
-    images: ["/images/products/dht22-sensor-module.jpg","/images/products/sensor-ds18b20-probe.jpg","/images/products/sensor-lm35-temp.jpg"],
+    images: ["/images/products/dht22-sensor-module.jpg"],
     specs: {
           "Feature 1": "-40 to 80°C (±0.5°C)",
           "Feature 2": "0–100% RH (±2% RH)"
@@ -220,7 +220,7 @@ export const PRODUCTS: Product[] = [
     stock: 110,
     status: "in-stock",
     image: "/images/products/sensor-ds18b20-probe.jpg",
-    images: ["/images/products/sensor-ds18b20-probe.jpg","/images/products/dht22-sensor-module.jpg","/images/products/connectors-terminal-block.jpg"],
+    images: ["/images/products/sensor-ds18b20-probe.jpg"],
     specs: {
           "Feature 1": "Stainless steel 1-Wire digital temp sensor probe"
     },
@@ -239,7 +239,7 @@ export const PRODUCTS: Product[] = [
     stock: 150,
     status: "in-stock",
     image: "/images/products/sensor-lm35-temp.jpg",
-    images: ["/images/products/sensor-lm35-temp.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/sensor-lm35-temp.jpg"],
     specs: {
           "Feature 1": "Linear +10.0 mV/°C scale",
           "Feature 2": "0°C to 100°C TO-92"
@@ -259,7 +259,7 @@ export const PRODUCTS: Product[] = [
     stock: 130,
     status: "in-stock",
     image: "/images/products/sensor-pir-hcsr501.jpg",
-    images: ["/images/products/sensor-pir-hcsr501.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/sensor-pir-hcsr501.jpg"],
     specs: {
           "Feature 1": "7m detection range",
           "Feature 2": "120° cone",
@@ -279,8 +279,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 450,
     status: "in-stock",
-    image: "/images/products/led-5mm-pack.jpg",
-    images: ["/images/products/led-5mm-pack.jpg","/images/products/led-ring-neopixel.jpg","/images/products/led-strip-ws2812b.jpg"],
+    image: "/images/products/sensor-ldr-photoresistor.jpg",
+    images: ["/images/products/sensor-ldr-photoresistor.jpg"],
     specs: {
           "Feature 1": "5mm cadmium sulfide photo conductive cell"
     },
@@ -299,7 +299,7 @@ export const PRODUCTS: Product[] = [
     stock: 120,
     status: "in-stock",
     image: "/images/products/sensor-touch-ttp223.jpg",
-    images: ["/images/products/sensor-touch-ttp223.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/sensor-touch-ttp223.jpg"],
     specs: {
           "Feature 1": "Nickel-plated PCB grid + LM393 comparator board"
     },
@@ -318,7 +318,7 @@ export const PRODUCTS: Product[] = [
     stock: 280,
     status: "in-stock",
     image: "/images/products/sensor-touch-ttp223.jpg",
-    images: ["/images/products/sensor-touch-ttp223.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/sensor-touch-ttp223.jpg"],
     specs: {
           "Feature 1": "Momentary / toggle mode selectable",
           "Feature 2": "2.5V–5.5V"
@@ -338,7 +338,7 @@ export const PRODUCTS: Product[] = [
     stock: 150,
     status: "in-stock",
     image: "/images/products/sensor-reed-switch.jpg",
-    images: ["/images/products/sensor-reed-switch.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/sensor-reed-switch.jpg"],
     specs: {
           "Feature 1": "Surface/flush mount security alarm reed contact"
     },
@@ -357,7 +357,7 @@ export const PRODUCTS: Product[] = [
     stock: 190,
     status: "in-stock",
     image: "/images/products/servo-sg90.jpg",
-    images: ["/images/products/servo-sg90.jpg","/images/products/servo-sg90-angle3.jpg","/images/products/servo-mg996r.jpg"],
+    images: ["/images/products/servo-sg90.jpg"],
     specs: {
           "Feature 1": "1.8 kg·cm torque",
           "Feature 2": "180° rotation",
@@ -377,8 +377,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 70,
     status: "in-stock",
-    image: "/images/products/servo-sg90.jpg",
-    images: ["/images/products/servo-sg90.jpg","/images/products/servo-sg90-angle3.jpg","/images/products/servo-mg996r.jpg"],
+    image: "/images/products/servo-mg996r.jpg",
+    images: ["/images/products/servo-mg996r.jpg"],
     specs: {
           "Feature 1": "11 kg·cm high torque",
           "Feature 2": "metal gears",
@@ -399,7 +399,7 @@ export const PRODUCTS: Product[] = [
     stock: 160,
     status: "in-stock",
     image: "/images/products/motor-dc-tt.jpg",
-    images: ["/images/products/motor-dc-tt.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/motor-dc-tt.jpg"],
     specs: {
           "1": "48 reduction gear ratio",
           "Feature 1": "3–6V DC",
@@ -420,7 +420,7 @@ export const PRODUCTS: Product[] = [
     stock: 110,
     status: "in-stock",
     image: "/images/products/stepper-28byj48.jpg",
-    images: ["/images/products/stepper-28byj48.jpg","/images/products/driver-tb6612.jpg","/images/products/motor-dc-tt.jpg"],
+    images: ["/images/products/stepper-28byj48.jpg"],
     specs: {
           "64": "1 reduction ratio",
           "Feature 1": "4-phase 5-wire unipolar"
@@ -440,7 +440,7 @@ export const PRODUCTS: Product[] = [
     stock: 140,
     status: "in-stock",
     image: "/images/products/driver-tmc2209.jpg",
-    images: ["/images/products/driver-tmc2209.jpg","/images/products/driver-tb6612.jpg","/images/products/stepper-nema17.jpg"],
+    images: ["/images/products/driver-tmc2209.jpg"],
     specs: {
           "Feature 1": "Microstepping bipolar motor driver up to 2A"
     },
@@ -459,7 +459,7 @@ export const PRODUCTS: Product[] = [
     stock: 65,
     status: "in-stock",
     image: "/images/products/l298n-motor-driver.jpg",
-    images: ["/images/products/l298n-motor-driver.jpg","/images/products/motor-dc-tt.jpg","/images/products/connectors-terminal-block.jpg"],
+    images: ["/images/products/l298n-motor-driver.jpg"],
     specs: {
           "Feature 1": "Dual DC / 1 stepper motor driver up to 46V/2A"
     },
@@ -478,7 +478,7 @@ export const PRODUCTS: Product[] = [
     stock: 80,
     status: "in-stock",
     image: "/images/products/driver-tb6612.jpg",
-    images: ["/images/products/driver-tb6612.jpg","/images/products/motor-dc-tt.jpg","/images/products/driver-tmc2209.jpg"],
+    images: ["/images/products/driver-tb6612.jpg"],
     specs: {
           "Feature 1": "High-efficiency MOSFET H-bridge 1.2A/channel"
     },
@@ -497,7 +497,7 @@ export const PRODUCTS: Product[] = [
     stock: 130,
     status: "in-stock",
     image: "/images/products/sensor-loadcell-5kg.jpg",
-    images: ["/images/products/sensor-loadcell-5kg.jpg","/images/products/hardware-m3-screws.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/sensor-loadcell-5kg.jpg"],
     specs: {
           "Feature 1": "Dual-channel differential input amplifier for load cells"
     },
@@ -516,7 +516,7 @@ export const PRODUCTS: Product[] = [
     stock: 110,
     status: "in-stock",
     image: "/images/products/module-rtc-ds1307.jpg",
-    images: ["/images/products/module-rtc-ds1307.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/module-rtc-ds1307.jpg"],
     specs: {
           "Feature 1": "Temperature-compensated I2C clock + AT24C32 EEPROM"
     },
@@ -535,7 +535,7 @@ export const PRODUCTS: Product[] = [
     stock: 95,
     status: "in-stock",
     image: "/images/products/oled-096-i2c-blue.jpg",
-    images: ["/images/products/oled-096-i2c-blue.jpg","/images/products/oled-096-i2c-blue-angle2.jpg","/images/products/oled-096-i2c-blue-angle3.jpg"],
+    images: ["/images/products/oled-096-i2c-blue.jpg"],
     specs: {
           "Feature 1": "128×64 SSD1306 driver",
           "Feature 2": "3.3V–5V",
@@ -556,7 +556,7 @@ export const PRODUCTS: Product[] = [
     stock: 80,
     status: "in-stock",
     image: "/images/products/lcd-1602-blue.jpg",
-    images: ["/images/products/lcd-1602-blue.jpg","/images/products/connectors-terminal-block.jpg","/images/products/pin-headers-strip.jpg"],
+    images: ["/images/products/lcd-1602-blue.jpg"],
     specs: {
           "Feature 1": "HD44780 standard parallel display with blue backlight"
     },
@@ -575,7 +575,7 @@ export const PRODUCTS: Product[] = [
     stock: 130,
     status: "in-stock",
     image: "/images/products/lcd-1602-blue.jpg",
-    images: ["/images/products/lcd-1602-blue.jpg","/images/products/connectors-terminal-block.jpg","/images/products/pin-headers-strip.jpg"],
+    images: ["/images/products/lcd-1602-blue.jpg"],
     specs: {
           "Feature 1": "Reduces 16-pin LCD wiring to 2 I2C pins (SDA/SCL)"
     },
@@ -594,7 +594,7 @@ export const PRODUCTS: Product[] = [
     stock: 190,
     status: "in-stock",
     image: "/images/products/module-relay-5v.jpg",
-    images: ["/images/products/module-relay-5v.jpg","/images/products/connectors-terminal-block.jpg","/images/products/actuator-solenoid-12v.jpg"],
+    images: ["/images/products/module-relay-5v.jpg"],
     specs: {
           "Feature 1": "Songle 10A 250VAC with optocoupler isolation"
     },
@@ -613,7 +613,7 @@ export const PRODUCTS: Product[] = [
     stock: 140,
     status: "in-stock",
     image: "/images/products/transistor-bc547.jpg",
-    images: ["/images/products/transistor-bc547.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/transistor-bc547.jpg"],
     specs: {
           "Feature 1": "40V 50A high-power PWM load switch"
     },
@@ -632,7 +632,7 @@ export const PRODUCTS: Product[] = [
     stock: 320,
     status: "in-stock",
     image: "/images/products/ic-lm7805.jpg",
-    images: ["/images/products/ic-lm7805.jpg","/images/products/transistor-bc547.jpg","/images/products/capacitor-electrolytic.jpg"],
+    images: ["/images/products/ic-lm7805.jpg"],
     specs: {
           "Feature 1": "1.5A positive fixed linear regulator TO-220"
     },
@@ -651,7 +651,7 @@ export const PRODUCTS: Product[] = [
     stock: 150,
     status: "in-stock",
     image: "/images/products/converter-buck-lm2596.jpg",
-    images: ["/images/products/converter-buck-lm2596.jpg","/images/products/converter-boost-mt3608.jpg","/images/products/power-supply-adapter.jpg"],
+    images: ["/images/products/converter-buck-lm2596.jpg"],
     specs: {
           "Feature 1": "3.2V–40V input to 1.25V–35V adjustable output (3A)"
     },
@@ -670,7 +670,7 @@ export const PRODUCTS: Product[] = [
     stock: 160,
     status: "in-stock",
     image: "/images/products/converter-boost-mt3608.jpg",
-    images: ["/images/products/converter-boost-mt3608.jpg","/images/products/converter-buck-lm2596.jpg","/images/products/battery-18650-cell.jpg"],
+    images: ["/images/products/converter-boost-mt3608.jpg"],
     specs: {
           "Feature 1": "2V–24V input up to 28V adjustable output (2A)"
     },
@@ -689,7 +689,7 @@ export const PRODUCTS: Product[] = [
     stock: 310,
     status: "in-stock",
     image: "/images/products/module-tp4056-charger.jpg",
-    images: ["/images/products/module-tp4056-charger.jpg","/images/products/battery-18650-cell.jpg","/images/products/power-supply-adapter.jpg"],
+    images: ["/images/products/module-tp4056-charger.jpg"],
     specs: {
           "Feature 1": "Lithium battery charger with dual protection IC"
     },
@@ -708,7 +708,7 @@ export const PRODUCTS: Product[] = [
     stock: 110,
     status: "in-stock",
     image: "/images/products/module-tp4056-charger.jpg",
-    images: ["/images/products/module-tp4056-charger.jpg","/images/products/battery-18650-cell.jpg","/images/products/power-supply-adapter.jpg"],
+    images: ["/images/products/module-tp4056-charger.jpg"],
     specs: {
           "Feature 1": "Overcharge",
           "Feature 2": "over-discharge",
@@ -729,7 +729,7 @@ export const PRODUCTS: Product[] = [
     stock: 140,
     status: "in-stock",
     image: "/images/products/module-usb-ttl-ch340.jpg",
-    images: ["/images/products/module-usb-ttl-ch340.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/module-usb-ttl-ch340.jpg"],
     specs: {
           "Feature 1": "USB serial UART adapter with 3.3V/5V jumper"
     },
@@ -748,7 +748,7 @@ export const PRODUCTS: Product[] = [
     stock: 130,
     status: "in-stock",
     image: "/images/products/module-microsd-spi.jpg",
-    images: ["/images/products/module-microsd-spi.jpg","/images/products/perfboard-pcb.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/module-microsd-spi.jpg"],
     specs: {
           "Feature 1": "Onboard 3.3V LDO regulator and level shifter"
     },
@@ -767,7 +767,7 @@ export const PRODUCTS: Product[] = [
     stock: 220,
     status: "in-stock",
     image: "/images/products/transistor-bc547.jpg",
-    images: ["/images/products/transistor-bc547.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/transistor-bc547.jpg"],
     specs: {
           "Feature 1": "55V 49A 17.5mΩ Rds(on) Power MOSFET TO-220"
     },
@@ -786,7 +786,7 @@ export const PRODUCTS: Product[] = [
     stock: 220,
     status: "in-stock",
     image: "/images/products/module-logic-level-converter.jpg",
-    images: ["/images/products/module-logic-level-converter.jpg","/images/products/perfboard-pcb.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/module-logic-level-converter.jpg"],
     specs: {
           "Feature 1": "Bidirectional 3.3V to 5.0V signal shifter"
     },
@@ -805,7 +805,7 @@ export const PRODUCTS: Product[] = [
     stock: 130,
     status: "in-stock",
     image: "/images/products/module-relay-5v.jpg",
-    images: ["/images/products/module-relay-5v.jpg","/images/products/driver-tb6612.jpg","/images/products/transistor-bc547.jpg"],
+    images: ["/images/products/module-relay-5v.jpg"],
     specs: {
           "Feature 1": "4-channel photocoupler galvanic isolation"
     },
@@ -824,7 +824,7 @@ export const PRODUCTS: Product[] = [
     stock: 180,
     status: "in-stock",
     image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "Solderless breadboard with dual power distribution rails"
     },
@@ -843,7 +843,7 @@ export const PRODUCTS: Product[] = [
     stock: 240,
     status: "in-stock",
     image: "/images/products/breadboard-mb102.jpg",
-    images: ["/images/products/breadboard-mb102.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/breadboard-mb102.jpg"],
     specs: {
           "Feature 1": "SYB-170 mini tie-point prototyping block"
     },
@@ -862,7 +862,7 @@ export const PRODUCTS: Product[] = [
     stock: 350,
     status: "in-stock",
     image: "/images/products/jumper-wires-ribbon.jpg",
-    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/pin-headers-strip.jpg"],
+    images: ["/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "20cm 2.54mm Dupont male-to-male ribbon cable"
     },
@@ -881,7 +881,7 @@ export const PRODUCTS: Product[] = [
     stock: 350,
     status: "in-stock",
     image: "/images/products/jumper-wires-ribbon.jpg",
-    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/pin-headers-strip.jpg"],
+    images: ["/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "20cm 2.54mm Dupont male-to-female ribbon cable"
     },
@@ -900,7 +900,7 @@ export const PRODUCTS: Product[] = [
     stock: 350,
     status: "in-stock",
     image: "/images/products/jumper-wires-ribbon.jpg",
-    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/pin-headers-strip.jpg"],
+    images: ["/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "20cm 2.54mm Dupont female-to-female ribbon cable"
     },
@@ -919,7 +919,7 @@ export const PRODUCTS: Product[] = [
     stock: 85,
     status: "in-stock",
     image: "/images/products/power-supply-adapter.jpg",
-    images: ["/images/products/power-supply-adapter.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/power-supply-adapter.jpg"],
     specs: {
           "Feature 1": "Wall adapter",
           "Feature 2": "standard 5.5×2.1mm barrel jack"
@@ -939,7 +939,7 @@ export const PRODUCTS: Product[] = [
     stock: 75,
     status: "in-stock",
     image: "/images/products/power-supply-adapter.jpg",
-    images: ["/images/products/power-supply-adapter.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/power-supply-adapter.jpg"],
     specs: {
           "Feature 1": "Regulated 12V 2A adapter for motors and LED strips"
     },
@@ -958,7 +958,7 @@ export const PRODUCTS: Product[] = [
     stock: 190,
     status: "in-stock",
     image: "/images/products/battery-18650-cell.jpg",
-    images: ["/images/products/battery-18650-cell.jpg","/images/products/module-tp4056-charger.jpg","/images/products/power-supply-adapter.jpg"],
+    images: ["/images/products/battery-18650-cell.jpg"],
     specs: {
           "Feature 1": "Dual serial cell holder with color-coded wire leads"
     },
@@ -977,7 +977,7 @@ export const PRODUCTS: Product[] = [
     stock: 130,
     status: "in-stock",
     image: "/images/products/battery-18650-cell.jpg",
-    images: ["/images/products/battery-18650-cell.jpg","/images/products/module-tp4056-charger.jpg","/images/products/power-supply-adapter.jpg"],
+    images: ["/images/products/battery-18650-cell.jpg"],
     specs: {
           "Feature 1": "Standard cylindrical Li-ion rechargeable cell"
     },
@@ -996,7 +996,7 @@ export const PRODUCTS: Product[] = [
     stock: 400,
     status: "in-stock",
     image: "/images/products/connectors-terminal-block.jpg",
-    images: ["/images/products/connectors-terminal-block.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/connectors-terminal-block.jpg"],
     specs: {
           "Feature 1": "5.08mm pitch PCB screw terminal blocks"
     },
@@ -1015,7 +1015,7 @@ export const PRODUCTS: Product[] = [
     stock: 350,
     status: "in-stock",
     image: "/images/products/connectors-terminal-block.jpg",
-    images: ["/images/products/connectors-terminal-block.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/connectors-terminal-block.jpg"],
     specs: {
           "Feature 1": "5.08mm pitch 3-pin PCB screw terminal connectors"
     },
@@ -1034,7 +1034,7 @@ export const PRODUCTS: Product[] = [
     stock: 500,
     status: "in-stock",
     image: "/images/products/pin-headers-strip.jpg",
-    images: ["/images/products/pin-headers-strip.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/pin-headers-strip.jpg"],
     specs: {
           "Feature 1": "2.54mm pitch breakable straight male pin strips"
     },
@@ -1053,7 +1053,7 @@ export const PRODUCTS: Product[] = [
     stock: 450,
     status: "in-stock",
     image: "/images/products/pin-headers-strip.jpg",
-    images: ["/images/products/pin-headers-strip.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/pin-headers-strip.jpg"],
     specs: {
           "Feature 1": "2.54mm pitch straight single-row socket strips"
     },
@@ -1072,7 +1072,7 @@ export const PRODUCTS: Product[] = [
     stock: 220,
     status: "in-stock",
     image: "/images/products/connectors-terminal-block.jpg",
-    images: ["/images/products/connectors-terminal-block.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/connectors-terminal-block.jpg"],
     specs: {
           "Feature 1": "Assorted 1P/2P/3P/4P housings + male/female pins"
     },
@@ -1091,7 +1091,7 @@ export const PRODUCTS: Product[] = [
     stock: 180,
     status: "in-stock",
     image: "/images/products/connectors-terminal-block.jpg",
-    images: ["/images/products/connectors-terminal-block.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/connectors-terminal-block.jpg"],
     specs: {
           "Feature 1": "JST-XH 2-pin",
           "Feature 2": "3-pin",
@@ -1112,7 +1112,7 @@ export const PRODUCTS: Product[] = [
     stock: 260,
     status: "in-stock",
     image: "/images/products/perfboard-pcb.jpg",
-    images: ["/images/products/perfboard-pcb.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/perfboard-pcb.jpg"],
     specs: {
           "Feature 1": "5×7cm universal copper prototype matrix board"
     },
@@ -1131,7 +1131,7 @@ export const PRODUCTS: Product[] = [
     stock: 180,
     status: "in-stock",
     image: "/images/products/perfboard-pcb.jpg",
-    images: ["/images/products/perfboard-pcb.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/perfboard-pcb.jpg"],
     specs: {
           "Feature 1": "High-quality tinned double-sided FR4 board"
     },
@@ -1150,7 +1150,7 @@ export const PRODUCTS: Product[] = [
     stock: 210,
     status: "in-stock",
     image: "/images/products/jumper-wires-ribbon.jpg",
-    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/pin-headers-strip.jpg"],
+    images: ["/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "High-conductivity PVC insulated copper hookup wire"
     },
@@ -1168,8 +1168,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 240,
     status: "in-stock",
-    image: "/images/products/jumper-wires-ribbon.jpg",
-    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/pin-headers-strip.jpg"],
+    image: "/images/products/cable-usb-micro.jpg",
+    images: ["/images/products/cable-usb-micro.jpg"],
     specs: {
           "Feature 1": "Fast sync and programming cable with molded relief"
     },
@@ -1188,7 +1188,7 @@ export const PRODUCTS: Product[] = [
     stock: 90,
     status: "in-stock",
     image: "/images/products/module-microsd-spi.jpg",
-    images: ["/images/products/module-microsd-spi.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/module-microsd-spi.jpg"],
     specs: {
           "Feature 1": "High-speed TF card for data logging and ESP32-CAM"
     },
@@ -1207,7 +1207,7 @@ export const PRODUCTS: Product[] = [
     stock: 160,
     status: "in-stock",
     image: "/images/products/cooling-fan-4010.jpg",
-    images: ["/images/products/cooling-fan-4010.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/cooling-fan-4010.jpg"],
     specs: {
           "Feature 1": "40×40×10mm brushless silent DC fan"
     },
@@ -1226,7 +1226,7 @@ export const PRODUCTS: Product[] = [
     stock: 90,
     status: "in-stock",
     image: "/images/products/enclosure-box-abs.jpg",
-    images: ["/images/products/enclosure-box-abs.jpg","/images/products/hardware-m3-screws.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/enclosure-box-abs.jpg"],
     specs: {
           "Feature 1": "210×297mm protective peelable film",
           "Feature 2": "laser-cut grade"
@@ -1246,7 +1246,7 @@ export const PRODUCTS: Product[] = [
     stock: 120,
     status: "in-stock",
     image: "/images/products/enclosure-box-abs.jpg",
-    images: ["/images/products/enclosure-box-abs.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/enclosure-box-abs.jpg"],
     specs: {
           "Feature 1": "High-density lightweight structural prototyping sheet"
     },
@@ -1265,7 +1265,7 @@ export const PRODUCTS: Product[] = [
     stock: 65,
     status: "in-stock",
     image: "/images/products/mechanical-rack-pinion.jpg",
-    images: ["/images/products/mechanical-rack-pinion.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/mechanical-rack-pinion.jpg"],
     specs: {
           "Feature 1": "Soft-glide ball bearing slides for dispensing trays"
     },
@@ -1284,7 +1284,7 @@ export const PRODUCTS: Product[] = [
     stock: 110,
     status: "in-stock",
     image: "/images/products/mechanical-rack-pinion.jpg",
-    images: ["/images/products/mechanical-rack-pinion.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/mechanical-rack-pinion.jpg"],
     specs: {
           "Feature 1": "Precision molded nylon linear gear for push/pull gates"
     },
@@ -1303,7 +1303,7 @@ export const PRODUCTS: Product[] = [
     stock: 95,
     status: "in-stock",
     image: "/images/products/mechanical-rack-pinion.jpg",
-    images: ["/images/products/mechanical-rack-pinion.jpg","/images/products/stepper-nema17.jpg","/images/products/ball-bearing-608zz.jpg"],
+    images: ["/images/products/mechanical-rack-pinion.jpg"],
     specs: {
           "Feature 1": "Lightweight pivot rod with M3 threaded eyelets"
     },
@@ -1322,7 +1322,7 @@ export const PRODUCTS: Product[] = [
     stock: 150,
     status: "in-stock",
     image: "/images/products/mechanical-rack-pinion.jpg",
-    images: ["/images/products/mechanical-rack-pinion.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/mechanical-rack-pinion.jpg"],
     specs: {
           "Feature 1": "Heavy-duty stamped steel bracket with predrilled slots"
     },
@@ -1341,7 +1341,7 @@ export const PRODUCTS: Product[] = [
     stock: 110,
     status: "in-stock",
     image: "/images/products/servo-sg90.jpg",
-    images: ["/images/products/servo-sg90.jpg","/images/products/servo-sg90-angle3.jpg","/images/products/servo-mg996r.jpg"],
+    images: ["/images/products/servo-sg90.jpg"],
     specs: {
           "Feature 1": "CNC aluminum mounting bracket for SG90 and MG996R"
     },
@@ -1360,7 +1360,7 @@ export const PRODUCTS: Product[] = [
     stock: 130,
     status: "in-stock",
     image: "/images/products/ball-bearing-608zz.jpg",
-    images: ["/images/products/ball-bearing-608zz.jpg","/images/products/stepper-nema17.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/ball-bearing-608zz.jpg"],
     specs: {
           "Feature 1": "Solid brass coupler with 4× set screws"
     },
@@ -1379,7 +1379,7 @@ export const PRODUCTS: Product[] = [
     stock: 120,
     status: "in-stock",
     image: "/images/products/ball-bearing-608zz.jpg",
-    images: ["/images/products/ball-bearing-608zz.jpg","/images/products/stepper-nema17.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/ball-bearing-608zz.jpg"],
     specs: {
           "Feature 1": "Aluminum helical beam coupler for steppers"
     },
@@ -1398,7 +1398,7 @@ export const PRODUCTS: Product[] = [
     stock: 200,
     status: "in-stock",
     image: "/images/products/ball-bearing-608zz.jpg",
-    images: ["/images/products/ball-bearing-608zz.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/ball-bearing-608zz.jpg"],
     specs: {
           "Feature 1": "Steel deep groove shielded ball bearings (8×22×7mm)"
     },
@@ -1417,7 +1417,7 @@ export const PRODUCTS: Product[] = [
     stock: 150,
     status: "in-stock",
     image: "/images/products/hardware-m3-screws.jpg",
-    images: ["/images/products/hardware-m3-screws.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/hardware-m3-screws.jpg"],
     specs: {
           "Feature 1": "Stainless steel M3 screws (6/10/16/20mm) + hex nuts"
     },
@@ -1436,7 +1436,7 @@ export const PRODUCTS: Product[] = [
     stock: 130,
     status: "in-stock",
     image: "/images/products/hardware-m3-screws.jpg",
-    images: ["/images/products/hardware-m3-screws.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/hardware-m3-screws.jpg"],
     specs: {
           "Feature 1": "Male-female and female-female brass spacers"
     },
@@ -1454,8 +1454,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 450,
     status: "in-stock",
-    image: "/images/products/jumper-wires-ribbon.jpg",
-    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/pin-headers-strip.jpg"],
+    image: "/images/products/hardware-cable-ties.jpg",
+    images: ["/images/products/hardware-cable-ties.jpg"],
     specs: {
           "Feature 1": "Self-locking black nylon wire management ties"
     },
@@ -1474,7 +1474,7 @@ export const PRODUCTS: Product[] = [
     stock: 250,
     status: "in-stock",
     image: "/images/products/jumper-wires-ribbon.jpg",
-    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/pin-headers-strip.jpg"],
+    images: ["/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "IP68 waterproof strain-relief wire gland"
     },
@@ -1493,7 +1493,7 @@ export const PRODUCTS: Product[] = [
     stock: 100,
     status: "in-stock",
     image: "/images/products/enclosure-box-abs.jpg",
-    images: ["/images/products/enclosure-box-abs.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/enclosure-box-abs.jpg"],
     specs: {
           "Feature 1": "Flame-retardant ABS project junction enclosure"
     },
@@ -1512,7 +1512,7 @@ export const PRODUCTS: Product[] = [
     stock: 85,
     status: "in-stock",
     image: "/images/products/enclosure-box-abs.jpg",
-    images: ["/images/products/enclosure-box-abs.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/enclosure-box-abs.jpg"],
     specs: {
           "Feature 1": "Food-grade modular pill storage container"
     },
@@ -1531,7 +1531,7 @@ export const PRODUCTS: Product[] = [
     stock: 65,
     status: "in-stock",
     image: "/images/products/enclosure-box-abs.jpg",
-    images: ["/images/products/enclosure-box-abs.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/enclosure-box-abs.jpg"],
     specs: {
           "Feature 1": "Anti-jam gravity pill guide hopper"
     },
@@ -1550,7 +1550,7 @@ export const PRODUCTS: Product[] = [
     stock: 55,
     status: "in-stock",
     image: "/images/products/servo-sg90.jpg",
-    images: ["/images/products/servo-sg90.jpg","/images/products/servo-sg90-angle3.jpg","/images/products/servo-mg996r.jpg"],
+    images: ["/images/products/servo-sg90.jpg"],
     specs: {
           "Feature 1": "Calibrated single-pill dispensing slide shutter"
     },
@@ -1569,7 +1569,7 @@ export const PRODUCTS: Product[] = [
     stock: 120,
     status: "in-stock",
     image: "/images/products/enclosure-box-abs.jpg",
-    images: ["/images/products/enclosure-box-abs.jpg","/images/products/hardware-m3-screws.jpg","/images/products/mechanical-rack-pinion.jpg"],
+    images: ["/images/products/enclosure-box-abs.jpg"],
     specs: {
           "Feature 1": "96mm aluminum handle with M4 mounting screws"
     },
@@ -1588,7 +1588,7 @@ export const PRODUCTS: Product[] = [
     stock: 350,
     status: "in-stock",
     image: "/images/products/hardware-m3-screws.jpg",
-    images: ["/images/products/hardware-m3-screws.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/hardware-m3-screws.jpg"],
     specs: {
           "Feature 1": "Self-adhesive silicone non-marking bumper feet"
     },
@@ -1607,7 +1607,7 @@ export const PRODUCTS: Product[] = [
     stock: 180,
     status: "in-stock",
     image: "/images/products/jumper-wires-ribbon.jpg",
-    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/pin-headers-strip.jpg"],
+    images: ["/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "Ultra-flexible 200°C rated tinned copper wire"
     },
@@ -1626,7 +1626,7 @@ export const PRODUCTS: Product[] = [
     stock: 200,
     status: "in-stock",
     image: "/images/products/enclosure-box-abs.jpg",
-    images: ["/images/products/enclosure-box-abs.jpg","/images/products/hardware-m3-screws.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/enclosure-box-abs.jpg"],
     specs: {
           "Feature 1": "10mm × 3m heavy-duty industrial mounting tape"
     },
@@ -1645,7 +1645,7 @@ export const PRODUCTS: Product[] = [
     stock: 280,
     status: "in-stock",
     image: "/images/products/pin-headers-strip.jpg",
-    images: ["/images/products/pin-headers-strip.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/pin-headers-strip.jpg"],
     specs: {
           "Feature 1": "Machined gold-plated round IC header socket strip"
     },
@@ -1664,7 +1664,7 @@ export const PRODUCTS: Product[] = [
     stock: 95,
     status: "in-stock",
     image: "/images/products/converter-buck-lm2596.jpg",
-    images: ["/images/products/converter-buck-lm2596.jpg","/images/products/connectors-terminal-block.jpg","/images/products/connectors-xt60.jpg"],
+    images: ["/images/products/converter-buck-lm2596.jpg"],
     specs: {
           "Feature 1": "Multi-rail screw terminal distribution hub"
     },
@@ -1682,8 +1682,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 260,
     status: "in-stock",
-    image: "/images/products/servo-sg90.jpg",
-    images: ["/images/products/servo-sg90.jpg","/images/products/servo-sg90-angle3.jpg","/images/products/servo-mg996r.jpg"],
+    image: "/images/products/jumper-wires-ribbon.jpg",
+    images: ["/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "3-pin standard JR connector extension lead"
     },
@@ -1702,7 +1702,7 @@ export const PRODUCTS: Product[] = [
     stock: 500,
     status: "in-stock",
     image: "/images/products/led-5mm-pack.jpg",
-    images: ["/images/products/led-5mm-pack.jpg","/images/products/led-ring-neopixel.jpg","/images/products/led-strip-ws2812b.jpg"],
+    images: ["/images/products/led-5mm-pack.jpg"],
     specs: {
           "Feature 1": "Diffused round LEDs (Red",
           "Feature 2": "Green",
@@ -1724,7 +1724,7 @@ export const PRODUCTS: Product[] = [
     stock: 250,
     status: "in-stock",
     image: "/images/products/led-5mm-pack.jpg",
-    images: ["/images/products/led-5mm-pack.jpg","/images/products/led-ring-neopixel.jpg","/images/products/led-strip-ws2812b.jpg"],
+    images: ["/images/products/led-5mm-pack.jpg"],
     specs: {
           "Feature 1": "Common cathode RGB LEDs with 4 pins"
     },
@@ -1743,7 +1743,7 @@ export const PRODUCTS: Product[] = [
     stock: 300,
     status: "in-stock",
     image: "/images/products/pushbutton-switch.jpg",
-    images: ["/images/products/pushbutton-switch.jpg","/images/products/tactile-switch-6mm.jpg","/images/products/emergency-stop-button.jpg"],
+    images: ["/images/products/pushbutton-switch.jpg"],
     specs: {
           "Feature 1": "Tactile push button switch with round colored caps"
     },
@@ -1762,7 +1762,7 @@ export const PRODUCTS: Product[] = [
     stock: 600,
     status: "in-stock",
     image: "/images/products/tactile-switch-6mm.jpg",
-    images: ["/images/products/tactile-switch-6mm.jpg","/images/products/pushbutton-switch.jpg","/images/products/toggle-switch-spdt.jpg"],
+    images: ["/images/products/tactile-switch-6mm.jpg"],
     specs: {
           "Feature 1": "Miniature 4-pin momentary PCB push switch"
     },
@@ -1781,7 +1781,7 @@ export const PRODUCTS: Product[] = [
     stock: 200,
     status: "in-stock",
     image: "/images/products/toggle-switch-spdt.jpg",
-    images: ["/images/products/toggle-switch-spdt.jpg","/images/products/pushbutton-switch.jpg","/images/products/emergency-stop-button.jpg"],
+    images: ["/images/products/toggle-switch-spdt.jpg"],
     specs: {
           "Feature 1": "Panel-mount 3-pin ON-ON miniature toggle switch"
     },
@@ -1800,7 +1800,7 @@ export const PRODUCTS: Product[] = [
     stock: 350,
     status: "in-stock",
     image: "/images/products/switch-slide-spdt.jpg",
-    images: ["/images/products/switch-slide-spdt.jpg","/images/products/toggle-switch-spdt.jpg","/images/products/pushbutton-switch.jpg"],
+    images: ["/images/products/switch-slide-spdt.jpg"],
     specs: {
           "Feature 1": "3-pin PCB horizontal mini slide switch"
     },
@@ -1819,7 +1819,7 @@ export const PRODUCTS: Product[] = [
     stock: 1000,
     status: "in-stock",
     image: "/images/products/resistor-kit-600.jpg",
-    images: ["/images/products/resistor-kit-600.jpg","/images/products/potentiometer-wh148.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/resistor-kit-600.jpg"],
     specs: {
           "Feature 1": "Carbon film",
           "Feature 2": "ideal current limiter for 5V LEDs"
@@ -1839,7 +1839,7 @@ export const PRODUCTS: Product[] = [
     stock: 1000,
     status: "in-stock",
     image: "/images/products/resistor-kit-600.jpg",
-    images: ["/images/products/resistor-kit-600.jpg","/images/products/potentiometer-wh148.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/resistor-kit-600.jpg"],
     specs: {
           "Feature 1": "Carbon film",
           "Feature 2": "ideal current limiter for blue/white LEDs"
@@ -1859,7 +1859,7 @@ export const PRODUCTS: Product[] = [
     stock: 1000,
     status: "in-stock",
     image: "/images/products/resistor-kit-600.jpg",
-    images: ["/images/products/resistor-kit-600.jpg","/images/products/potentiometer-wh148.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/resistor-kit-600.jpg"],
     specs: {
           "Feature 1": "Metal film precision resistor (1% tolerance)"
     },
@@ -1878,7 +1878,7 @@ export const PRODUCTS: Product[] = [
     stock: 800,
     status: "in-stock",
     image: "/images/products/resistor-kit-600.jpg",
-    images: ["/images/products/resistor-kit-600.jpg","/images/products/potentiometer-wh148.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/resistor-kit-600.jpg"],
     specs: {
           "Feature 1": "Pull-up resistor for I2C and 1-Wire (DS18B20)"
     },
@@ -1897,7 +1897,7 @@ export const PRODUCTS: Product[] = [
     stock: 1200,
     status: "in-stock",
     image: "/images/products/resistor-kit-600.jpg",
-    images: ["/images/products/resistor-kit-600.jpg","/images/products/potentiometer-wh148.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/resistor-kit-600.jpg"],
     specs: {
           "Feature 1": "Standard pull-up/pull-down resistor for buttons"
     },
@@ -1916,7 +1916,7 @@ export const PRODUCTS: Product[] = [
     stock: 750,
     status: "in-stock",
     image: "/images/products/resistor-kit-600.jpg",
-    images: ["/images/products/resistor-kit-600.jpg","/images/products/potentiometer-wh148.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/resistor-kit-600.jpg"],
     specs: {
           "Feature 1": "High-impedance timing and voltage divider resistor"
     },
@@ -1935,7 +1935,7 @@ export const PRODUCTS: Product[] = [
     stock: 220,
     status: "in-stock",
     image: "/images/products/potentiometer-wh148.jpg",
-    images: ["/images/products/potentiometer-wh148.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/potentiometer-wh148.jpg"],
     specs: {
           "Feature 1": "3-pin rotary linear potentiometer with knob"
     },
@@ -1954,7 +1954,7 @@ export const PRODUCTS: Product[] = [
     stock: 170,
     status: "in-stock",
     image: "/images/products/buzzer-piezo-5v.jpg",
-    images: ["/images/products/buzzer-piezo-5v.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/buzzer-piezo-5v.jpg"],
     specs: {
           "Feature 1": "Onboard S8550 transistor trigger circuit"
     },
@@ -1973,7 +1973,7 @@ export const PRODUCTS: Product[] = [
     stock: 260,
     status: "in-stock",
     image: "/images/products/buzzer-piezo-5v.jpg",
-    images: ["/images/products/buzzer-piezo-5v.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/buzzer-piezo-5v.jpg"],
     specs: {
           "Feature 1": "Built-in oscillator",
           "Feature 2": "generates sound on DC 5V"
@@ -1993,7 +1993,7 @@ export const PRODUCTS: Product[] = [
     stock: 260,
     status: "in-stock",
     image: "/images/products/buzzer-piezo-5v.jpg",
-    images: ["/images/products/buzzer-piezo-5v.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/buzzer-piezo-5v.jpg"],
     specs: {
           "Feature 1": "Requires PWM/frequency signal to produce tone"
     },
@@ -2012,7 +2012,7 @@ export const PRODUCTS: Product[] = [
     stock: 300,
     status: "in-stock",
     image: "/images/products/jumper-wires-ribbon.jpg",
-    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/solder-wire-spool.jpg","/images/products/tool-soldering-iron-station.jpg"],
+    images: ["/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "Flame-retardant polyolefin tubing (2/3/4/6mm)"
     },
@@ -2031,7 +2031,7 @@ export const PRODUCTS: Product[] = [
     stock: 220,
     status: "in-stock",
     image: "/images/products/fuse-glass.jpg",
-    images: ["/images/products/fuse-glass.jpg","/images/products/connectors-terminal-block.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/fuse-glass.jpg"],
     specs: {
           "Feature 1": "Screw-type waterproof in-line fuse holder"
     },
@@ -2050,7 +2050,7 @@ export const PRODUCTS: Product[] = [
     stock: 350,
     status: "in-stock",
     image: "/images/products/fuse-glass.jpg",
-    images: ["/images/products/fuse-glass.jpg","/images/products/connectors-terminal-block.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/fuse-glass.jpg"],
     specs: {
           "Feature 1": "Fast-blow glass tube cartridge fuses"
     },
@@ -2069,7 +2069,7 @@ export const PRODUCTS: Product[] = [
     stock: 800,
     status: "in-stock",
     image: "/images/products/diode-1n4007.jpg",
-    images: ["/images/products/diode-1n4007.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/diode-1n4007.jpg"],
     specs: {
           "Feature 1": "1000V 1A axial rectifier (flyback diode for relays/motors)"
     },
@@ -2088,7 +2088,7 @@ export const PRODUCTS: Product[] = [
     stock: 800,
     status: "in-stock",
     image: "/images/products/diode-1n4007.jpg",
-    images: ["/images/products/diode-1n4007.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/diode-1n4007.jpg"],
     specs: {
           "Feature 1": "High-speed small signal switching diode (4ns)"
     },
@@ -2107,7 +2107,7 @@ export const PRODUCTS: Product[] = [
     stock: 500,
     status: "in-stock",
     image: "/images/products/transistor-bc547.jpg",
-    images: ["/images/products/transistor-bc547.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/transistor-bc547.jpg"],
     specs: {
           "Feature 1": "General purpose 45V 100mA NPN transistor TO-92"
     },
@@ -2126,7 +2126,7 @@ export const PRODUCTS: Product[] = [
     stock: 500,
     status: "in-stock",
     image: "/images/products/transistor-bc547.jpg",
-    images: ["/images/products/transistor-bc547.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/transistor-bc547.jpg"],
     specs: {
           "Feature 1": "High-current 40V 800mA switching transistor TO-92"
     },
@@ -2145,7 +2145,7 @@ export const PRODUCTS: Product[] = [
     stock: 600,
     status: "in-stock",
     image: "/images/products/capacitor-electrolytic.jpg",
-    images: ["/images/products/capacitor-electrolytic.jpg","/images/products/capacitor-ceramic.jpg","/images/products/resistor-kit-600.jpg"],
+    images: ["/images/products/capacitor-electrolytic.jpg"],
     specs: {
           "Feature 1": "Radial lead electrolytic decoupling capacitor"
     },
@@ -2164,7 +2164,7 @@ export const PRODUCTS: Product[] = [
     stock: 650,
     status: "in-stock",
     image: "/images/products/capacitor-electrolytic.jpg",
-    images: ["/images/products/capacitor-electrolytic.jpg","/images/products/capacitor-ceramic.jpg","/images/products/resistor-kit-600.jpg"],
+    images: ["/images/products/capacitor-electrolytic.jpg"],
     specs: {
           "Feature 1": "Power filtering and bypass capacitor"
     },
@@ -2183,7 +2183,7 @@ export const PRODUCTS: Product[] = [
     stock: 400,
     status: "in-stock",
     image: "/images/products/capacitor-electrolytic.jpg",
-    images: ["/images/products/capacitor-electrolytic.jpg","/images/products/capacitor-ceramic.jpg","/images/products/resistor-kit-600.jpg"],
+    images: ["/images/products/capacitor-electrolytic.jpg"],
     specs: {
           "Feature 1": "High-capacity bulk reservoir capacitor for motors"
     },
@@ -2202,7 +2202,7 @@ export const PRODUCTS: Product[] = [
     stock: 900,
     status: "in-stock",
     image: "/images/products/capacitor-ceramic.jpg",
-    images: ["/images/products/capacitor-ceramic.jpg","/images/products/capacitor-electrolytic.jpg","/images/products/resistor-kit-600.jpg"],
+    images: ["/images/products/capacitor-ceramic.jpg"],
     specs: {
           "Feature 1": "100nF monolithic ceramic noise filter capacitor"
     },
@@ -2221,7 +2221,7 @@ export const PRODUCTS: Product[] = [
     stock: 320,
     status: "in-stock",
     image: "/images/products/solder-wire-spool.jpg",
-    images: ["/images/products/solder-wire-spool.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/solder-wire-spool.jpg"],
     specs: {
           "Feature 1": "Flame-retardant 600V certified insulation tape"
     },
@@ -2239,8 +2239,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 140,
     status: "in-stock",
-    image: "/images/products/jumper-wires-ribbon.jpg",
-    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg","/images/products/pin-headers-strip.jpg"],
+    image: "/images/products/solder-wire-spool.jpg",
+    images: ["/images/products/solder-wire-spool.jpg"],
     specs: {
           "Feature 1": "Rosin-core soldering wire with high thermal fluidity"
     },
@@ -2259,7 +2259,7 @@ export const PRODUCTS: Product[] = [
     stock: 190,
     status: "in-stock",
     image: "/images/products/tool-soldering-iron-station.jpg",
-    images: ["/images/products/tool-soldering-iron-station.jpg","/images/products/tool-soldering-iron-station-angle2.jpg","/images/products/tool-soldering-iron-station-angle3.jpg"],
+    images: ["/images/products/tool-soldering-iron-station.jpg"],
     specs: {
           "Feature 1": "Non-corrosive high-activity soldering paste"
     },
@@ -2277,8 +2277,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 350,
     status: "in-stock",
-    image: "/images/products/battery-18650-cell.jpg",
-    images: ["/images/products/battery-18650-cell.jpg","/images/products/module-tp4056-charger.jpg","/images/products/power-supply-adapter.jpg"],
+    image: "/images/products/battery-coin-cr2032.jpg",
+    images: ["/images/products/battery-coin-cr2032.jpg"],
     specs: {
           "Feature 1": "Long-life 3V coin cell battery for DS3231 RTC"
     },
@@ -2297,7 +2297,7 @@ export const PRODUCTS: Product[] = [
     stock: 65,
     status: "in-stock",
     image: "/images/products/emergency-stop-button.jpg",
-    images: ["/images/products/emergency-stop-button.jpg","/images/products/pushbutton-switch.jpg","/images/products/toggle-switch-spdt.jpg"],
+    images: ["/images/products/emergency-stop-button.jpg"],
     specs: {
           "Feature 1": "Red mushroom twist-to-release safety cut-off switch"
     },
@@ -2316,7 +2316,7 @@ export const PRODUCTS: Product[] = [
     stock: 170,
     status: "in-stock",
     image: "/images/products/buzzer-piezo-5v.jpg",
-    images: ["/images/products/buzzer-piezo-5v.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/buzzer-piezo-5v.jpg"],
     specs: {
           "Feature 1": "Compact chamber speaker for voice/sound alerts"
     },
@@ -2335,7 +2335,7 @@ export const PRODUCTS: Product[] = [
     stock: 25,
     status: "in-stock",
     image: "/images/products/raspberry-pi-4b.jpg",
-    images: ["/images/products/raspberry-pi-4b.jpg","/images/products/raspberry-pi-4b-angle3.jpg","/images/products/camera-rpi-v2.jpg"],
+    images: ["/images/products/raspberry-pi-4b.jpg"],
     specs: {
           "Feature 1": "Quad-core Cortex-A72 1.5GHz",
           "Feature 2": "dual 4K micro-HDMI",
@@ -2356,7 +2356,7 @@ export const PRODUCTS: Product[] = [
     stock: 20,
     status: "in-stock",
     image: "/images/products/raspberry-pi-5.jpg",
-    images: ["/images/products/raspberry-pi-5.jpg","/images/products/raspberry-pi-5-angle2.jpg","/images/products/raspberry-pi-5-angle3.jpg"],
+    images: ["/images/products/raspberry-pi-5.jpg"],
     specs: {
           "Feature 1": "Quad-core Cortex-A76 2.4GHz",
           "Feature 2": "PCIe 2.0",
@@ -2377,7 +2377,7 @@ export const PRODUCTS: Product[] = [
     stock: 120,
     status: "in-stock",
     image: "/images/products/raspberry-pi-pico.jpg",
-    images: ["/images/products/raspberry-pi-pico.jpg","/images/products/raspberry-pi-pico-angle2.jpg","/images/products/raspberry-pi-pico-angle3.jpg"],
+    images: ["/images/products/raspberry-pi-pico.jpg"],
     specs: {
           "Feature 1": "Dual ARM Cortex-M0+ @ 133MHz",
           "Feature 2": "2MB Flash",
@@ -2398,7 +2398,7 @@ export const PRODUCTS: Product[] = [
     stock: 90,
     status: "in-stock",
     image: "/images/products/raspberry-pi-pico-w.jpg",
-    images: ["/images/products/raspberry-pi-pico-w.jpg","/images/products/raspberry-pi-pico.jpg","/images/products/pin-headers-strip.jpg"],
+    images: ["/images/products/raspberry-pi-pico-w.jpg"],
     specs: {
           "Feature 1": "RP2040 core with Infineon CYW43439 2.4GHz Wi-Fi 4 & BLE 5.2"
     },
@@ -2417,7 +2417,7 @@ export const PRODUCTS: Product[] = [
     stock: 35,
     status: "in-stock",
     image: "/images/products/arduino-uno-r4.jpg",
-    images: ["/images/products/arduino-uno-r4.jpg","/images/products/arduino-uno-r3.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/arduino-uno-r4.jpg"],
     specs: {
           "Feature 1": "Renesas RA4M1 32-bit Cortex-M4 @ 48MHz",
           "Feature 2": "256KB Flash",
@@ -2438,7 +2438,7 @@ export const PRODUCTS: Product[] = [
     stock: 30,
     status: "in-stock",
     image: "/images/products/arduino-uno-r4.jpg",
-    images: ["/images/products/arduino-uno-r4.jpg","/images/products/arduino-uno-r3.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/arduino-uno-r4.jpg"],
     specs: {
           "Feature 1": "RA4M1 MCU + ESP32-S3 Wi-Fi/BT co-processor + 12×8 LED Matrix"
     },
@@ -2457,7 +2457,7 @@ export const PRODUCTS: Product[] = [
     stock: 150,
     status: "in-stock",
     image: "/images/products/arduino-nano-v3.jpg",
-    images: ["/images/products/arduino-nano-v3.jpg","/images/products/arduino-nano-v3-angle2.jpg","/images/products/arduino-nano-v3-angle3.jpg"],
+    images: ["/images/products/arduino-nano-v3.jpg"],
     specs: {
           "Feature 1": "ATmega328P 16MHz ultra-compact breadboardable microcontroller"
     },
@@ -2476,7 +2476,7 @@ export const PRODUCTS: Product[] = [
     stock: 50,
     status: "in-stock",
     image: "/images/products/arduino-mega-2560.jpg",
-    images: ["/images/products/arduino-mega-2560.jpg","/images/products/arduino-uno-r3.jpg","/images/products/pin-headers-strip.jpg"],
+    images: ["/images/products/arduino-mega-2560.jpg"],
     specs: {
           "Feature 1": "ATmega2560 16MHz",
           "Feature 2": "54 Digital I/O (15 PWM)",
@@ -2497,7 +2497,7 @@ export const PRODUCTS: Product[] = [
     stock: 110,
     status: "in-stock",
     image: "/images/products/arduino-nano-v3.jpg",
-    images: ["/images/products/arduino-nano-v3.jpg","/images/products/arduino-nano-v3-angle2.jpg","/images/products/arduino-nano-v3-angle3.jpg"],
+    images: ["/images/products/arduino-nano-v3.jpg"],
     specs: {
           "Feature 1": "ATmega328P minimalist board without USB interface for low power"
     },
@@ -2516,7 +2516,7 @@ export const PRODUCTS: Product[] = [
     stock: 80,
     status: "in-stock",
     image: "/images/products/esp32-wroom-32u.jpg",
-    images: ["/images/products/esp32-wroom-32u.jpg","/images/products/esp32-cam.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/esp32-wroom-32u.jpg"],
     specs: {
           "Feature 1": "Terminal block + GVS pin headers + 6.5–16V DC barrel jack input"
     },
@@ -2535,7 +2535,7 @@ export const PRODUCTS: Product[] = [
     stock: 95,
     status: "in-stock",
     image: "/images/products/module-mcp23017-expander.jpg",
-    images: ["/images/products/module-mcp23017-expander.jpg","/images/products/module-logic-level-converter.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/module-mcp23017-expander.jpg"],
     specs: {
           "Feature 1": "Expands 2 I2C pins to 16 quasi-bidirectional I/O pins"
     },
@@ -2554,7 +2554,7 @@ export const PRODUCTS: Product[] = [
     stock: 90,
     status: "in-stock",
     image: "/images/products/module-mcp23017-expander.jpg",
-    images: ["/images/products/module-mcp23017-expander.jpg","/images/products/ic-74hc595.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/module-mcp23017-expander.jpg"],
     specs: {
           "Feature 1": "16-bit remote bidirectional I/O port with interrupt output DIP-28"
     },
@@ -2573,7 +2573,7 @@ export const PRODUCTS: Product[] = [
     stock: 30,
     status: "in-stock",
     image: "/images/products/camera-rpi-v2.jpg",
-    images: ["/images/products/camera-rpi-v2.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/camera-rpi-v2.jpg"],
     specs: {
           "Feature 1": "Sony IMX219 8-megapixel sensor",
           "Feature 2": "1080p30 / 720p60 video"
@@ -2593,7 +2593,7 @@ export const PRODUCTS: Product[] = [
     stock: 40,
     status: "in-stock",
     image: "/images/products/camera-rpi-v2.jpg",
-    images: ["/images/products/camera-rpi-v2.jpg","/images/products/raspberry-pi-4b.jpg","/images/products/raspberry-pi-5.jpg"],
+    images: ["/images/products/camera-rpi-v2.jpg"],
     specs: {
           "Feature 1": "5MP OV5647 fish-eye 175° lens with dual adjustable IR LED illuminators"
     },
@@ -2612,7 +2612,7 @@ export const PRODUCTS: Product[] = [
     stock: 45,
     status: "in-stock",
     image: "/images/products/display-tft-28-touch.jpg",
-    images: ["/images/products/display-tft-28-touch.jpg","/images/products/display-nextion-24.jpg","/images/products/oled-096-i2c-blue.jpg"],
+    images: ["/images/products/display-tft-28-touch.jpg"],
     specs: {
           "Feature 1": "240×320 color RGB display with resistive touch panel + stylus"
     },
@@ -2631,7 +2631,7 @@ export const PRODUCTS: Product[] = [
     stock: 60,
     status: "in-stock",
     image: "/images/products/display-tft-28-touch.jpg",
-    images: ["/images/products/display-tft-28-touch.jpg","/images/products/display-nextion-24.jpg","/images/products/oled-096-i2c-blue.jpg"],
+    images: ["/images/products/display-tft-28-touch.jpg"],
     specs: {
           "Feature 1": "128×160 18-bit color display with onboard SD card slot"
     },
@@ -2650,7 +2650,7 @@ export const PRODUCTS: Product[] = [
     stock: 25,
     status: "in-stock",
     image: "/images/products/display-nextion-24.jpg",
-    images: ["/images/products/display-nextion-24.jpg","/images/products/display-nextion-24-angle2.jpg","/images/products/display-tft-28-touch.jpg"],
+    images: ["/images/products/display-nextion-24.jpg"],
     specs: {
           "Feature 1": "320×240 resistive touch screen with onboard GUI editor memory"
     },
@@ -2669,7 +2669,7 @@ export const PRODUCTS: Product[] = [
     stock: 110,
     status: "in-stock",
     image: "/images/products/oled-096-i2c-blue.jpg",
-    images: ["/images/products/oled-096-i2c-blue.jpg","/images/products/oled-096-i2c-blue-angle2.jpg","/images/products/oled-096-i2c-blue-angle3.jpg"],
+    images: ["/images/products/oled-096-i2c-blue.jpg"],
     specs: {
           "Feature 1": "Ultra-slim SSD1306 white OLED display",
           "Feature 2": "only 4 pins (VCC/GND/SDA/SCL)"
@@ -2689,7 +2689,7 @@ export const PRODUCTS: Product[] = [
     stock: 65,
     status: "in-stock",
     image: "/images/products/led-strip-ws2812b.jpg",
-    images: ["/images/products/led-strip-ws2812b.jpg","/images/products/led-ring-neopixel.jpg","/images/products/led-5mm-pack.jpg"],
+    images: ["/images/products/led-strip-ws2812b.jpg"],
     specs: {
           "Feature 1": "60 LEDs/meter individual pixel control",
           "Feature 2": "5V DC",
@@ -2710,7 +2710,7 @@ export const PRODUCTS: Product[] = [
     stock: 80,
     status: "in-stock",
     image: "/images/products/led-ring-neopixel.jpg",
-    images: ["/images/products/led-ring-neopixel.jpg","/images/products/led-strip-ws2812b.jpg","/images/products/led-5mm-pack.jpg"],
+    images: ["/images/products/led-ring-neopixel.jpg"],
     specs: {
           "Feature 1": "8 circular cascaded 5050 RGB LEDs with integrated drivers"
     },
@@ -2729,7 +2729,7 @@ export const PRODUCTS: Product[] = [
     stock: 120,
     status: "in-stock",
     image: "/images/products/module-rtc-ds1307.jpg",
-    images: ["/images/products/module-rtc-ds1307.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/module-rtc-ds1307.jpg"],
     specs: {
           "Feature 1": "Classic I2C RTC with 56-byte NV-RAM and 32.768kHz crystal"
     },
@@ -2748,7 +2748,7 @@ export const PRODUCTS: Product[] = [
     stock: 140,
     status: "in-stock",
     image: "/images/products/sensor-mpu6050-gyro.jpg",
-    images: ["/images/products/sensor-mpu6050-gyro.jpg","/images/products/sensor-bme280-temp.jpg","/images/products/pin-headers-strip.jpg"],
+    images: ["/images/products/sensor-mpu6050-gyro.jpg"],
     specs: {
           "Feature 1": "3-axis gyro + 3-axis accelerometer with Digital Motion Processor (DMP)"
     },
@@ -2767,7 +2767,7 @@ export const PRODUCTS: Product[] = [
     stock: 110,
     status: "in-stock",
     image: "/images/products/sensor-bme280-temp.jpg",
-    images: ["/images/products/sensor-bme280-temp.jpg","/images/products/dht22-sensor-module.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/sensor-bme280-temp.jpg"],
     specs: {
           "Feature 1": "High-accuracy atmospheric pressure sensor ±1 hPa (altitude estimation)"
     },
@@ -2786,7 +2786,7 @@ export const PRODUCTS: Product[] = [
     stock: 70,
     status: "in-stock",
     image: "/images/products/sensor-bme280-temp.jpg",
-    images: ["/images/products/sensor-bme280-temp.jpg","/images/products/sensor-mpu6050-gyro.jpg","/images/products/dht22-sensor-module.jpg"],
+    images: ["/images/products/sensor-bme280-temp.jpg"],
     specs: {
           "Feature 1": "All-in-one environmental sensor",
           "Feature 2": "I2C/SPI selectable",
@@ -2807,7 +2807,7 @@ export const PRODUCTS: Product[] = [
     stock: 120,
     status: "in-stock",
     image: "/images/products/sensor-gas-mq2.jpg",
-    images: ["/images/products/sensor-gas-mq2.jpg","/images/products/sensor-gas-mq2-angle2.jpg","/images/products/sensor-gas-mq2-angle3.jpg"],
+    images: ["/images/products/sensor-gas-mq2.jpg"],
     specs: {
           "Feature 1": "Detects LPG",
           "Feature 2": "propane",
@@ -2831,7 +2831,7 @@ export const PRODUCTS: Product[] = [
     stock: 80,
     status: "in-stock",
     image: "/images/products/sensor-gas-mq2.jpg",
-    images: ["/images/products/sensor-gas-mq2.jpg","/images/products/sensor-gas-mq2-angle2.jpg","/images/products/sensor-gas-mq2-angle3.jpg"],
+    images: ["/images/products/sensor-gas-mq2.jpg"],
     specs: {
           "Feature 1": "High sensitivity to ethanol gas",
           "Feature 2": "suitable for breathalyzer capstones"
@@ -2850,8 +2850,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 75,
     status: "in-stock",
-    image: "/images/products/sensor-gas-mq2-angle2.jpg",
-    images: ["/images/products/sensor-gas-mq2-angle2.jpg","/images/products/sensor-gas-mq2.jpg","/images/products/sensor-gas-mq2-angle3.jpg"],
+    image: "/images/products/sensor-gas-mq2.jpg",
+    images: ["/images/products/sensor-gas-mq2.jpg"],
     specs: {
           "Feature 1": "High sensitivity to CO toxic gas",
           "Feature 2": "high-low cycle temperature drive"
@@ -2870,8 +2870,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 85,
     status: "in-stock",
-    image: "/images/products/sensor-gas-mq2-angle3.jpg",
-    images: ["/images/products/sensor-gas-mq2-angle3.jpg","/images/products/sensor-gas-mq2.jpg","/images/products/sensor-gas-mq2-angle2.jpg"],
+    image: "/images/products/sensor-gas-mq2.jpg",
+    images: ["/images/products/sensor-gas-mq2.jpg"],
     specs: {
           "Feature 1": "Detects NH3",
           "Feature 2": "NOx",
@@ -2895,7 +2895,7 @@ export const PRODUCTS: Product[] = [
     stock: 60,
     status: "in-stock",
     image: "/images/products/sensor-touch-ttp223.jpg",
-    images: ["/images/products/sensor-touch-ttp223.jpg","/images/products/led-ring-neopixel.jpg","/images/products/sensor-mpu6050-gyro.jpg"],
+    images: ["/images/products/sensor-touch-ttp223.jpg"],
     specs: {
           "Feature 1": "Programmable color light-to-frequency converter with 4 white LEDs"
     },
@@ -2914,7 +2914,7 @@ export const PRODUCTS: Product[] = [
     stock: 65,
     status: "in-stock",
     image: "/images/products/sensor-mpu6050-gyro.jpg",
-    images: ["/images/products/sensor-mpu6050-gyro.jpg","/images/products/sensor-ir-obstacle.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/sensor-mpu6050-gyro.jpg"],
     specs: {
           "Feature 1": "940nm VCSEL laser ranging up to 2 meters independent of object color"
     },
@@ -2933,7 +2933,7 @@ export const PRODUCTS: Product[] = [
     stock: 55,
     status: "in-stock",
     image: "/images/products/sensor-mpu6050-gyro.jpg",
-    images: ["/images/products/sensor-mpu6050-gyro.jpg","/images/products/sensor-touch-ttp223.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/sensor-mpu6050-gyro.jpg"],
     specs: {
           "Feature 1": "Up/down/left/right gesture swipe detection + ambient light sensor"
     },
@@ -2952,7 +2952,7 @@ export const PRODUCTS: Product[] = [
     stock: 200,
     status: "in-stock",
     image: "/images/products/sensor-soil-moisture.jpg",
-    images: ["/images/products/sensor-soil-moisture.jpg","/images/products/sensor-touch-ttp223.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/sensor-soil-moisture.jpg"],
     specs: {
           "Feature 1": "Dual fork probe with potentiometer-adjusted LM393 comparator board"
     },
@@ -2970,8 +2970,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 180,
     status: "in-stock",
-    image: "/images/products/sensor-touch-ttp223.jpg",
-    images: ["/images/products/sensor-touch-ttp223.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/hardware-m3-screws.jpg"],
+    image: "/images/products/sensor-water-level.jpg",
+    images: ["/images/products/sensor-water-level.jpg"],
     specs: {
           "Feature 1": "Parallel exposed trace analog conductivity water depth sensor"
     },
@@ -2990,7 +2990,7 @@ export const PRODUCTS: Product[] = [
     stock: 50,
     status: "in-stock",
     image: "/images/products/sensor-mpu6050-gyro.jpg",
-    images: ["/images/products/sensor-mpu6050-gyro.jpg","/images/products/sensor-touch-ttp223.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/sensor-mpu6050-gyro.jpg"],
     specs: {
           "Feature 1": "High-sensitivity biosensor with red/IR LEDs and photodetector for SpO2"
     },
@@ -3009,7 +3009,7 @@ export const PRODUCTS: Product[] = [
     stock: 160,
     status: "in-stock",
     image: "/images/products/sensor-reed-switch.jpg",
-    images: ["/images/products/sensor-reed-switch.jpg","/images/products/transistor-bc547.jpg","/images/products/sensor-touch-ttp223.jpg"],
+    images: ["/images/products/sensor-reed-switch.jpg"],
     specs: {
           "Feature 1": "Non-contact magnetic polarity detection switch module"
     },
@@ -3028,7 +3028,7 @@ export const PRODUCTS: Product[] = [
     stock: 140,
     status: "in-stock",
     image: "/images/products/sensor-sound-ky038.jpg",
-    images: ["/images/products/sensor-sound-ky038.jpg","/images/products/sensor-sound-ky038-angle2.jpg","/images/products/sensor-sound-ky038-angle3.jpg"],
+    images: ["/images/products/sensor-sound-ky038.jpg"],
     specs: {
           "Feature 1": "Electret condenser microphone with analog + digital threshold outputs"
     },
@@ -3047,7 +3047,7 @@ export const PRODUCTS: Product[] = [
     stock: 150,
     status: "in-stock",
     image: "/images/products/sensor-ir-obstacle.jpg",
-    images: ["/images/products/sensor-ir-obstacle.jpg","/images/products/sensor-ir-breakbeam.jpg","/images/products/sensor-touch-ttp223.jpg"],
+    images: ["/images/products/sensor-ir-obstacle.jpg"],
     specs: {
           "Feature 1": "760nm–1100nm infrared wavelength flame detector (60° angle)"
     },
@@ -3066,7 +3066,7 @@ export const PRODUCTS: Product[] = [
     stock: 160,
     status: "in-stock",
     image: "/images/products/sensor-touch-ttp223.jpg",
-    images: ["/images/products/sensor-touch-ttp223.jpg","/images/products/sensor-sound-ky038.jpg","/images/products/buzzer-piezo-5v.jpg"],
+    images: ["/images/products/sensor-touch-ttp223.jpg"],
     specs: {
           "Feature 1": "Normally closed spring vibration sensor for anti-theft & impact alarms"
     },
@@ -3085,7 +3085,7 @@ export const PRODUCTS: Product[] = [
     stock: 90,
     status: "in-stock",
     image: "/images/products/module-tp4056-charger.jpg",
-    images: ["/images/products/module-tp4056-charger.jpg","/images/products/sensor-mpu6050-gyro.jpg","/images/products/connectors-terminal-block.jpg"],
+    images: ["/images/products/module-tp4056-charger.jpg"],
     specs: {
           "Feature 1": "Hall-effect linear current sensor",
           "Feature 2": "100mV/A sensitivity",
@@ -3106,7 +3106,7 @@ export const PRODUCTS: Product[] = [
     stock: 75,
     status: "in-stock",
     image: "/images/products/sensor-mpu6050-gyro.jpg",
-    images: ["/images/products/sensor-mpu6050-gyro.jpg","/images/products/module-tp4056-charger.jpg","/images/products/module-logic-level-converter.jpg"],
+    images: ["/images/products/sensor-mpu6050-gyro.jpg"],
     specs: {
           "Feature 1": "Measures voltage up to +26VDC and bidirectional current across shunt"
     },
@@ -3125,7 +3125,7 @@ export const PRODUCTS: Product[] = [
     stock: 60,
     status: "in-stock",
     image: "/images/products/sensor-ir-breakbeam.jpg",
-    images: ["/images/products/sensor-ir-breakbeam.jpg","/images/products/sensor-ir-obstacle.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/sensor-ir-breakbeam.jpg"],
     specs: {
           "Feature 1": "Optical reflective optical wheel speed pickup sensor"
     },
@@ -3143,8 +3143,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 180,
     status: "in-stock",
-    image: "/images/products/jumper-wires-ribbon.jpg",
-    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg","/images/products/pin-headers-strip.jpg"],
+    image: "/images/products/module-nrf24l01-pa-lna.jpg",
+    images: ["/images/products/module-nrf24l01-pa-lna.jpg"],
     specs: {
           "Feature 1": "2.4GHz ISM band transceiver",
           "Feature 2": "2Mbps",
@@ -3165,7 +3165,7 @@ export const PRODUCTS: Product[] = [
     stock: 90,
     status: "in-stock",
     image: "/images/products/module-nrf24l01-pa-lna.jpg",
-    images: ["/images/products/module-nrf24l01-pa-lna.jpg","/images/products/module-esp8266-esp01.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/module-nrf24l01-pa-lna.jpg"],
     specs: {
           "Feature 1": "Power amplified + low-noise amp with 2dBi external whip antenna"
     },
@@ -3184,7 +3184,7 @@ export const PRODUCTS: Product[] = [
     stock: 110,
     status: "in-stock",
     image: "/images/products/module-bluetooth-hc05.jpg",
-    images: ["/images/products/module-bluetooth-hc05.jpg","/images/products/module-usb-ttl-ch340.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/module-bluetooth-hc05.jpg"],
     specs: {
           "Feature 1": "Classic Bluetooth V2.0+EDR master/slave transceiver with button"
     },
@@ -3203,7 +3203,7 @@ export const PRODUCTS: Product[] = [
     stock: 90,
     status: "in-stock",
     image: "/images/products/module-bluetooth-hc05.jpg",
-    images: ["/images/products/module-bluetooth-hc05.jpg","/images/products/module-usb-ttl-ch340.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/module-bluetooth-hc05.jpg"],
     specs: {
           "Feature 1": "Dedicated slave Bluetooth module for smartphone Arduino control"
     },
@@ -3222,7 +3222,7 @@ export const PRODUCTS: Product[] = [
     stock: 130,
     status: "in-stock",
     image: "/images/products/sensor-rfid-rc522.jpg",
-    images: ["/images/products/sensor-rfid-rc522.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/sensor-rfid-rc522.jpg"],
     specs: {
           "Feature 1": "SPI interface RFID reader with ISO14443A key fob and white card"
     },
@@ -3241,7 +3241,7 @@ export const PRODUCTS: Product[] = [
     stock: 60,
     status: "in-stock",
     image: "/images/products/module-gsm-sim800l.jpg",
-    images: ["/images/products/module-gsm-sim800l.jpg","/images/products/battery-18650-cell.jpg","/images/products/module-tp4056-charger.jpg"],
+    images: ["/images/products/module-gsm-sim800l.jpg"],
     specs: {
           "Feature 1": "Quad-band 850/900/1800/1900MHz for SMS",
           "Feature 2": "voice",
@@ -3262,7 +3262,7 @@ export const PRODUCTS: Product[] = [
     stock: 70,
     status: "in-stock",
     image: "/images/products/module-microsd-spi.jpg",
-    images: ["/images/products/module-microsd-spi.jpg","/images/products/module-usb-ttl-ch340.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/module-microsd-spi.jpg"],
     specs: {
           "Feature 1": "50-channel u-blox positioning engine",
           "Feature 2": "EEPROM data backup",
@@ -3283,7 +3283,7 @@ export const PRODUCTS: Product[] = [
     stock: 140,
     status: "in-stock",
     image: "/images/products/jumper-wires-ribbon.jpg",
-    images: ["/images/products/jumper-wires-ribbon.jpg","/images/products/perfboard-pcb.jpg","/images/products/pin-headers-strip.jpg"],
+    images: ["/images/products/jumper-wires-ribbon.jpg"],
     specs: {
           "Feature 1": "ASK/OOK low-cost radio link pair for remote controls and telemetry"
     },
@@ -3302,7 +3302,7 @@ export const PRODUCTS: Product[] = [
     stock: 45,
     status: "in-stock",
     image: "/images/products/module-ethernet-w5500.jpg",
-    images: ["/images/products/module-ethernet-w5500.jpg","/images/products/module-usb-ttl-ch340.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/module-ethernet-w5500.jpg"],
     specs: {
           "Feature 1": "Hardwired TCP/IP embedded Ethernet controller (10/100 Mbps RJ45)"
     },
@@ -3321,7 +3321,7 @@ export const PRODUCTS: Product[] = [
     stock: 40,
     status: "in-stock",
     image: "/images/products/module-nrf24l01-pa-lna.jpg",
-    images: ["/images/products/module-nrf24l01-pa-lna.jpg","/images/products/module-esp8266-esp01.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/module-nrf24l01-pa-lna.jpg"],
     specs: {
           "Feature 1": "Ultra-long range spread spectrum communication module (>3km)"
     },
@@ -3340,7 +3340,7 @@ export const PRODUCTS: Product[] = [
     stock: 55,
     status: "in-stock",
     image: "/images/products/stepper-nema17.jpg",
-    images: ["/images/products/stepper-nema17.jpg","/images/products/driver-tmc2209.jpg","/images/products/mechanical-rack-pinion.jpg"],
+    images: ["/images/products/stepper-nema17.jpg"],
     specs: {
           "Feature 1": "40N·cm holding torque",
           "Feature 2": "1.5A/phase",
@@ -3361,7 +3361,7 @@ export const PRODUCTS: Product[] = [
     stock: 60,
     status: "in-stock",
     image: "/images/products/driver-tmc2209.jpg",
-    images: ["/images/products/driver-tmc2209.jpg","/images/products/driver-tb6612.jpg","/images/products/stepper-nema17.jpg"],
+    images: ["/images/products/driver-tmc2209.jpg"],
     specs: {
           "Feature 1": "StealthChop2 silent microstepping up to 2.8A peak with UART control"
     },
@@ -3380,7 +3380,7 @@ export const PRODUCTS: Product[] = [
     stock: 90,
     status: "in-stock",
     image: "/images/products/driver-tmc2209.jpg",
-    images: ["/images/products/driver-tmc2209.jpg","/images/products/driver-tb6612.jpg","/images/products/stepper-nema17.jpg"],
+    images: ["/images/products/driver-tmc2209.jpg"],
     specs: {
           "Feature 1": "Up to 2.5A/phase",
           "Feature 2": "1/32 microstepping with thermal shutdown"
@@ -3400,7 +3400,7 @@ export const PRODUCTS: Product[] = [
     stock: 70,
     status: "in-stock",
     image: "/images/products/actuator-solenoid-12v.jpg",
-    images: ["/images/products/actuator-solenoid-12v.jpg","/images/products/module-relay-5v.jpg","/images/products/mechanical-rack-pinion.jpg"],
+    images: ["/images/products/actuator-solenoid-12v.jpg"],
     specs: {
           "Feature 1": "10mm stroke",
           "Feature 2": "5N initial pulling force",
@@ -3421,7 +3421,7 @@ export const PRODUCTS: Product[] = [
     stock: 65,
     status: "in-stock",
     image: "/images/products/actuator-solenoid-12v.jpg",
-    images: ["/images/products/actuator-solenoid-12v.jpg","/images/products/module-relay-5v.jpg","/images/products/mechanical-rack-pinion.jpg"],
+    images: ["/images/products/actuator-solenoid-12v.jpg"],
     specs: {
           "Feature 1": "Spring latch bolt with electric release for automated locker kiosks"
     },
@@ -3440,7 +3440,7 @@ export const PRODUCTS: Product[] = [
     stock: 120,
     status: "in-stock",
     image: "/images/products/actuator-solenoid-12v.jpg",
-    images: ["/images/products/actuator-solenoid-12v.jpg","/images/products/module-relay-5v.jpg","/images/products/mechanical-rack-pinion.jpg"],
+    images: ["/images/products/actuator-solenoid-12v.jpg"],
     specs: {
           "Feature 1": "120 Liters/hour flow rate",
           "Feature 2": "brushless DC motor",
@@ -3461,7 +3461,7 @@ export const PRODUCTS: Product[] = [
     stock: 40,
     status: "in-stock",
     image: "/images/products/actuator-solenoid-12v.jpg",
-    images: ["/images/products/actuator-solenoid-12v.jpg","/images/products/module-relay-5v.jpg","/images/products/mechanical-rack-pinion.jpg"],
+    images: ["/images/products/actuator-solenoid-12v.jpg"],
     specs: {
           "Feature 1": "Food-grade self-priming pressure pump 2L/min for dispensing"
     },
@@ -3480,7 +3480,7 @@ export const PRODUCTS: Product[] = [
     stock: 50,
     status: "in-stock",
     image: "/images/products/actuator-solenoid-12v.jpg",
-    images: ["/images/products/actuator-solenoid-12v.jpg","/images/products/module-relay-5v.jpg","/images/products/mechanical-rack-pinion.jpg"],
+    images: ["/images/products/actuator-solenoid-12v.jpg"],
     specs: {
           "Feature 1": "Gravity/pressure water valve",
           "Feature 2": "0.02–0.8Mpa operating pressure"
@@ -3500,7 +3500,7 @@ export const PRODUCTS: Product[] = [
     stock: 110,
     status: "in-stock",
     image: "/images/products/module-relay-5v.jpg",
-    images: ["/images/products/module-relay-5v.jpg","/images/products/connectors-terminal-block.jpg","/images/products/actuator-solenoid-12v.jpg"],
+    images: ["/images/products/module-relay-5v.jpg"],
     specs: {
           "Feature 1": "Dual 10A 250VAC relays with independent status indicator LEDs"
     },
@@ -3519,7 +3519,7 @@ export const PRODUCTS: Product[] = [
     stock: 80,
     status: "in-stock",
     image: "/images/products/module-relay-5v.jpg",
-    images: ["/images/products/module-relay-5v.jpg","/images/products/connectors-terminal-block.jpg","/images/products/actuator-solenoid-12v.jpg"],
+    images: ["/images/products/module-relay-5v.jpg"],
     specs: {
           "Feature 1": "Quad relay board with optical isolation for multi-device automation"
     },
@@ -3538,7 +3538,7 @@ export const PRODUCTS: Product[] = [
     stock: 45,
     status: "in-stock",
     image: "/images/products/module-relay-5v.jpg",
-    images: ["/images/products/module-relay-5v.jpg","/images/products/connectors-terminal-block.jpg","/images/products/actuator-solenoid-12v.jpg"],
+    images: ["/images/products/module-relay-5v.jpg"],
     specs: {
           "Feature 1": "8-relay channel bank for heavy industrial automation capstones"
     },
@@ -3557,7 +3557,7 @@ export const PRODUCTS: Product[] = [
     stock: 50,
     status: "in-stock",
     image: "/images/products/module-relay-5v.jpg",
-    images: ["/images/products/module-relay-5v.jpg","/images/products/connectors-terminal-block.jpg","/images/products/actuator-solenoid-12v.jpg"],
+    images: ["/images/products/module-relay-5v.jpg"],
     specs: {
           "Feature 1": "Silent AC switching",
           "Feature 2": "zero-cross trigger",
@@ -3578,7 +3578,7 @@ export const PRODUCTS: Product[] = [
     stock: 85,
     status: "in-stock",
     image: "/images/products/converter-buck-lm2596.jpg",
-    images: ["/images/products/converter-buck-lm2596.jpg","/images/products/converter-boost-mt3608.jpg","/images/products/connectors-terminal-block.jpg"],
+    images: ["/images/products/converter-buck-lm2596.jpg"],
     specs: {
           "Feature 1": "High efficiency 5A adjustable voltage & constant current battery charger"
     },
@@ -3597,7 +3597,7 @@ export const PRODUCTS: Product[] = [
     stock: 90,
     status: "in-stock",
     image: "/images/products/module-tp4056-charger.jpg",
-    images: ["/images/products/module-tp4056-charger.jpg","/images/products/battery-18650-cell.jpg","/images/products/power-supply-adapter.jpg"],
+    images: ["/images/products/module-tp4056-charger.jpg"],
     specs: {
           "Feature 1": "3-cell 18650 balance charging and short-circuit protection board"
     },
@@ -3616,7 +3616,7 @@ export const PRODUCTS: Product[] = [
     stock: 250,
     status: "in-stock",
     image: "/images/products/ic-74hc595.jpg",
-    images: ["/images/products/ic-74hc595.jpg","/images/products/ne555-timer-ic.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/ic-74hc595.jpg"],
     specs: {
           "Feature 1": "8-bit serial-in",
           "Feature 2": "parallel-out register for expanding MCU output pins"
@@ -3636,7 +3636,7 @@ export const PRODUCTS: Product[] = [
     stock: 220,
     status: "in-stock",
     image: "/images/products/ic-74hc595.jpg",
-    images: ["/images/products/ic-74hc595.jpg","/images/products/ne555-timer-ic.jpg","/images/products/perfboard-pcb.jpg"],
+    images: ["/images/products/ic-74hc595.jpg"],
     specs: {
           "Feature 1": "10-output decoded counter for LED sequencers and chasers"
     },
@@ -3655,7 +3655,7 @@ export const PRODUCTS: Product[] = [
     stock: 240,
     status: "in-stock",
     image: "/images/products/transistor-bc547.jpg",
-    images: ["/images/products/transistor-bc547.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/transistor-bc547.jpg"],
     specs: {
           "Feature 1": "7-channel NPN Darlington pairs with clamp diodes (50V 500mA)"
     },
@@ -3674,7 +3674,7 @@ export const PRODUCTS: Product[] = [
     stock: 180,
     status: "in-stock",
     image: "/images/products/transistor-bc547.jpg",
-    images: ["/images/products/transistor-bc547.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/transistor-bc547.jpg"],
     specs: {
           "Feature 1": "60V 5A power Darlington for driving DC solenoids and motors"
     },
@@ -3693,7 +3693,7 @@ export const PRODUCTS: Product[] = [
     stock: 300,
     status: "in-stock",
     image: "/images/products/transistor-bc547.jpg",
-    images: ["/images/products/transistor-bc547.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/transistor-bc547.jpg"],
     specs: {
           "Feature 1": "60V 200mA low-threshold logic level switching FET"
     },
@@ -3712,7 +3712,7 @@ export const PRODUCTS: Product[] = [
     stock: 400,
     status: "in-stock",
     image: "/images/products/diode-1n4007.jpg",
-    images: ["/images/products/diode-1n4007.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/diode-1n4007.jpg"],
     specs: {
           "Feature 1": "Low forward voltage drop (0.45V) for high-frequency rectification"
     },
@@ -3731,7 +3731,7 @@ export const PRODUCTS: Product[] = [
     stock: 110,
     status: "in-stock",
     image: "/images/products/diode-1n4007.jpg",
-    images: ["/images/products/diode-1n4007.jpg","/images/products/perfboard-pcb.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/diode-1n4007.jpg"],
     specs: {
           "Feature 1": "10 values (3.3V",
           "Feature 2": "5.1V",
@@ -3754,7 +3754,7 @@ export const PRODUCTS: Product[] = [
     stock: 200,
     status: "in-stock",
     image: "/images/products/ic-audio-amp.jpg",
-    images: ["/images/products/ic-audio-amp.jpg","/images/products/ne555-timer-ic.jpg","/images/products/buzzer-piezo-5v.jpg"],
+    images: ["/images/products/ic-audio-amp.jpg"],
     specs: {
           "Feature 1": "4V–12V low-power audio amp DIP-8 with internal 20x gain"
     },
@@ -3773,7 +3773,7 @@ export const PRODUCTS: Product[] = [
     stock: 240,
     status: "in-stock",
     image: "/images/products/ic-audio-amp.jpg",
-    images: ["/images/products/ic-audio-amp.jpg","/images/products/ne555-timer-ic.jpg","/images/products/transistor-bc547.jpg"],
+    images: ["/images/products/ic-audio-amp.jpg"],
     specs: {
           "Feature 1": "High-precision dual comparator with open-collector output"
     },
@@ -3792,7 +3792,7 @@ export const PRODUCTS: Product[] = [
     stock: 160,
     status: "in-stock",
     image: "/images/products/ic-audio-amp.jpg",
-    images: ["/images/products/ic-audio-amp.jpg","/images/products/ne555-timer-ic.jpg","/images/products/transistor-bc547.jpg"],
+    images: ["/images/products/ic-audio-amp.jpg"],
     specs: {
           "Feature 1": "High-fidelity audio dual operational amplifier"
     },
@@ -3811,7 +3811,7 @@ export const PRODUCTS: Product[] = [
     stock: 300,
     status: "in-stock",
     image: "/images/products/crystal-oscillator-16mhz.jpg",
-    images: ["/images/products/crystal-oscillator-16mhz.jpg","/images/products/capacitor-ceramic.jpg","/images/products/transistor-bc547.jpg"],
+    images: ["/images/products/crystal-oscillator-16mhz.jpg"],
     specs: {
           "Feature 1": "Standard quartz crystal resonator for ATmega328P circuits"
     },
@@ -3830,7 +3830,7 @@ export const PRODUCTS: Product[] = [
     stock: 140,
     status: "in-stock",
     image: "/images/products/keypad-membrane-4x4.jpg",
-    images: ["/images/products/keypad-membrane-4x4.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/keypad-membrane-4x4.jpg"],
     specs: {
           "Feature 1": "Ultra-thin flexible matrix keypad with adhesive backing and 8-pin header"
     },
@@ -3849,7 +3849,7 @@ export const PRODUCTS: Product[] = [
     stock: 130,
     status: "in-stock",
     image: "/images/products/joystick-ps2-module.jpg",
-    images: ["/images/products/joystick-ps2-module.jpg","/images/products/rotary-encoder-ec11.jpg","/images/products/jumper-wires-ribbon.jpg"],
+    images: ["/images/products/joystick-ps2-module.jpg"],
     specs: {
           "Feature 1": "X/Y dual 10k potentiometers with momentary center push button"
     },
@@ -3868,7 +3868,7 @@ export const PRODUCTS: Product[] = [
     stock: 120,
     status: "in-stock",
     image: "/images/products/rotary-encoder-ec11.jpg",
-    images: ["/images/products/rotary-encoder-ec11.jpg","/images/products/potentiometer-wh148.jpg","/images/products/pushbutton-switch.jpg"],
+    images: ["/images/products/rotary-encoder-ec11.jpg"],
     specs: {
           "Feature 1": "360° infinite incremental digital rotation with detents"
     },
@@ -3887,7 +3887,7 @@ export const PRODUCTS: Product[] = [
     stock: 220,
     status: "in-stock",
     image: "/images/products/dip-switch-4pos.jpg",
-    images: ["/images/products/dip-switch-4pos.jpg","/images/products/dip-switch-8pos.jpg","/images/products/tactile-switch-6mm.jpg"],
+    images: ["/images/products/dip-switch-4pos.jpg"],
     specs: {
           "Feature 1": "Standard slide DIP switch for PCB configuration"
     },
@@ -3906,7 +3906,7 @@ export const PRODUCTS: Product[] = [
     stock: 200,
     status: "in-stock",
     image: "/images/products/dip-switch-8pos.jpg",
-    images: ["/images/products/dip-switch-8pos.jpg","/images/products/dip-switch-4pos.jpg","/images/products/tactile-switch-6mm.jpg"],
+    images: ["/images/products/dip-switch-8pos.jpg"],
     specs: {
           "Feature 1": "8-circuit SPST slide DIP switch for binary addressing"
     },
@@ -3925,7 +3925,7 @@ export const PRODUCTS: Product[] = [
     stock: 250,
     status: "in-stock",
     image: "/images/products/connectors-terminal-block.jpg",
-    images: ["/images/products/connectors-terminal-block.jpg","/images/products/power-supply-adapter.jpg","/images/products/connectors-xt60.jpg"],
+    images: ["/images/products/connectors-terminal-block.jpg"],
     specs: {
           "Feature 1": "5.5×2.1mm metal threaded chassis mount DC jack with nut"
     },
@@ -3944,7 +3944,7 @@ export const PRODUCTS: Product[] = [
     stock: 220,
     status: "in-stock",
     image: "/images/products/connectors-terminal-block.jpg",
-    images: ["/images/products/connectors-terminal-block.jpg","/images/products/module-tp4056-charger.jpg","/images/products/module-usb-ttl-ch340.jpg"],
+    images: ["/images/products/connectors-terminal-block.jpg"],
     specs: {
           "Feature 1": "2.54mm breakout board for USB-C power injection & CC pins"
     },
@@ -3963,7 +3963,7 @@ export const PRODUCTS: Product[] = [
     stock: 180,
     status: "in-stock",
     image: "/images/products/connectors-xt60.jpg",
-    images: ["/images/products/connectors-xt60.jpg","/images/products/battery-18650-cell.jpg","/images/products/connectors-terminal-block.jpg"],
+    images: ["/images/products/connectors-xt60.jpg"],
     specs: {
           "Feature 1": "Gold-plated 60A continuous power connector with heat shrink"
     },
@@ -3981,8 +3981,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 300,
     status: "in-stock",
-    image: "/images/products/battery-18650-cell.jpg",
-    images: ["/images/products/battery-18650-cell.jpg","/images/products/module-tp4056-charger.jpg","/images/products/power-supply-adapter.jpg"],
+    image: "/images/products/battery-clip-9v.jpg",
+    images: ["/images/products/battery-clip-9v.jpg"],
     specs: {
           "Feature 1": "Heavy-duty molded snap clip for powering Arduino via DC jack"
     },
@@ -4001,7 +4001,7 @@ export const PRODUCTS: Product[] = [
     stock: 70,
     status: "in-stock",
     image: "/images/products/tool-multimeter-digital.jpg",
-    images: ["/images/products/tool-multimeter-digital.jpg","/images/products/tool-multimeter-digital-angle2.jpg","/images/products/tool-multimeter-digital-angle3.jpg"],
+    images: ["/images/products/tool-multimeter-digital.jpg"],
     specs: {
           "Feature 1": "Measures AC/DC voltage",
           "Feature 2": "DC current",
@@ -4023,7 +4023,7 @@ export const PRODUCTS: Product[] = [
     stock: 45,
     status: "in-stock",
     image: "/images/products/tool-logic-analyzer.jpg",
-    images: ["/images/products/tool-logic-analyzer.jpg","/images/products/jumper-wires-ribbon.jpg","/images/products/module-usb-ttl-ch340.jpg"],
+    images: ["/images/products/tool-logic-analyzer.jpg"],
     specs: {
           "Feature 1": "Decodes I2C",
           "Feature 2": "SPI",
@@ -4045,7 +4045,7 @@ export const PRODUCTS: Product[] = [
     stock: 50,
     status: "in-stock",
     image: "/images/products/tool-soldering-iron-station.jpg",
-    images: ["/images/products/tool-soldering-iron-station.jpg","/images/products/tool-soldering-iron-station-angle2.jpg","/images/products/tool-tip-cleaner.jpg"],
+    images: ["/images/products/tool-soldering-iron-station.jpg"],
     specs: {
           "Feature 1": "200°C–450°C adjustable iron with 5 interchangeable tips & wire stand"
     },
@@ -4064,7 +4064,7 @@ export const PRODUCTS: Product[] = [
     stock: 40,
     status: "in-stock",
     image: "/images/products/tool-digital-caliper.jpg",
-    images: ["/images/products/tool-digital-caliper.jpg","/images/products/tool-tweezers-esd.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/tool-digital-caliper.jpg"],
     specs: {
           "Feature 1": "0.01mm resolution",
           "Feature 2": "metric/inch conversion for measuring 3D CAD parts"
@@ -4084,7 +4084,7 @@ export const PRODUCTS: Product[] = [
     stock: 120,
     status: "in-stock",
     image: "/images/products/tool-solder-sucker.jpg",
-    images: ["/images/products/tool-solder-sucker.jpg","/images/products/tool-solder-wick.jpg","/images/products/tool-soldering-iron-station.jpg"],
+    images: ["/images/products/tool-solder-sucker.jpg"],
     specs: {
           "Feature 1": "High-vacuum spring-loaded suction pump for clearing through-hole joints"
     },
@@ -4103,7 +4103,7 @@ export const PRODUCTS: Product[] = [
     stock: 80,
     status: "in-stock",
     image: "/images/products/tool-tip-cleaner.jpg",
-    images: ["/images/products/tool-tip-cleaner.jpg","/images/products/tool-soldering-iron-station.jpg","/images/products/tool-solder-wick.jpg"],
+    images: ["/images/products/tool-tip-cleaner.jpg"],
     specs: {
           "Feature 1": "Waterless cleaning brass coils prevents temperature drop on iron tips"
     },
@@ -4122,7 +4122,7 @@ export const PRODUCTS: Product[] = [
     stock: 160,
     status: "in-stock",
     image: "/images/products/tool-solder-wick.jpg",
-    images: ["/images/products/tool-solder-wick.jpg","/images/products/tool-solder-sucker.jpg","/images/products/solder-wire-spool.jpg"],
+    images: ["/images/products/tool-solder-wick.jpg"],
     specs: {
           "Feature 1": "Pure copper braid coated with non-corrosive rosin flux"
     },
@@ -4141,7 +4141,7 @@ export const PRODUCTS: Product[] = [
     stock: 65,
     status: "in-stock",
     image: "/images/products/tool-tweezers-esd.jpg",
-    images: ["/images/products/tool-tweezers-esd.jpg","/images/products/tool-digital-caliper.jpg","/images/products/tool-esd-wrist-strap.jpg"],
+    images: ["/images/products/tool-tweezers-esd.jpg"],
     specs: {
           "Feature 1": "Non-magnetic stainless steel tweezers set (curved",
           "Feature 2": "straight",
@@ -4162,7 +4162,7 @@ export const PRODUCTS: Product[] = [
     stock: 140,
     status: "in-stock",
     image: "/images/products/tool-wire-cutters.jpg",
-    images: ["/images/products/tool-wire-cutters.jpg","/images/products/tool-wire-stripper.jpg","/images/products/tool-tweezers-esd.jpg"],
+    images: ["/images/products/tool-wire-cutters.jpg"],
     specs: {
           "Feature 1": "Spring-loaded precision flush cutters for trimming component leads"
     },
@@ -4181,7 +4181,7 @@ export const PRODUCTS: Product[] = [
     stock: 55,
     status: "in-stock",
     image: "/images/products/tool-wire-stripper.jpg",
-    images: ["/images/products/tool-wire-stripper.jpg","/images/products/tool-wire-cutters.jpg","/images/products/tool-tweezers-esd.jpg"],
+    images: ["/images/products/tool-wire-stripper.jpg"],
     specs: {
           "Feature 1": "Strips 10–22 AWG solid & stranded wire with serrated cutting nose"
     },
@@ -4200,7 +4200,7 @@ export const PRODUCTS: Product[] = [
     stock: 40,
     status: "in-stock",
     image: "/images/products/tool-helping-hands.jpg",
-    images: ["/images/products/tool-helping-hands.jpg","/images/products/tool-soldering-iron-station.jpg","/images/products/tool-soldering-iron-station-angle3.jpg"],
+    images: ["/images/products/tool-helping-hands.jpg"],
     specs: {
           "Feature 1": "Cast-iron weighted base with dual alligator clips and 2.5x glass lens"
     },
@@ -4218,8 +4218,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 90,
     status: "in-stock",
-    image: "/images/products/solder-wire-spool.jpg",
-    images: ["/images/products/solder-wire-spool.jpg","/images/products/tool-soldering-iron-station.jpg","/images/products/perfboard-pcb.jpg"],
+    image: "/images/products/tape-kapton-polyimide.jpg",
+    images: ["/images/products/tape-kapton-polyimide.jpg"],
     specs: {
           "Feature 1": "Resists up to 260°C",
           "Feature 2": "ideal for heat bed masking & PCB insulation"
@@ -4238,8 +4238,8 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 110,
     status: "in-stock",
-    image: "/images/products/cooling-fan-4010.jpg",
-    images: ["/images/products/cooling-fan-4010.jpg","/images/products/enclosure-box-abs.jpg","/images/products/ic-lm7805.jpg"],
+    image: "/images/products/paste-thermal-silicone.jpg",
+    images: ["/images/products/paste-thermal-silicone.jpg"],
     specs: {
           "Feature 1": "Syringe dispenser for heatsinks on L298N",
           "Feature 2": "MOSFETs",
@@ -4260,7 +4260,7 @@ export const PRODUCTS: Product[] = [
     stock: 150,
     status: "in-stock",
     image: "/images/products/tool-esd-wrist-strap.jpg",
-    images: ["/images/products/tool-esd-wrist-strap.jpg","/images/products/tool-tweezers-esd.jpg","/images/products/hardware-m3-screws.jpg"],
+    images: ["/images/products/tool-esd-wrist-strap.jpg"],
     specs: {
           "Feature 1": "Coiled ground cord with alligator clip to protect sensitive ICs from ESD"
     },
@@ -4279,7 +4279,7 @@ export const PRODUCTS: Product[] = [
     stock: 70,
     status: "in-stock",
     image: "/images/products/solder-wire-spool.jpg",
-    images: ["/images/products/solder-wire-spool.jpg","/images/products/tool-soldering-iron-station.jpg","/images/products/tool-soldering-iron-station-angle2.jpg"],
+    images: ["/images/products/solder-wire-spool.jpg"],
     specs: {
           "Feature 1": "Sn99.3 Cu0.7 high-grade solder wire for clean",
           "Feature 2": "RoHS-compliant joints"

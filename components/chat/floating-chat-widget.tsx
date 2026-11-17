@@ -101,6 +101,7 @@ export function FloatingChatWidget() {
 
     function handleClickOutside(event: MouseEvent | TouchEvent) {
       const target = event.target as Node;
+      if (target instanceof Element && target.closest("[data-chat-launcher]")) return;
       // Do not close if clicking inside launcher button or inside the popup drawer
       if (launcherRef.current?.contains(target)) return;
       if (popupRef.current && !popupRef.current.contains(target)) {

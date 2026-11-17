@@ -1,0 +1,18 @@
+.card {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+}
+
+.card > :first-child {
+  justify-self: center;
+  max-width: 100%;
+}
+
+.details {
+  width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

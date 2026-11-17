@@ -5,6 +5,7 @@ import { Copy, Check, Download, QrCode } from "lucide-react";
 import { toast } from "@/components/ui/toast";
 import { usePaymentSettings } from "@/lib/settings/payment-settings";
 import qrcode from "qrcode-generator";
+import styles from "./payment-qr.module.css";
 
 interface PaymentQrProps {
   channel: "GCASH" | "MAYA";
@@ -103,10 +104,10 @@ export function PaymentQr({
 
   return (
     <div
-      className={`p-4 sm:p-5 rounded-2xl border transition-all ${isGcash
+      className={`${styles.card} p-4 sm:p-5 rounded-2xl border transition-all ${isGcash
         ? "bg-[#007DFE]/10 border-[#007DFE]/30"
         : "bg-[#00D665]/10 border-[#00D665]/30"
-        } flex flex-col md:flex-row items-center gap-5`}
+        }`}
     >
       {/* Official QR Ph Card with Scannable Grid */}
       <div className="relative bg-white p-3.5 rounded-2xl shadow-lg border border-gray-200 shrink-0 flex flex-col items-center">
@@ -188,9 +189,9 @@ export function PaymentQr({
       </div>
 
       {/* Details & Actions Cluster */}
-      <div className="flex-1 text-center md:text-left flex flex-col gap-2.5">
+      <div className={`${styles.details} text-center md:text-left flex flex-col gap-2.5`}>
         <div>
-          <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-1">
             <span
               className="px-2 py-0.5 rounded text-[10px] font-bold uppercase font-mono text-white shadow-xs"
               style={{ backgroundColor: brandColor }}
@@ -210,7 +211,7 @@ export function PaymentQr({
         </div>
 
         {/* Functional Mobile Number with 1-Click Copy */}
-        <div className="p-2.5 rounded-xl bg-mocha-bg/70 border border-mocha-border flex items-center justify-between gap-3">
+        <div className="p-2.5 rounded-xl bg-mocha-bg/70 border border-mocha-border flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0 text-left">
             <p className="text-[10px] font-mono uppercase tracking-wider text-mocha-text-muted">
               Recipient Mobile Number
@@ -222,7 +223,7 @@ export function PaymentQr({
           <button
             type="button"
             onClick={handleCopyNumber}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${copied
+            className={`min-h-11 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${copied
               ? "bg-mocha-success/20 text-mocha-success border border-mocha-success/40"
               : "bg-mocha-panel text-mocha-text hover:text-mocha-accent border border-mocha-border"
               }`}
@@ -241,11 +242,11 @@ export function PaymentQr({
         </div>
 
         {/* Download QR & Help */}
-        <div className="flex items-center justify-center md:justify-start gap-2 pt-1">
+        <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1">
           <button
             type="button"
             onClick={handleDownloadQr}
-            className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-mocha-panel border border-mocha-border text-mocha-text hover:text-mocha-accent hover:border-mocha-accent transition-colors flex items-center gap-1.5 min-h-[36px]"
+            className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-mocha-panel border border-mocha-border text-mocha-text hover:text-mocha-accent hover:border-mocha-accent transition-colors flex items-center gap-1.5 min-h-11"
           >
             <Download size={13} />
             <span>{activeQrImage ? "Download Uploaded QR" : "Download QR Ph"}</span>

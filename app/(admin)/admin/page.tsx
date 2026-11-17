@@ -277,7 +277,7 @@ export default function AdminDashboardPage() {
       <section aria-label="Key Performance Indicators">
         <div
           data-testid="admin-kpi-grid"
-          className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"
+          className="grid grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-4"
         >
           {/* Card 1: Total Revenue */}
           <AdminKpiCard

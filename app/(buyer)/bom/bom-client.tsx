@@ -200,10 +200,7 @@ export function BomClient() {
       toast("No components to transfer", "warning");
       return;
     }
-    const success = addBundleToCart(selProj.id, selProj.name, lineItems);
-    if (success) {
-      toast(`Added all items from "${selProj.name}" to cart!`, "success");
-    }
+    addBundleToCart(selProj.id, selProj.name, lineItems);
   };
 
   const handleDeleteProject = () => {
@@ -448,6 +445,7 @@ export function BomClient() {
                     return (
                       <div
                         key={li.productId}
+                        data-mobile-bom-item
                         className="p-3 2xl:px-4 2xl:py-3.5 flex flex-col 2xl:grid 2xl:grid-cols-[56px_minmax(0,1fr)_110px_90px_100px_110px_110px_80px_40px] 2xl:items-center gap-3 hover:bg-mocha-panel-raised/40 transition-colors"
                       >
                         {/* Part Image */}
