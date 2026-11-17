@@ -710,7 +710,7 @@ function ProductFormModal({
   );
   const [imageUrl, setImageUrl] = useState(
     initialProduct?.image ??
-      "https://images.unsplash.com/photo-1634452015397-ad0686a2ae2d?w=400&h=300&fit=crop&auto=format"
+      "/images/products/esp32-wroom-32u.jpg"
   );
 
   const [specRows, setSpecRows] = useState<SpecKeyValueRow[]>(() => {
@@ -1092,7 +1092,7 @@ function ProductFormModal({
                 type="url"
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
-                placeholder="https://images.unsplash.com/..."
+                placeholder="/images/products/..."
                 className="w-full min-h-[42px] px-3.5 py-2 rounded-xl bg-[#181825] border border-[#313244] font-mono text-[#CDD6F4] focus:border-[#89B4FA] focus:outline-none"
               />
             </div>

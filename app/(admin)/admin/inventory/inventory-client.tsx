@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { ChevronDown, Download, History, RefreshCw, Search, SlidersHorizontal, X } from "lucide-react";
 import type { StockStatus } from "@/types/product";
 import { formatDate, formatPrice } from "@/lib/format";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Surface } from "@/components/ui/surface";
 import { toast } from "@/components/ui/toast";
 import { exportInventoryToCsv } from "@/services/inventory-service";
+import styles from "./inventory.module.css";
 import {
   type AdminProductRecord,
   type StockAdjustmentReason,
@@ -21,10 +21,10 @@ import {
 type StockFilterTab = "ALL" | StockStatus;
 
 const STOCK_FILTER_TABS: Array<{ id: StockFilterTab; label: string }> = [
-  { id: "ALL", label: "All" },
-  { id: "in-stock", label: "In Stock" },
-  { id: "low-stock", label: "Low Stock (<= minThreshold)" },
-  { id: "out-of-stock", label: "Out of Stock (= 0)" },
+  { id: "ALL", label: "All products" },
+  { id: "in-stock", label: "In stock" },
+  { id: "low-stock", label: "Low stock" },
+  { id: "out-of-stock", label: "Out of stock" },
 ];
 
 const ADJUSTMENT_REASONS: StockAdjustmentReason[] = [
@@ -38,7 +38,6 @@ function getStockStatusStyle(status: StockStatus): {
   color: string;
   bg: string;
   border: string;
-  barColor: string;
 } {
   switch (status) {
     case "in-stock":
@@ -47,7 +46,6 @@ function getStockStatusStyle(status: StockStatus): {
         color: "#A6E3A1",
         bg: "rgba(166, 227, 161, 0.12)",
         border: "rgba(166, 227, 161, 0.3)",
-        barColor: "#A6E3A1",
       };
     case "low-stock":
       return {
@@ -55,7 +53,6 @@ function getStockStatusStyle(status: StockStatus): {
         color: "#F9E2AF",
         bg: "rgba(249, 226, 175, 0.12)",
         border: "rgba(249, 226, 175, 0.3)",
-        barColor: "#F9E2AF",
       };
     case "out-of-stock":
       return {
@@ -63,7 +60,6 @@ function getStockStatusStyle(status: StockStatus): {
         color: "#F38BA8",
         bg: "rgba(243, 139, 168, 0.12)",
         border: "rgba(243, 139, 168, 0.3)",
-        barColor: "#F38BA8",
       };
   }
 }
@@ -172,7 +168,7 @@ function AdjustStockModalInner({
         role="dialog"
         aria-modal="true"
         aria-labelledby="adjust-stock-modal-title"
-        className="flex w-full max-w-lg flex-col overflow-hidden rounded-xl border border-[#45475A] bg-[#1E1E2E] shadow-2xl"
+        className="flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col overflow-y-auto rounded-xl border border-[#45475A] bg-[#1E1E2E] shadow-2xl"
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[#313244] bg-[#181825] px-6 py-4">
@@ -246,6 +242,9 @@ function AdjustStockModalInner({
               </p>
               <span className="text-xs text-[#A6ADC8]">{product.category}</span>
             </div>
+            <p className="mt-1 text-xs text-[#A6ADC8]">
+              {product.brand ?? "Generic"} · {formatPrice(product.price)}
+            </p>
             <div className="mt-3 grid grid-cols-3 gap-2 border-t border-[#313244]/70 pt-3 text-center">
               <div>
                 <p className="text-[10px] font-semibold tracking-wider text-[#A6ADC8] uppercase">
@@ -321,7 +320,7 @@ function AdjustStockModalInner({
 
           {/* Quantity Input & Quick Presets */}
           <div>
-            <div className="mb-1.5 flex items-center justify-between">
+            <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
               <label
                 htmlFor="adj-quantity"
                 className="text-xs font-medium text-[#BAC2DE]"
@@ -396,7 +395,7 @@ function AdjustStockModalInner({
           </div>
 
           {/* Footer Buttons */}
-          <div className="flex items-center justify-end gap-3 border-t border-[#313244] pt-4">
+          <div className="flex flex-wrap items-center justify-end gap-3 border-t border-[#313244] pt-4">
             <Button
               type="button"
               variant="outline"
@@ -530,525 +529,153 @@ export function InventoryClient() {
     toast(`Exported ${exportableItems.length} inventory records to CSV.`, "success");
   };
 
+  const hasFilters = activeStatusTab !== "ALL" || selectedCategory !== "ALL" || searchQuery.trim() !== "";
+  const resetFilters = () => {
+    setActiveStatusTab("ALL");
+    setSelectedCategory("ALL");
+    setSearchQuery("");
+  };
+
   return (
-    <div
-      data-testid="admin-inventory-page"
-      className="mx-auto flex w-full max-w-[1600px] flex-col gap-6"
-    >
-      {/* Page Header */}
-      <div className="flex flex-col gap-4 border-b border-[#313244] pb-2 sm:flex-row sm:items-center sm:justify-between">
+    <div data-testid="admin-inventory-page" className={styles.page}>
+      <header className={styles.header}>
         <div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#94E2D5]/30 bg-[#94E2D5]/12 px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider text-[#94E2D5] uppercase">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#94E2D5]" />
-              WAREHOUSE &amp; SAFETY STOCK TELEMETRY
-            </span>
-            <span className="font-mono text-[11px] text-[#A6ADC8]">
-              • Last synced: {lastSyncedTime}
-            </span>
+          <h1>Inventory</h1>
+          <p>Monitor stock levels and manage adjustments.</p>
+        </div>
+        <div className={styles.headerActions}>
+          <span className={styles.syncTime} role="status">Updated {lastSyncedTime.toLowerCase()}</span>
+          <button type="button" className={styles.secondaryButton} disabled={isSyncing} onClick={handleRefresh}>
+            <RefreshCw size={15} aria-hidden="true" className={isSyncing ? "animate-spin" : undefined} />
+            {isSyncing ? "Syncing…" : "Sync stock"}
+          </button>
+          <button type="button" className={styles.secondaryButton} onClick={handleExportCsv}>
+            <Download size={15} aria-hidden="true" />
+            Export CSV
+          </button>
+        </div>
+      </header>
+
+      <dl className={styles.overview} aria-label="Stock overview">
+        <div>
+          <dt>Total products</dt>
+          <dd>{overviewMetrics.totalSkus.toLocaleString("en-PH")}</dd>
+        </div>
+        <div>
+          <dt>Units on hand</dt>
+          <dd>{overviewMetrics.totalUnits.toLocaleString("en-PH")}</dd>
+        </div>
+        <div>
+          <dt>Low stock</dt>
+          <dd data-tone={overviewMetrics.lowStockCount > 0 ? "warning" : undefined}>{overviewMetrics.lowStockCount}</dd>
+        </div>
+        <div>
+          <dt>Out of stock</dt>
+          <dd data-tone={overviewMetrics.outOfStockCount > 0 ? "danger" : undefined}>{overviewMetrics.outOfStockCount}</dd>
+        </div>
+      </dl>
+
+      <section className={styles.inventory} aria-label="Product inventory">
+        <div className={styles.filters}>
+          <div className={styles.search}>
+            <Search size={17} aria-hidden="true" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search products or SKU…"
+              aria-label="Search inventory SKUs"
+            />
+            {searchQuery && (
+              <button type="button" onClick={() => setSearchQuery("")} aria-label="Clear search">
+                <X size={15} aria-hidden="true" />
+              </button>
+            )}
           </div>
-          <h1 className="mt-2 text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
-            Inventory &amp; Stock Control
-          </h1>
+          <label htmlFor="inventory-cat-filter" className="sr-only">Filter by category</label>
+          <select
+            id="inventory-cat-filter"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className={styles.categorySelect}
+          >
+            {categories.map((category) => (
+              <option key={category} value={category}>{category === "ALL" ? "All categories" : category}</option>
+            ))}
+          </select>
+          <span className={styles.valuation}>Inventory value <strong>{formatPrice(overviewMetrics.totalInventoryValuation)}</strong></span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
-          <div className="flex items-center gap-2 rounded-xl border border-[#313244] bg-[#181825] px-3.5 py-2">
-            <span className="text-xs text-[#A6ADC8]">Est. Stock Valuation:</span>
-            <span className="font-mono text-sm font-bold text-[#94E2D5]">
-              {formatPrice(overviewMetrics.totalInventoryValuation)}
-            </span>
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            size="small"
-            disabled={isSyncing}
-            onClick={handleRefresh}
-            className="flex items-center gap-2"
-          >
-            <svg
-              aria-hidden="true"
-              className={`h-3.5 w-3.5 ${isSyncing ? "animate-spin" : ""}`}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+        <div className={styles.statusFilters} role="group" aria-label="Filter inventory by stock status">
+          {STOCK_FILTER_TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              aria-pressed={activeStatusTab === tab.id}
+              onClick={() => setActiveStatusTab(tab.id)}
             >
-              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
-            </svg>
-            <span>{isSyncing ? "Syncing..." : "Sync Warehouse"}</span>
-          </Button>
-
-          <Button
-            type="button"
-            variant="outline"
-            size="small"
-            onClick={handleExportCsv}
-            className="flex items-center gap-2"
-          >
-            <svg
-              aria-hidden="true"
-              className="h-3.5 w-3.5 text-[#94E2D5]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            <span>Export Stock CSV</span>
-          </Button>
+              {tab.label}<span>{statusTabCounts[tab.id]}</span>
+            </button>
+          ))}
         </div>
-      </div>
 
-      {/* Stock Overview Cards (4 Cards) */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {/* Card 1: Total SKUs Tracked */}
-        <Surface
-          variant="panel"
-          className="border border-[#313244] bg-[#1E1E2E] p-4"
-        >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-semibold tracking-wider text-[#A6ADC8] uppercase">
-                Total SKUs Tracked
-              </p>
-              <p className="mt-2 font-mono text-2xl font-bold text-[#CDD6F4]">
-                {overviewMetrics.totalSkus}
-              </p>
-            </div>
-            <Badge variant="primary" className="font-mono">
-              TRACKED
-            </Badge>
-          </div>
-          <p className="mt-3 text-xs text-[#A6ADC8]">
-            Active catalog components monitored for safety thresholds
-          </p>
-        </Surface>
-
-        {/* Card 2: Total Units in Stock */}
-        <Surface
-          variant="panel"
-          className="border border-[#313244] bg-[#1E1E2E] p-4"
-        >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-semibold tracking-wider text-[#A6ADC8] uppercase">
-                Total Units in Stock
-              </p>
-              <p className="mt-2 font-mono text-2xl font-bold text-[#94E2D5]">
-                {overviewMetrics.totalUnits.toLocaleString("en-PH")}
-              </p>
-            </div>
-            <Badge variant="success" className="font-mono">
-              UNITS
-            </Badge>
-          </div>
-          <p className="mt-3 text-xs text-[#A6ADC8]">
-            Combined physical inventory across all shelves &amp; bins
-          </p>
-        </Surface>
-
-        {/* Card 3: Low Stock Count */}
-        <Surface
-          variant="panel"
-          className="border border-[#313244] bg-[#1E1E2E] p-4"
-        >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-semibold tracking-wider text-[#A6ADC8] uppercase">
-                Low Stock Count
-              </p>
-              <p className="mt-2 font-mono text-2xl font-bold text-[#F9E2AF]">
-                {overviewMetrics.lowStockCount}
-              </p>
-            </div>
-            <Badge variant="warning" className="font-mono">
-              LOW STOCK
-            </Badge>
-          </div>
-          <p className="mt-3 text-xs text-[#A6ADC8]">
-            SKUs at or below minimum safety threshold (&lt;= minThreshold)
-          </p>
-        </Surface>
-
-        {/* Card 4: Out of Stock Count */}
-        <Surface
-          variant="panel"
-          className="border border-[#313244] bg-[#1E1E2E] p-4"
-        >
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-xs font-semibold tracking-wider text-[#A6ADC8] uppercase">
-                Out of Stock Count
-              </p>
-              <p className="mt-2 font-mono text-2xl font-bold text-[#F38BA8]">
-                {overviewMetrics.outOfStockCount}
-              </p>
-            </div>
-            <Badge variant="danger" className="font-mono">
-              DEPLETED
-            </Badge>
-          </div>
-          <p className="mt-3 text-xs text-[#A6ADC8]">
-            Depleted SKUs (stock = 0) requiring immediate restock
-          </p>
-        </Surface>
-      </div>
-
-      {/* Filter by Stock Status + Search Bar */}
-      <Surface
-        variant="panel"
-        className="space-y-4 border border-[#313244] bg-[#1E1E2E] p-4"
-      >
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          {/* Stock Status Filter Tabs */}
-          <div
-            role="tablist"
-            aria-label="Filter inventory by stock status"
-            className="flex flex-wrap items-center gap-2"
-          >
-            {STOCK_FILTER_TABS.map((tab) => {
-              const isActive = activeStatusTab === tab.id;
-              const count = statusTabCounts[tab.id];
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  onClick={() => setActiveStatusTab(tab.id)}
-                  style={
-                    isActive
-                      ? {
-                          color: "#89B4FA",
-                          backgroundColor: "rgba(137, 180, 250, 0.14)",
-                          borderColor: "rgba(137, 180, 250, 0.45)",
-                        }
-                      : undefined
-                  }
-                  className={`inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all ${
-                    isActive
-                      ? "shadow-xs"
-                      : "border-[#313244] bg-[#181825] text-[#A6ADC8] hover:border-[#45475A] hover:text-[#CDD6F4]"
-                  }`}
-                >
-                  <span>{tab.label}</span>
-                  <span
-                    className={`rounded-full px-1.5 py-0.2 font-mono text-[11px] ${
-                      isActive
-                        ? "bg-[#89B4FA]/20 text-[#89B4FA]"
-                        : "bg-[#313244]/70 text-[#BAC2DE]"
-                    }`}
-                  >
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Filters: Category Selector + Search Input */}
-          <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
-            {/* Category Filter Dropdown */}
-            <div className="relative">
-              <label htmlFor="inventory-cat-filter" className="sr-only">
-                Filter by category
-              </label>
-              <select
-                id="inventory-cat-filter"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="h-9 rounded-lg border border-[#313244] bg-[#181825] px-3 font-mono text-xs text-[#CDD6F4] focus:border-[#89B4FA] focus:outline-none"
-              >
-                {categories.map((c) => (
-                  <option key={c} value={c}>
-                    {c === "ALL" ? "All Categories" : c}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Search Input */}
-            <div className="relative w-full sm:w-64">
-              <svg
-                aria-hidden="true"
-                className="pointer-events-none absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-[#A6ADC8]"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search SKU, product, category..."
-                aria-label="Search inventory SKUs"
-                className="h-9 w-full rounded-lg border border-[#313244] bg-[#181825] pr-8 pl-10 text-xs text-[#CDD6F4] placeholder-[#A6ADC8] transition-colors focus:border-[#89B4FA] focus:outline-none"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  aria-label="Clear search"
-                  className="absolute top-1/2 right-2.5 -translate-y-1/2 rounded p-0.5 text-[#A6ADC8] hover:text-[#CDD6F4]"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </Surface>
-
-      {/* Inventory Stock Table */}
-      <Surface
-        variant="panel"
-        className="overflow-hidden border border-[#313244] bg-[#1E1E2E] p-0"
-      >
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left">
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <caption className="sr-only">Inventory products, stock counts, minimum stock levels, and availability</caption>
             <thead>
-              <tr className="border-b border-[#313244] bg-[#181825] text-[11px] font-semibold tracking-wider text-[#A6ADC8] uppercase">
-                <th className="px-4 py-3.5">SKU</th>
-                <th className="px-4 py-3.5">Product Name</th>
-                <th className="px-4 py-3.5">Category</th>
-                <th className="px-4 py-3.5 text-right">Current Stock</th>
-                <th className="px-4 py-3.5 text-right">Min Threshold</th>
-                <th className="px-4 py-3.5">Safety Stock Status Indicator</th>
-                <th className="px-4 py-3.5 text-right">Action</th>
+              <tr>
+                <th scope="col">Product</th>
+                <th scope="col" className={styles.stockColumn}>On hand</th>
+                <th scope="col">Status</th>
+                <th scope="col"><span className="sr-only">Actions</span></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#313244]/60 text-sm">
+            <tbody>
               {filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center">
-                    <div className="mx-auto flex max-w-sm flex-col items-center gap-2">
-                      <p className="text-sm font-semibold text-[#CDD6F4]">
-                        No matching SKUs found
-                      </p>
-                      <p className="text-xs text-[#A6ADC8]">
-                        Try selecting another stock status tab or clearing your
-                        search query.
-                      </p>
-                    </div>
+                  <td colSpan={4} className={styles.emptyState}>
+                    <Search size={24} aria-hidden="true" />
+                    <p>No matching products</p>
+                    <span>Try another search or adjust your filters.</span>
+                    {hasFilters && <button type="button" onClick={resetFilters}>Clear filters</button>}
                   </td>
                 </tr>
-              ) : (
-                filteredProducts.map((product) => {
-                  const liveStatus = computeStockStatus(
-                    product.stock,
-                    product.minThreshold,
-                  );
-                  const statusStyle = getStockStatusStyle(liveStatus);
-                  const maxScale = Math.max(product.minThreshold * 3, 50);
-                  const fillPercent = Math.min(
-                    100,
-                    Math.round((product.stock / maxScale) * 100),
-                  );
-                  const thresholdMarkerPercent = Math.min(
-                    100,
-                    Math.round((product.minThreshold / maxScale) * 100),
-                  );
-
-                  return (
-                    <tr
-                      key={product.id}
-                      className="transition-colors hover:bg-[#181825]/80"
-                    >
-                      {/* SKU */}
-                      <td className="px-4 py-3.5 whitespace-nowrap">
-                        <span className="font-mono text-xs font-semibold text-[#89B4FA]">
-                          {product.sku}
-                        </span>
-                      </td>
-
-                      {/* Product Name */}
-                      <td className="px-4 py-3.5">
-                        <div className="min-w-[200px]">
-                          <p className="font-medium text-[#CDD6F4]">
-                            {product.name}
-                          </p>
-                          <p className="text-xs text-[#A6ADC8]">
-                            {product.brand ?? "Generic"} •{" "}
-                            {formatPrice(product.price)}
-                          </p>
-                        </div>
-                      </td>
-
-                      {/* Category */}
-                      <td className="px-4 py-3.5 whitespace-nowrap">
-                        <span className="inline-flex items-center rounded-md border border-[#313244] bg-[#181825] px-2.5 py-1 text-xs font-medium text-[#BAC2DE]">
-                          {product.category}
-                        </span>
-                      </td>
-
-                      {/* Current Stock */}
-                      <td className="px-4 py-3.5 text-right whitespace-nowrap">
-                        <span
-                          className="font-mono text-sm font-bold"
-                          style={{ color: statusStyle.color }}
-                        >
-                          {product.stock}
-                        </span>
-                        <span className="ml-1 text-xs text-[#A6ADC8]">
-                          units
-                        </span>
-                      </td>
-
-                      {/* Min Threshold */}
-                      <td className="px-4 py-3.5 text-right whitespace-nowrap">
-                        <span className="font-mono text-xs text-[#BAC2DE]">
-                          {product.minThreshold} units
-                        </span>
-                      </td>
-
-                      {/* Safety Stock Status Indicator */}
-                      <td className="px-4 py-3.5">
-                        <div className="min-w-[210px] space-y-1.5">
-                          <div className="flex items-center justify-between gap-2">
-                            <span
-                              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold tracking-wide"
-                              style={{
-                                color: statusStyle.color,
-                                backgroundColor: statusStyle.bg,
-                                border: `1px solid ${statusStyle.border}`,
-                              }}
-                            >
-                              <span
-                                className="h-1.5 w-1.5 rounded-full"
-                                style={{ backgroundColor: statusStyle.color }}
-                              />
-                              {statusStyle.label}
-                            </span>
-
-                            <span className="font-mono text-[11px] text-[#A6ADC8]">
-                              {product.stock === 0
-                                ? "Depleted"
-                                : product.stock <= product.minThreshold
-                                  ? `${product.minThreshold - product.stock + 1} to safe`
-                                  : `+${product.stock - product.minThreshold} above min`}
-                            </span>
-                          </div>
-
-                          {/* Safety Stock Progress Bar */}
-                          <div className="relative h-2 w-full overflow-hidden rounded-full bg-[#11111B]">
-                            <div
-                              className="h-full rounded-full transition-all duration-300"
-                              style={{
-                                width: `${fillPercent}%`,
-                                backgroundColor: statusStyle.barColor,
-                              }}
-                            />
-                            <div
-                              title={`Safety Min Threshold (${product.minThreshold})`}
-                              className="absolute top-0 bottom-0 w-0.5 bg-[#CDD6F4]/60"
-                              style={{ left: `${thresholdMarkerPercent}%` }}
-                            />
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Action */}
-                      <td className="px-4 py-3.5 text-right whitespace-nowrap">
-                        <Button
-                          variant="outline"
-                          size="small"
-                          onClick={() => setAdjustingProduct(product)}
-                        >
-                          Adjust Stock
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </Surface>
-
-      {/* Recent Stock Adjustment Audit Log */}
-      <Surface
-        variant="panel"
-        className="overflow-hidden border border-[#313244] bg-[#1E1E2E] p-0"
-      >
-        <div className="flex items-center justify-between border-b border-[#313244] bg-[#181825] px-5 py-3.5">
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 rounded-full bg-[#89B4FA]" />
-            <h2 className="text-sm font-semibold text-[#CDD6F4]">
-              Recent Stock Adjustment Log
-            </h2>
-          </div>
-          <span className="font-mono text-xs text-[#A6ADC8]">
-            {adjustmentLogs.length} entries recorded
-          </span>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left">
-            <thead>
-              <tr className="border-b border-[#313244] bg-[#181825]/60 text-[11px] font-semibold tracking-wider text-[#A6ADC8] uppercase">
-                <th className="px-5 py-3">Timestamp</th>
-                <th className="px-5 py-3">SKU &amp; Component</th>
-                <th className="px-5 py-3">Adjustment</th>
-                <th className="px-5 py-3">Reason</th>
-                <th className="px-5 py-3 text-right">Stock Delta</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#313244]/60 text-xs">
-              {adjustmentLogs.slice(0, 8).map((entry) => {
-                const isAdd = entry.type === "ADD";
+              ) : filteredProducts.map((product) => {
+                const liveStatus = computeStockStatus(product.stock, product.minThreshold);
+                const needsRestock = liveStatus !== "in-stock";
                 return (
-                  <tr
-                    key={entry.id}
-                    className="transition-colors hover:bg-[#181825]/60"
-                  >
-                    <td className="px-5 py-3 whitespace-nowrap text-[#A6ADC8]">
-                      {formatDate(entry.timestamp)}
+                  <tr key={product.id}>
+                    <td className={styles.productCell}>
+                      <p className={styles.productName}>{product.name}</p>
+                      <div className={styles.productMeta}>
+                        <span className={styles.sku}>{product.sku}</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{product.category}</span>
+                      </div>
                     </td>
-                    <td className="px-5 py-3">
-                      <span className="font-mono font-semibold text-[#89B4FA]">
-                        {entry.sku}
-                      </span>
-                      <span className="ml-2 text-[#CDD6F4]">
-                        {entry.productName}
-                      </span>
+                    <td className={styles.stockCell}>
+                      <div className={styles.stockCount} data-tone={liveStatus === "low-stock" ? "warning" : liveStatus === "out-of-stock" ? "danger" : undefined}>
+                        {product.stock.toLocaleString("en-PH")} <span>units</span>
+                      </div>
+                      <p className={styles.minimum}>Min. {product.minThreshold}</p>
                     </td>
-                    <td className="px-5 py-3 whitespace-nowrap">
-                      <span
-                        className="inline-flex items-center gap-1 rounded-md px-2 py-0.5 font-mono text-[11px] font-semibold"
-                        style={
-                          isAdd
-                            ? {
-                                color: "#A6E3A1",
-                                backgroundColor: "rgba(166, 227, 161, 0.12)",
-                              }
-                            : {
-                                color: "#F38BA8",
-                                backgroundColor: "rgba(243, 139, 168, 0.12)",
-                              }
-                        }
+                    <td className={styles.statusCell}>
+                      <span className={styles.stockStatus} data-status={liveStatus}>
+                        <span className={styles.statusDot} aria-hidden="true" />
+                        {liveStatus === "in-stock" ? "In stock" : liveStatus === "low-stock" ? "Low stock" : "Out of stock"}
+                      </span>
+                      {needsRestock && <p className={styles.restockHint}>Add {product.minThreshold - product.stock + 1} to restock</p>}
+                    </td>
+                    <td className={styles.actionCell}>
+                      <button
+                        type="button"
+                        className={styles.adjustButton}
+                        aria-label={`Adjust stock for ${product.name}`}
+                        onClick={() => setAdjustingProduct(product)}
                       >
-                        {isAdd ? `+${entry.quantity}` : `-${entry.quantity}`}{" "}
-                        units
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-[#BAC2DE]">{entry.reason}</td>
-                    <td className="px-5 py-3 text-right font-mono whitespace-nowrap text-[#CDD6F4]">
-                      {entry.previousStock} →{" "}
-                      <span className="font-bold text-[#89B4FA]">
-                        {entry.newStock}
-                      </span>
+                        <SlidersHorizontal size={15} aria-hidden="true" />
+                        <span>Adjust stock</span>
+                      </button>
                     </td>
                   </tr>
                 );
@@ -1056,13 +683,44 @@ export function InventoryClient() {
             </tbody>
           </table>
         </div>
-      </Surface>
+        <footer className={styles.tableFooter}>
+          <span>{filteredProducts.length} of {products.length} products</span>
+          {hasFilters && <button type="button" onClick={resetFilters}>Clear filters</button>}
+        </footer>
+      </section>
 
-      {/* Quick Adjust Stock Modal */}
-      <AdjustStockModal
-        product={adjustingProduct}
-        onClose={() => setAdjustingProduct(null)}
-      />
+      <details className={styles.activity}>
+        <summary>
+          <History size={17} aria-hidden="true" />
+          <h2>Recent adjustments</h2>
+          <span className={styles.activityCount}>{adjustmentLogs.length} recorded</span>
+          <ChevronDown size={16} className={styles.disclosureIcon} aria-hidden="true" />
+        </summary>
+        <div>
+          {adjustmentLogs.length === 0 ? <p className={styles.activityEmpty}>No stock adjustments yet.</p> : (
+            <ul className={styles.activityList}>
+              {adjustmentLogs.slice(0, 8).map((entry) => {
+                const delta = entry.newStock - entry.previousStock;
+                return (
+                  <li key={entry.id}>
+                    <div className={styles.activityProduct}>
+                      <p>{entry.productName}</p>
+                      <span>{entry.sku} · {entry.reason}</span>
+                    </div>
+                    <div className={styles.activityDelta}>
+                      <strong>{delta > 0 ? "+" : ""}{delta} units</strong>
+                      <span>{entry.previousStock} → {entry.newStock}</span>
+                    </div>
+                    <time dateTime={entry.timestamp}>{formatDate(entry.timestamp)}</time>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      </details>
+
+      <AdjustStockModal product={adjustingProduct} onClose={() => setAdjustingProduct(null)} />
     </div>
   );
 }

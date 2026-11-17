@@ -18,7 +18,7 @@ function BuyerShell({ children }: { children: React.ReactNode }) {
     resetProfileStore();
   }, []);
   return (
-    <div className="min-h-screen flex flex-col bg-mocha-bg text-mocha-text selection:bg-mocha-accent/30 selection:text-mocha-text w-full max-w-full overflow-x-clip">
+    <div className="buyer-shell min-h-dvh flex flex-col bg-mocha-bg text-mocha-text selection:bg-mocha-accent/30 selection:text-mocha-text w-full max-w-full overflow-x-clip">
       {/* Desktop Header */}
       <Suspense fallback={<div className="h-[64px] hidden md:block" />}>
         <BuyerHeader />
@@ -31,7 +31,7 @@ function BuyerShell({ children }: { children: React.ReactNode }) {
       <main
         id="main-content"
         tabIndex={-1}
-        className="flex-1 flex flex-col pb-16 md:pb-0 focus:outline-none w-full max-w-full overflow-x-clip"
+        className="flex-1 min-w-0 flex flex-col pb-[var(--buyer-mobile-nav-space)] md:pb-0 focus:outline-none w-full max-w-full overflow-x-clip"
       >
         {children}
       </main>

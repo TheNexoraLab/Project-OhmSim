@@ -62,12 +62,13 @@ export function AdminTopbar({
       className="sticky top-0 z-30 h-16 px-4 sm:px-6 bg-[#181825]/95 backdrop-blur-md border-b border-[#313244] flex items-center justify-between gap-3 shrink-0"
     >
       {/* Left: Mobile Hamburger + Breadcrumb / Current Section Title */}
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex flex-1 items-center gap-3 min-w-0">
         <button
           type="button"
           onClick={onToggleMobileMenu}
           aria-label="Toggle admin navigation menu"
           aria-expanded={isMobileMenuOpen}
+          aria-controls="admin-mobile-navigation"
           data-testid="admin-mobile-menu-button"
           className="lg:hidden min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-xl bg-[#1E1E2E] border border-[#313244] text-[#CDD6F4] hover:border-[#89B4FA] hover:text-[#89B4FA] transition-colors shrink-0"
         >
@@ -81,18 +82,18 @@ export function AdminTopbar({
         <div className="min-w-0 flex items-center gap-2.5">
           <nav
             aria-label="Breadcrumb"
-            className="flex items-center gap-2 text-xs sm:text-sm font-medium"
+            className="flex min-w-0 items-center gap-2 text-xs sm:text-sm font-medium"
           >
             <Link
               href="/admin"
-              className="text-[#A6ADC8] hover:text-[#89B4FA] transition-colors rounded-xs"
+              className="hidden sm:inline text-[#A6ADC8] hover:text-[#89B4FA] transition-colors rounded-xs"
             >
               Admin
             </Link>
-            <span aria-hidden="true" className="text-[#45475A] font-normal">
+            <span aria-hidden="true" className="hidden sm:inline text-[#45475A] font-normal">
               /
             </span>
-            <span className="text-[#CDD6F4] font-bold tracking-tight truncate">
+            <span aria-current="page" className="text-[#CDD6F4] font-bold tracking-tight truncate">
               {title}
             </span>
           </nav>
@@ -111,6 +112,7 @@ export function AdminTopbar({
           href="/home"
           target="_blank"
           rel="noopener noreferrer"
+          aria-label="View storefront (opens in a new tab)"
           data-testid="view-storefront-link"
           className={getButtonClasses(
             "outline",
@@ -118,8 +120,8 @@ export function AdminTopbar({
             "gap-1.5 text-xs border-[#45475A] text-[#CDD6F4] hover:border-[#89B4FA] hover:text-[#89B4FA]"
           )}
         >
-          <span>View Storefront</span>
-          <ExternalLink size={14} className="shrink-0" />
+          <span className="hidden sm:inline">View Storefront</span>
+          <ExternalLink size={14} className="shrink-0" aria-hidden="true" />
         </a>
 
         {/* Admin Profile Chip */}

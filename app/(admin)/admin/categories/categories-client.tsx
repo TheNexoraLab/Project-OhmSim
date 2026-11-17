@@ -187,7 +187,7 @@ export function CategoriesClient() {
       className="flex flex-col gap-6 max-w-[1600px] mx-auto w-full"
     >
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#313244]">
+      <div className="admin-page-header flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#313244]">
         <div>
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#89B4FA]/12 text-[#89B4FA] border border-[#89B4FA]/30">
@@ -340,8 +340,8 @@ export function CategoriesClient() {
           </Badge>
         </div>
 
-        <div className="overflow-x-auto">
-          <table
+        <div role="region" aria-label="Category summary table" tabIndex={0} className="admin-table-scroll overflow-x-auto">
+          <table data-responsive-table="cards" role="table"
             data-testid="admin-categories-table"
             className="w-full min-w-[720px] text-left border-collapse"
           >
@@ -371,19 +371,19 @@ export function CategoriesClient() {
                   data-testid={`category-row-${cat.slug}`}
                   className="hover:bg-[#313244]/35 transition-colors"
                 >
-                  <td className="py-3.5 pl-5 pr-3 font-bold text-[#CDD6F4] whitespace-nowrap">
+                  <td data-label="Category" data-cell="primary" className="py-3.5 pl-5 pr-3 font-bold text-[#CDD6F4] whitespace-nowrap">
                     {cat.name}
                   </td>
-                  <td className="py-3.5 px-3 font-mono text-[#89B4FA] whitespace-nowrap">
+                  <td data-label="Slug" className="py-3.5 px-3 font-mono text-[#89B4FA] whitespace-nowrap">
                     {cat.slug}
                   </td>
-                  <td className="py-3.5 px-3 text-[#BAC2DE] max-w-md truncate">
+                  <td data-label="Description" className="py-3.5 px-3 text-[#BAC2DE] max-w-md truncate">
                     {cat.description}
                   </td>
-                  <td className="py-3.5 px-3 font-mono font-bold text-[#CDD6F4] whitespace-nowrap">
+                  <td data-label="Products" className="py-3.5 px-3 font-mono font-bold text-[#CDD6F4] whitespace-nowrap">
                     {cat.productCount} SKUs
                   </td>
-                  <td className="py-3.5 pl-3 pr-5 text-right font-mono text-[#94E2D5] whitespace-nowrap">
+                  <td data-label="Units" className="py-3.5 pl-3 pr-5 text-right font-mono text-[#94E2D5] whitespace-nowrap">
                     {cat.totalUnits} units
                   </td>
                 </tr>
@@ -464,7 +464,7 @@ function AddCategoryModal({ onClose }: { onClose: () => void }) {
 
       <div
         data-testid="add-category-modal"
-        className="relative z-10 w-full max-w-lg bg-[#1E1E2E] border border-[#45475A] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.75)] flex flex-col overflow-hidden text-[#CDD6F4]"
+        className="relative z-10 max-h-[calc(100dvh-2rem)] w-full max-w-lg bg-[#1E1E2E] border border-[#45475A] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.75)] flex flex-col overflow-y-auto text-[#CDD6F4]"
       >
         <div className="px-6 py-4 bg-[#181825] border-b border-[#313244] flex items-center justify-between">
           <div>

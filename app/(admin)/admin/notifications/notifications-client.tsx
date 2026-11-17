@@ -262,7 +262,7 @@ export function NotificationsClient() {
       className="mx-auto flex w-full max-w-[1600px] flex-col gap-5"
     >
       {/* Header */}
-      <div className="flex flex-col gap-4 border-b border-[#313244] pb-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="admin-page-header flex flex-col gap-4 border-b border-[#313244] pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
             Notifications Log

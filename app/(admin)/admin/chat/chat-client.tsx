@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { toast } from "@/components/ui/toast";
 import {
+  ArrowLeft,
   Search,
   Send,
   Package,
@@ -168,6 +169,7 @@ export function ChatClient() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterUnreadOnly, setFilterUnreadOnly] = useState(false);
   const [composerText, setComposerText] = useState("");
+  const [mobileThreadOpen, setMobileThreadOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -297,6 +299,7 @@ export function ChatClient() {
 
   const handleSelectThread = (threadId: string) => {
     setActiveThreadId(threadId);
+    setMobileThreadOpen(true);
     setThreads((prev) =>
       prev.map((t) => (t.id === threadId ? { ...t, unreadCount: 0 } : t)),
     );
@@ -370,12 +373,12 @@ export function ChatClient() {
   return (
     <div
       data-testid="admin-chat-page"
-      className="mx-auto flex w-full max-w-[1600px] flex-col gap-6"
+      className="admin-chat-page mx-auto flex w-full max-w-[1600px] flex-col gap-6"
     >
       {/* Clean, Tranquil Page Header */}
-      <div className="flex flex-col gap-3 pb-1 sm:flex-row sm:items-center sm:justify-between">
+      <div className="admin-page-header flex flex-col gap-3 pb-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="text-xl font-bold tracking-tight text-[#CDD6F4] sm:text-2xl">
               Support Chat
             </h1>
@@ -421,11 +424,11 @@ export function ChatClient() {
       </div>
 
       {/* Two-Pane Helpdesk Layout */}
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
+      <div className="admin-chat-layout" data-mobile-thread-open={mobileThreadOpen}>
         {/* Left Pane: Active Threads (4 cols on lg) */}
         <Surface
           variant="panel"
-          className="flex flex-col overflow-hidden border border-[#313244] bg-[#1E1E2E] rounded-2xl p-0 lg:col-span-4 shadow-sm"
+          className="admin-chat-threads flex flex-col overflow-hidden border border-[#313244] bg-[#1E1E2E] rounded-2xl p-0 shadow-sm"
         >
           {/* Search Header */}
           <div className="border-b border-[#313244] bg-[#181825] p-3">
@@ -442,7 +445,7 @@ export function ChatClient() {
             </div>
           </div>
 
-          <div className="divide-y divide-[#313244]/40 overflow-y-auto max-h-[640px]">
+          <div className="min-h-0 flex-1 divide-y divide-[#313244]/40 overflow-y-auto">
             {filteredThreads.length === 0 ? (
               <div className="p-8 text-center">
                 <p className="text-xs font-semibold text-[#A6ADC8]">
@@ -549,17 +552,20 @@ export function ChatClient() {
         {/* Right Pane: Chat Workspace (8 cols on lg) */}
         <Surface
           variant="panel"
-          className="flex min-h-[600px] flex-col overflow-hidden border border-[#313244] bg-[#1E1E2E] rounded-2xl p-0 lg:col-span-8 shadow-sm"
+          className="admin-chat-workspace flex min-h-0 min-w-0 flex-col overflow-hidden border border-[#313244] bg-[#1E1E2E] rounded-2xl p-0 shadow-sm"
         >
           {activeThread ? (
             <>
               {/* Active Customer Header */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#313244] bg-[#181825] px-5 py-3.5">
-                <div className="flex items-center gap-3 min-w-0">
+              <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-b border-[#313244] bg-[#181825] px-3 sm:px-5 py-3.5">
+                <div className="flex w-full min-w-0 items-center gap-2.5">
+                  <button type="button" onClick={() => setMobileThreadOpen(false)} aria-label="Back to conversations" className="lg:hidden inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-[#313244] text-[#BAC2DE] hover:text-[#CDD6F4]">
+                    <ArrowLeft size={18} aria-hidden="true" />
+                  </button>
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-mono text-xs font-bold bg-[#313244]/60 border border-[#45475A] text-[#CDD6F4]">
                     {activeThread.initials}
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <h2 className="text-sm font-bold text-[#CDD6F4] truncate">
                         {activeThread.customerName}
@@ -583,7 +589,7 @@ export function ChatClient() {
                 </div>
 
                 {/* Subtle Order # & Referenced SKU Links */}
-                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <div className="flex min-w-0 max-w-full flex-wrap items-center gap-2">
                   {activeThread.orderNumber && (
                     <Link
                       href="/admin/orders"
@@ -617,7 +623,7 @@ export function ChatClient() {
               </div>
 
               {/* Message History Feed */}
-              <div className="flex-1 space-y-4 overflow-y-auto bg-[#11111B]/40 p-5">
+              <div className="min-h-0 flex-1 space-y-4 overflow-y-auto bg-[#11111B]/40 p-3 sm:p-5 [overflow-wrap:anywhere]">
                 {activeThread.messages.map((msg) => {
                   if (msg.from === "system") {
                     return (
@@ -626,7 +632,7 @@ export function ChatClient() {
                         className="my-3 flex items-center justify-center gap-3"
                       >
                         <div className="h-px flex-1 bg-[#313244]/60" />
-                        <span className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[#6C7086]">
+                        <span className="inline-flex min-w-0 flex-wrap items-center gap-1.5 font-mono text-[11px] text-[#6C7086]">
                           {msg.type === "order" ? (
                             <>
                               <Package size={12} className="text-[#6C7086]" />
@@ -690,7 +696,7 @@ export function ChatClient() {
               {/* Reply Composer */}
               <form
                 onSubmit={handleSendMessage}
-                className="space-y-2.5 border-t border-[#313244] bg-[#181825] p-3.5"
+                className="shrink-0 space-y-2.5 border-t border-[#313244] bg-[#181825] p-3.5"
               >
                 {/* Clean Quick Responses Toolbar */}
                 <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
@@ -718,7 +724,7 @@ export function ChatClient() {
                     onChange={(e) => setComposerText(e.target.value)}
                     placeholder={`Reply to ${activeThread.customerName}...`}
                     aria-label="Message reply input"
-                    className="h-10 flex-1 rounded-xl border border-[#313244] bg-[#11111B] px-4 text-xs sm:text-sm text-[#CDD6F4] placeholder-[#585B70] focus:border-[#89B4FA] focus:ring-1 focus:ring-[#89B4FA]/30 focus:outline-none transition-all"
+                    className="h-11 min-w-0 flex-1 rounded-xl border border-[#313244] bg-[#11111B] px-3 text-xs sm:text-sm text-[#CDD6F4] placeholder-[#585B70] focus:border-[#89B4FA] focus:ring-1 focus:ring-[#89B4FA]/30 focus:outline-none transition-all"
                   />
                   <Button
                     type="submit"
@@ -727,7 +733,7 @@ export function ChatClient() {
                     disabled={!composerText.trim()}
                     className="h-10 px-4.5 font-semibold text-xs gap-1.5 shadow-sm shrink-0"
                   >
-                    <span>Send Reply</span>
+                    <span>Send<span className="hidden sm:inline"> Reply</span></span>
                     <Send size={13} />
                   </Button>
                 </div>

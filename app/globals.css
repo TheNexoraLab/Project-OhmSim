@@ -34,6 +34,7 @@
 }
 
 :root {
+  --buyer-mobile-nav-space: calc(64px + env(safe-area-inset-bottom, 0px));
   --background: #11111b;
   --foreground: #cdd6f4;
 
@@ -72,6 +73,10 @@ body {
   color: var(--mocha-text);
   font-family: var(--font-inter), system-ui, sans-serif;
   overflow-x: hidden;
+}
+
+main {
+  min-width: 0;
 }
 
 /* Canonical Focus Outline */

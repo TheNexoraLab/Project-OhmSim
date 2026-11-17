@@ -313,7 +313,7 @@ export function BomClient() {
       {selProj ? (
         <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
           {/* Project Header with Delete Action */}
-          <div className="px-4 py-3 bg-mocha-bg border-b border-mocha-border flex items-center justify-between">
+          <div className="px-4 py-3 bg-mocha-bg border-b border-mocha-border flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-sm md:text-base font-bold text-mocha-text">
                 {selProj.name}
@@ -426,7 +426,7 @@ export function BomClient() {
             ) : (
               <div className="rounded-2xl overflow-hidden border border-mocha-border bg-mocha-panel shadow-sm">
                 {/* Table Header for desktop */}
-                <div className="hidden lg:grid items-center px-4 py-3 bg-mocha-bg-secondary border-b border-mocha-border grid-cols-[56px_1fr_110px_90px_100px_110px_110px_80px_40px] text-[10px] font-bold uppercase tracking-widest text-mocha-text-muted">
+                <div className="hidden 2xl:grid items-center px-4 py-3 bg-mocha-bg-secondary border-b border-mocha-border grid-cols-[56px_minmax(0,1fr)_110px_90px_100px_110px_110px_80px_40px] text-[10px] font-bold uppercase tracking-widest text-mocha-text-muted">
                   <span>Part</span>
                   <span>Component Details</span>
                   <span>Category</span>
@@ -448,7 +448,7 @@ export function BomClient() {
                     return (
                       <div
                         key={li.productId}
-                        className="p-3 lg:px-4 lg:py-3.5 flex flex-col lg:grid lg:grid-cols-[56px_1fr_110px_90px_100px_110px_110px_80px_40px] lg:items-center gap-3 hover:bg-mocha-panel-raised/40 transition-colors"
+                        className="p-3 2xl:px-4 2xl:py-3.5 flex flex-col 2xl:grid 2xl:grid-cols-[56px_minmax(0,1fr)_110px_90px_100px_110px_110px_80px_40px] 2xl:items-center gap-3 hover:bg-mocha-panel-raised/40 transition-colors"
                       >
                         {/* Part Image */}
                         <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-mocha-border bg-mocha-bg shrink-0">
@@ -494,7 +494,7 @@ export function BomClient() {
                         </div>
 
                         {/* Quantity Controls */}
-                        <div className="flex items-center justify-start lg:justify-center gap-1.5">
+                        <div className="flex items-center justify-start 2xl:justify-center gap-1.5">
                           <button
                             type="button"
                             aria-label={`Decrease quantity of ${prod.name}`}
@@ -530,12 +530,12 @@ export function BomClient() {
                         </div>
 
                         {/* Subtotal */}
-                        <div className="text-xs font-mono font-bold text-mocha-accent text-left lg:text-right">
+                        <div className="text-xs font-mono font-bold text-mocha-accent text-left 2xl:text-right">
                           {formatPrice(subtotal)}
                         </div>
 
                         {/* Stock Badge */}
-                        <div className="flex justify-start lg:justify-center">
+                        <div className="flex justify-start 2xl:justify-center">
                           <StockBadge status={prod.status} stockCount={prod.stock} />
                         </div>
 
@@ -561,7 +561,7 @@ export function BomClient() {
           </div>
 
           {/* ── Bottom Action Bar ── */}
-          <div className="p-4 border-t border-mocha-border bg-mocha-bg-secondary flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0 mb-16 md:mb-0">
+          <div className="p-4 border-t border-mocha-border bg-mocha-bg-secondary flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3 shrink-0">
             <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-start">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider text-mocha-text-muted">
@@ -581,7 +581,7 @@ export function BomClient() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5 w-full sm:w-auto">
+            <div className="flex flex-wrap items-center gap-2.5 w-full xl:w-auto">
               <button
                 type="button"
                 onClick={handleExportCsv}

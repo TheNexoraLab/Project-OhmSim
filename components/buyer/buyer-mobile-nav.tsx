@@ -102,7 +102,7 @@ export function BuyerMobileBottomNav() {
   return (
     <nav
       aria-label="Mobile Bottom Navigation"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex items-center bg-mocha-bg-secondary/95 backdrop-blur-[20px] border-t border-mocha-border shadow-[0_-1px_16px_rgba(0,0,0,0.4)]"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex items-center pb-[env(safe-area-inset-bottom)] bg-mocha-bg-secondary/95 backdrop-blur-[20px] border-t border-mocha-border shadow-[0_-1px_16px_rgba(0,0,0,0.4)]"
     >
       {tabs.map((tab) => {
         const isActive = pathname === tab.href || (tab.href !== "/home" && pathname.startsWith(tab.href));

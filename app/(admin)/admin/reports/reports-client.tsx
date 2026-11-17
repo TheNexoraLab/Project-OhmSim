@@ -292,7 +292,7 @@ export function ReportsClient() {
       className="mx-auto flex w-full max-w-[1600px] flex-col gap-6"
     >
       {/* Page Header */}
-      <div className="flex flex-col gap-4 border-b border-[#313244] pb-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="admin-page-header flex flex-col gap-4 border-b border-[#313244] pb-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[#A6E3A1]/30 bg-[#A6E3A1]/12 px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider text-[#A6E3A1] uppercase">
@@ -598,8 +598,8 @@ export function ReportsClient() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left">
+        <div role="region" aria-label="Revenue settlements table" tabIndex={0} className="admin-table-scroll overflow-x-auto">
+          <table data-responsive-table="cards" role="table" className="w-full border-collapse text-left">
             <thead>
               <tr className="border-b border-[#313244] bg-[#181825]/60 text-[11px] font-semibold tracking-wider text-[#A6ADC8] uppercase">
                 <th className="px-4 py-3.5">Reporting Period</th>
@@ -623,31 +623,31 @@ export function ReportsClient() {
                     key={row.id}
                     className="transition-colors hover:bg-[#181825]/70"
                   >
-                    <td className="px-4 py-3.5 font-semibold text-[#CDD6F4]">
+                    <td data-label="Period" data-cell="primary" className="px-4 py-3.5 font-semibold text-[#CDD6F4]">
                       {row.period}
                     </td>
-                    <td className="px-4 py-3.5 whitespace-nowrap text-[#A6ADC8]">
+                    <td data-label="Settlement date" className="px-4 py-3.5 whitespace-nowrap text-[#A6ADC8]">
                       {formatDate(row.settlementDate)}
                     </td>
-                    <td className="px-4 py-3.5 text-center font-mono text-[#CDD6F4]">
+                    <td data-label="Orders" className="px-4 py-3.5 text-center font-mono text-[#CDD6F4]">
                       {row.totalOrders}
                     </td>
-                    <td className="px-4 py-3.5 text-right font-mono text-[#89B4FA]">
+                    <td data-label="COD collected" className="px-4 py-3.5 text-right font-mono text-[#89B4FA]">
                       {formatPrice(row.codCollected)}
                     </td>
-                    <td className="px-4 py-3.5 text-right font-mono text-[#94E2D5]">
+                    <td data-label="Pay on pickup" className="px-4 py-3.5 text-right font-mono text-[#94E2D5]">
                       {formatPrice(row.pickupCollected)}
                     </td>
-                    <td className="px-4 py-3.5 text-right font-mono text-[#BAC2DE]">
+                    <td data-label="Shipping fees" className="px-4 py-3.5 text-right font-mono text-[#BAC2DE]">
                       {formatPrice(row.shippingFeesCollected)}
                     </td>
-                    <td className="px-4 py-3.5 text-right font-mono text-[#F38BA8]">
+                    <td data-label="Courier fees" className="px-4 py-3.5 text-right font-mono text-[#F38BA8]">
                       -{formatPrice(row.courierHandlingDeduction)}
                     </td>
-                    <td className="px-4 py-3.5 text-right font-mono font-bold text-[#A6E3A1]">
+                    <td data-label="Net revenue" className="px-4 py-3.5 text-right font-mono font-bold text-[#A6E3A1]">
                       {formatPrice(row.netRemitted)}
                     </td>
-                    <td className="px-4 py-3.5 text-right whitespace-nowrap">
+                    <td data-label="Status" className="px-4 py-3.5 text-right whitespace-nowrap">
                       <span
                         className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono text-[11px] font-semibold"
                         style={

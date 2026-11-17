@@ -18,12 +18,9 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 142,
     status: "in-stock",
-    image: "https://images.unsplash.com/photo-1634452015397-ad0686a2ae2d?w=400&h=300&fit=crop&auto=format",
+    image: "/images/products/esp32-wroom-32u.jpg",
     images: [
-      "https://images.unsplash.com/photo-1634452015397-ad0686a2ae2d?w=600&h=500&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1603732551658-5fabbafa84eb?w=600&h=500&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1631376604263-5d803038b389?w=600&h=500&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1649959168260-2eb9702d7b69?w=600&h=500&fit=crop&auto=format",
+      "/images/products/esp32-wroom-32u.jpg",
     ],
     specs: {
       "Microcontroller": "ESP32-D0WD",
@@ -52,12 +49,9 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 87,
     status: "in-stock",
-    image: "https://images.unsplash.com/photo-1603732551658-5fabbafa84eb?w=400&h=300&fit=crop&auto=format",
+    image: "/images/products/arduino-uno-r3.jpg",
     images: [
-      "https://images.unsplash.com/photo-1603732551658-5fabbafa84eb?w=600&h=500&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1634452015397-ad0686a2ae2d?w=600&h=500&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1603732551681-2e91159b9dc2?w=600&h=500&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1649959168260-2eb9702d7b69?w=600&h=500&fit=crop&auto=format",
+      "/images/products/arduino-uno-r3.jpg",
     ],
     specs: {
       "Microcontroller": "ATmega328P",
@@ -86,10 +80,9 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 12,
     status: "low-stock",
-    image: "https://images.unsplash.com/photo-1631376604263-5d803038b389?w=400&h=300&fit=crop&auto=format",
+    image: "/images/products/oled-096-i2c-blue.jpg",
     images: [
-      "https://images.unsplash.com/photo-1631376604263-5d803038b389?w=600&h=500&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1631376604269-6f42b26fa9b7?w=600&h=500&fit=crop&auto=format",
+      "/images/products/oled-096-i2c-blue.jpg",
     ],
     specs: {
       "Driver IC": "SSD1306",
@@ -117,9 +110,9 @@ export const PRODUCTS: Product[] = [
     resistance: 1000,
     stock: 55,
     status: "in-stock",
-    image: "https://images.unsplash.com/photo-1746016805172-86dc8aaf6484?w=400&h=300&fit=crop&auto=format",
+    image: "/images/products/resistor-kit-600.jpg",
     images: [
-      "https://images.unsplash.com/photo-1746016805172-86dc8aaf6484?w=600&h=500&fit=crop&auto=format",
+      "/images/products/resistor-kit-600.jpg",
     ],
     specs: {
       "Values": "30 (10Ω – 1MΩ)",
@@ -145,10 +138,9 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 203,
     status: "in-stock",
-    image: "https://images.unsplash.com/photo-1649959168260-2eb9702d7b69?w=400&h=300&fit=crop&auto=format",
+    image: "/images/products/hc-sr04-ultrasonic.jpg",
     images: [
-      "https://images.unsplash.com/photo-1649959168260-2eb9702d7b69?w=600&h=500&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1675602488453-c3897a475af5?w=600&h=500&fit=crop&auto=format",
+      "/images/products/hc-sr04-ultrasonic.jpg",
     ],
     specs: {
       "Operating Voltage": "5V DC",
@@ -176,10 +168,9 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 8,
     status: "low-stock",
-    image: "https://images.unsplash.com/photo-1675602488453-c3897a475af5?w=400&h=300&fit=crop&auto=format",
+    image: "/images/products/dht22-sensor-module.jpg",
     images: [
-      "https://images.unsplash.com/photo-1675602488453-c3897a475af5?w=600&h=500&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1649959168260-2eb9702d7b69?w=600&h=500&fit=crop&auto=format",
+      "/images/products/dht22-sensor-module.jpg",
     ],
     specs: {
       "Temperature Range": "-40°C to +80°C",
@@ -206,10 +197,9 @@ export const PRODUCTS: Product[] = [
     resistance: null,
     stock: 61,
     status: "in-stock",
-    image: "https://images.unsplash.com/photo-1603732551681-2e91159b9dc2?w=400&h=300&fit=crop&auto=format",
+    image: "/images/products/l298n-motor-driver.jpg",
     images: [
-      "https://images.unsplash.com/photo-1603732551681-2e91159b9dc2?w=600&h=500&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1603732551658-5fabbafa84eb?w=600&h=500&fit=crop&auto=format",
+      "/images/products/l298n-motor-driver.jpg",
     ],
     specs: {
       "Driver IC": "L298N",
@@ -236,10 +226,9 @@ export const PRODUCTS: Product[] = [
     resistance: 100,
     stock: 500,
     status: "in-stock",
-    image: "https://images.unsplash.com/photo-1631376604269-6f42b26fa9b7?w=400&h=300&fit=crop&auto=format",
+    image: "/images/products/ne555-timer-ic.jpg",
     images: [
-      "https://images.unsplash.com/photo-1631376604269-6f42b26fa9b7?w=600&h=500&fit=crop&auto=format",
-      "https://images.unsplash.com/photo-1631376604263-5d803038b389?w=600&h=500&fit=crop&auto=format",
+      "/images/products/ne555-timer-ic.jpg",
     ],
     specs: {
       "Package": "DIP-8",

@@ -83,11 +83,11 @@ export function ProductCard({
         >
           {product.name}
         </Link>
-        <p className="text-[9px] font-mono text-mocha-text-subtle">
+        <p className="break-all text-[9px] font-mono text-mocha-text-subtle">
           {product.sku}
         </p>
 
-        <div className={`flex items-baseline justify-between ${isHome ? "mt-2" : "mt-1"}`}>
+        <div className={`flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 ${isHome ? "mt-2" : "mt-1"}`}>
           <p className={`${isHome ? "text-[13px]" : "text-[14px]"} font-bold font-mono tracking-tight text-mocha-accent`}>
             {formatPrice(product.price)}
           </p>

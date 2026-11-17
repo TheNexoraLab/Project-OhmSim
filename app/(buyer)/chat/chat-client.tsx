@@ -178,7 +178,7 @@ export function ChatClient() {
   };
 
   return (
-    <div data-buyer-chat className="flex-none flex flex-col h-[calc(100dvh-120px)] md:h-[calc(100dvh-64px)] min-h-0 overflow-hidden bg-mocha-bg">
+    <div data-buyer-chat className="flex-none flex flex-col h-[calc(100dvh-56px-var(--buyer-mobile-nav-space))] md:h-[calc(100dvh-64px)] min-h-0 overflow-hidden bg-mocha-bg">
       <div data-chat-layout className="flex-1 min-h-0 min-w-0 flex overflow-hidden w-full">
         {/* Sidebar: Conversations List */}
         <aside

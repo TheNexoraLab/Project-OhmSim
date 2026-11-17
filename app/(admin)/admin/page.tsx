@@ -13,16 +13,16 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { toast } from "@/components/ui/toast";
 import {
-  Plus,
-  Banknote,
-  Package,
-  AlertTriangle,
-  MessageSquare,
-  MapPin,
-  Truck,
-  ClipboardList,
-  Boxes,
-} from "lucide-react";
+  AddIcon,
+  Banknote2Icon,
+  BoxMinimalisticIcon,
+  DangerTriangleIcon,
+  ChatRoundDotsIcon,
+  MapPointIcon,
+  DeliveryIcon,
+  BillListIcon,
+  ArchiveCheckIcon,
+} from "@solar-icons/react/linear";
 
 type SemanticStatusKey =
   | "PENDING"
@@ -109,8 +109,8 @@ function resolveSemanticStatus(status: ExtendedOrderStatus): {
           status === "READY_FOR_PICKUP"
             ? "Ready for Pickup"
             : status === "CONFIRMED"
-            ? "Confirmed"
-            : "Preparing",
+              ? "Confirmed"
+              : "Preparing",
         ...SEMANTIC_STATUS_TOKENS.PROCESSING,
       };
     case "SHIPPED":
@@ -242,7 +242,7 @@ export default function AdminDashboardPage() {
       className="flex flex-col gap-6 max-w-[1600px] mx-auto w-full"
     >
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#313244]">
+      <div className="admin-page-header flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#313244]">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-[#CDD6F4] tracking-tight">
             Dashboard
@@ -267,7 +267,7 @@ export default function AdminDashboardPage() {
             size="small"
             className="text-xs font-semibold gap-1.5"
           >
-            <Plus size={14} className="stroke-[2.5]" />
+            <AddIcon size={14} className="stroke-[2.5]" />
             <span>Add Product</span>
           </ButtonLink>
         </div>
@@ -290,7 +290,7 @@ export default function AdminDashboardPage() {
             accentColor="#89B4FA"
             progressPercent={84}
             progressLabel="Gross revenue target progress"
-            icon={<Banknote size={20} />}
+            icon={<Banknote2Icon size={20} />}
           />
 
           {/* Card 2: Active Orders */}
@@ -306,7 +306,7 @@ export default function AdminDashboardPage() {
               (activeOrders.length / Math.max(1, MOCK_ORDERS.length)) * 100
             )}
             progressLabel="Active order ratio"
-            icon={<Package size={20} />}
+            icon={<BoxMinimalisticIcon size={20} />}
           />
 
           {/* Card 3: Low Stock Alerts */}
@@ -323,10 +323,10 @@ export default function AdminDashboardPage() {
             progressPercent={Math.round(
               (baselineLowStockProducts.length /
                 Math.max(1, MOCK_PRODUCTS.length)) *
-                100
+              100
             )}
             progressLabel="Low stock SKU share"
-            icon={<AlertTriangle size={20} />}
+            icon={<DangerTriangleIcon size={20} />}
           />
 
           {/* Card 4: Unread Inquiries */}
@@ -340,7 +340,7 @@ export default function AdminDashboardPage() {
             accentColor="#94E2D5"
             progressPercent={60}
             progressLabel="Support queue SLA utilization"
-            icon={<MessageSquare size={20} />}
+            icon={<ChatRoundDotsIcon size={20} />}
           />
         </div>
       </section>
@@ -441,9 +441,9 @@ export default function AdminDashboardPage() {
               role="region"
               aria-label="Recent orders queue table"
               tabIndex={0}
-              className="overflow-x-auto"
+              className="admin-table-scroll overflow-x-auto"
             >
-              <table
+              <table data-responsive-table="cards" role="table"
                 data-testid="recent-orders-table"
                 className="w-full min-w-[720px] text-left border-collapse"
               >
@@ -487,19 +487,18 @@ export default function AdminDashboardPage() {
                       <tr
                         key={order.id}
                         data-testid={`order-row-${order.id}`}
-                        className={`transition-colors ${
-                          isSelected
-                            ? "bg-[#89B4FA]/10"
-                            : "hover:bg-[#313244]/35"
-                        }`}
+                        className={`transition-colors ${isSelected
+                          ? "bg-[#89B4FA]/10"
+                          : "hover:bg-[#313244]/35"
+                          }`}
                       >
                         {/* Order ID */}
-                        <td className="py-3.5 pl-5 pr-3 font-mono font-medium text-[#CDD6F4] whitespace-nowrap">
+                        <td data-label="Order" data-cell="primary" className="py-3.5 pl-5 pr-3 font-mono font-medium text-[#CDD6F4] whitespace-nowrap">
                           #{order.orderNumber}
                         </td>
 
                         {/* Customer Name */}
-                        <td className="py-3.5 px-3">
+                        <td data-label="Customer" className="py-3.5 px-3">
                           <div className="font-medium text-[#CDD6F4]">
                             {order.recipientName}
                           </div>
@@ -512,21 +511,21 @@ export default function AdminDashboardPage() {
                         </td>
 
                         {/* Date */}
-                        <td className="py-3.5 px-3 text-[#BAC2DE] whitespace-nowrap">
+                        <td data-label="Date" className="py-3.5 px-3 text-[#BAC2DE] whitespace-nowrap">
                           {formatDate(order.createdAt)}
                         </td>
 
                         {/* Fulfillment */}
-                        <td className="py-3.5 px-3 whitespace-nowrap">
+                        <td data-label="Fulfillment" className="py-3.5 px-3 whitespace-nowrap">
                           <span className="inline-flex items-center gap-1.5 text-xs text-[#BAC2DE]">
                             {order.fulfillmentType === "PICKUP" ? (
                               <>
-                                <MapPin size={14} className="text-[#A6ADC8]" />
+                                <MapPointIcon size={14} className="text-[#A6ADC8]" />
                                 <span>Campus Pickup</span>
                               </>
                             ) : (
                               <>
-                                <Truck size={14} className="text-[#A6ADC8]" />
+                                <DeliveryIcon size={14} className="text-[#A6ADC8]" />
                                 <span>Delivery</span>
                               </>
                             )}
@@ -534,12 +533,12 @@ export default function AdminDashboardPage() {
                         </td>
 
                         {/* Amount */}
-                        <td className="py-3.5 px-3 font-mono font-medium text-[#CDD6F4] whitespace-nowrap">
+                        <td data-label="Amount" className="py-3.5 px-3 font-mono font-medium text-[#CDD6F4] whitespace-nowrap">
                           {formatCurrency(order.totalAmount)}
                         </td>
 
                         {/* Status Badge */}
-                        <td className="py-3.5 px-3 whitespace-nowrap">
+                        <td data-label="Status" className="py-3.5 px-3 whitespace-nowrap">
                           <span
                             data-status-badge={statusMeta.semanticKey}
                             data-raw-status={order.status}
@@ -559,7 +558,7 @@ export default function AdminDashboardPage() {
                         </td>
 
                         {/* Action ('View' button) */}
-                        <td className="py-3.5 pl-3 pr-5 text-right whitespace-nowrap">
+                        <td data-label="Action" data-cell="actions" className="py-3.5 pl-3 pr-5 text-right whitespace-nowrap">
                           <Button
                             type="button"
                             variant={isSelected ? "accent" : "outline"}
@@ -748,8 +747,8 @@ export default function AdminDashboardPage() {
                               backgroundColor: isRestocked
                                 ? "#A6E3A1"
                                 : currentStock <= 8
-                                ? "#F38BA8"
-                                : "#89B4FA",
+                                  ? "#F38BA8"
+                                  : "#89B4FA",
                             }}
                           />
                         </div>
@@ -792,7 +791,7 @@ export default function AdminDashboardPage() {
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="w-8 h-8 rounded-lg bg-[#313244]/50 text-[#CDD6F4] flex items-center justify-center shrink-0 group-hover:text-[#89B4FA] transition-colors">
-                      <Plus size={16} />
+                      <AddIcon size={16} />
                     </span>
                     <span className="text-xs font-semibold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
                       Add Product
@@ -810,7 +809,7 @@ export default function AdminDashboardPage() {
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="w-8 h-8 rounded-lg bg-[#313244]/50 text-[#CDD6F4] flex items-center justify-center shrink-0 group-hover:text-[#89B4FA] transition-colors">
-                      <ClipboardList size={16} />
+                      <BillListIcon size={16} />
                     </span>
                     <span className="text-xs font-semibold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
                       Review Orders
@@ -828,7 +827,7 @@ export default function AdminDashboardPage() {
                 >
                   <div className="flex items-center gap-2.5 min-w-0">
                     <span className="w-8 h-8 rounded-lg bg-[#313244]/50 text-[#CDD6F4] flex items-center justify-center shrink-0 group-hover:text-[#89B4FA] transition-colors">
-                      <Boxes size={16} />
+                      <ArchiveCheckIcon size={16} />
                     </span>
                     <span className="text-xs font-semibold text-[#CDD6F4] group-hover:text-[#89B4FA] transition-colors">
                       Adjust Inventory

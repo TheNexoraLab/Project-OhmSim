@@ -124,18 +124,19 @@ function CustomerDetailDrawer({
         role="dialog"
         aria-modal="true"
         aria-labelledby="customer-drawer-title"
-        className="flex h-full w-full max-w-2xl flex-col border-l border-[#45475A] bg-[#1E1E2E] shadow-2xl animate-in slide-in-from-right duration-250"
+        data-testid="admin-customer-drawer"
+        className="flex h-dvh min-w-0 w-full max-w-2xl flex-col overflow-hidden [overflow-wrap:anywhere] border-l border-[#45475A] bg-[#1E1E2E] shadow-2xl animate-in slide-in-from-right duration-250"
       >
         {/* Drawer Header */}
-        <div className="flex items-center justify-between border-b border-[#313244] bg-[#181825] px-6 py-4">
-          <div className="flex items-center gap-3.5">
+        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-[#313244] bg-[#181825] px-4 sm:px-6 py-4">
+          <div className="flex min-w-0 items-center gap-3.5">
             <div
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-extrabold text-[#11111B] shadow-xs"
               style={{ backgroundColor: customer.avatarColor }}
             >
               {customer.initials}
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <h2
                   id="customer-drawer-title"
@@ -159,14 +160,14 @@ function CustomerDetailDrawer({
             type="button"
             onClick={onClose}
             aria-label="Close customer drawer"
-            className="rounded-lg border border-transparent p-1.5 text-[#A6ADC8] transition-colors hover:border-[#313244] hover:bg-[#1E1E2E] hover:text-[#CDD6F4]"
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-transparent text-[#A6ADC8] transition-colors hover:border-[#313244] hover:bg-[#1E1E2E] hover:text-[#CDD6F4]"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Drawer Body */}
-        <div className="flex-1 space-y-5 overflow-y-auto p-6">
+        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-4 sm:p-6">
           {/* Contact & Default Delivery Address Cards */}
           <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <div className="rounded-xl border border-[#313244] bg-[#181825] p-4">
@@ -222,7 +223,7 @@ function CustomerDetailDrawer({
           </div>
 
           {/* Spend & Order Summary Strip */}
-          <div className="grid grid-cols-3 gap-3 rounded-xl border border-[#313244] bg-[#11111B] p-4 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 rounded-xl border border-[#313244] bg-[#11111B] p-4 text-center">
             <div>
               <p className="text-[10px] font-bold tracking-wider text-[#A6ADC8] uppercase">
                 Orders Placed
@@ -678,8 +679,8 @@ export function CustomersClient() {
         variant="panel"
         className="overflow-hidden border border-[#313244] bg-[#1E1E2E] rounded-xl shadow-md p-0"
       >
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div role="region" aria-label="Customers table" tabIndex={0} className="admin-table-scroll overflow-x-auto">
+          <table data-responsive-table="cards" role="table" className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-[#181825] border-b border-[#313244] text-[10px] font-bold uppercase tracking-wider text-[#A6ADC8]">
                 <th scope="col" className="py-3 pl-4 pr-2">
@@ -727,7 +728,7 @@ export function CustomersClient() {
                       className="cursor-pointer transition-colors hover:bg-[#181825]/70"
                     >
                       {/* 1. Customer */}
-                      <td className="py-3.5 pl-4 pr-2">
+                      <td data-label="Customer" data-cell="primary" className="py-3.5 pl-4 pr-2">
                         <div className="flex items-center gap-2.5">
                           <div
                             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-mono text-xs font-extrabold text-[#11111B] shadow-xs"
@@ -757,7 +758,7 @@ export function CustomersClient() {
                       </td>
 
                       {/* 2. Contact */}
-                      <td className="py-3.5 px-2.5 whitespace-nowrap">
+                      <td data-label="Contact" className="py-3.5 px-2.5 whitespace-nowrap">
                         <div className="flex flex-col gap-0.5 max-w-[190px]">
                           <div className="flex items-center gap-1.5 text-xs text-[#BAC2DE]">
                             <Mail size={12} className="text-[#A6ADC8] shrink-0" />
@@ -778,7 +779,7 @@ export function CustomersClient() {
                       </td>
 
                       {/* 3. Location & Campus Lab */}
-                      <td className="py-3.5 px-2.5">
+                      <td data-label="Location" className="py-3.5 px-2.5">
                         <div className="flex flex-col gap-0.5 max-w-[230px]">
                           <div className="flex items-center gap-1.5">
                             <span className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[9.5px] font-semibold bg-[#89B4FA]/15 text-[#89B4FA] border border-[#89B4FA]/30 shrink-0">
@@ -799,14 +800,14 @@ export function CustomersClient() {
                       </td>
 
                       {/* 4. Orders */}
-                      <td className="py-3.5 px-2 text-center whitespace-nowrap">
+                      <td data-label="Orders" className="py-3.5 px-2 text-center whitespace-nowrap">
                         <span className="inline-flex items-center justify-center rounded-full border border-[#313244] bg-[#181825] px-2 py-0.5 font-mono text-xs font-bold text-[#CDD6F4]">
                           {customer.orders.length}
                         </span>
                       </td>
 
                       {/* 5. Lifetime Spend */}
-                      <td className="py-3.5 px-2.5 text-right whitespace-nowrap">
+                      <td data-label="Lifetime spend" className="py-3.5 px-2.5 text-right whitespace-nowrap">
                         <div className="font-bold text-xs text-[#A6E3A1]">
                           {formatCurrencyDisplay(lifetimeSpend)}
                         </div>
@@ -816,7 +817,7 @@ export function CustomersClient() {
                       </td>
 
                       {/* 6. Action */}
-                      <td
+                      <td data-label="Actions" data-cell="actions"
                         className="py-3.5 pl-1.5 pr-3.5 text-right whitespace-nowrap"
                         onClick={(e) => e.stopPropagation()}
                       >

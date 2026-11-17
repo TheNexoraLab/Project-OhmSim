@@ -422,7 +422,7 @@ export function FloatingChatWidget() {
         aria-modal="true"
         aria-hidden={!widgetState.isOpen}
         aria-label="OhmSim Assistant & Seller Chat"
-        className={`fixed bottom-20 md:bottom-6 right-2 sm:right-6 z-50 w-[calc(100vw-16px)] sm:w-[420px] h-[580px] max-h-[82vh] bg-mocha-panel/95 backdrop-blur-xl border border-mocha-border/80 rounded-2xl shadow-xl shadow-black/40 flex flex-col overflow-hidden origin-bottom-right transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        className={`fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] md:bottom-6 right-2 sm:right-6 z-50 w-[calc(100vw-16px)] sm:w-[420px] h-[580px] max-h-[calc(100dvh-9rem-env(safe-area-inset-bottom))] md:max-h-[calc(100dvh-6rem)] bg-mocha-panel/95 backdrop-blur-xl border border-mocha-border/80 rounded-2xl shadow-xl shadow-black/40 flex flex-col overflow-hidden origin-bottom-right transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           widgetState.isOpen
             ? "opacity-100 scale-100 translate-y-0 pointer-events-auto visible"
             : "opacity-0 scale-95 translate-y-6 pointer-events-none invisible"

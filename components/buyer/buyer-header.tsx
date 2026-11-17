@@ -137,14 +137,14 @@ export function BuyerHeader() {
                     toast(`${item.label} is scheduled for ${item.phase}`, "info");
                   }
                 }}
-                className={`relative flex items-center gap-1 lg:gap-2 px-2 lg:px-3 py-2 rounded-xl text-xs font-semibold min-h-[40px] justify-center transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
+                className={`relative flex min-w-11 items-center gap-1 lg:gap-2 px-2 lg:px-3 py-2 rounded-xl text-xs font-semibold min-h-[44px] justify-center transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
                   isActive
                     ? "bg-[#89B4FA]/15 text-[#89B4FA] border border-[#89B4FA]/30 shadow-xs"
                     : "text-[#A6ADC8] hover:text-[#CDD6F4] hover:bg-[#1E1E2E] border border-transparent"
                 }`}
               >
                 <span className="shrink-0">{item.icon}</span>
-                <span>{item.label}</span>
+                <span className="hidden xl:inline">{item.label}</span>
                 {item.badge !== undefined && item.badge > 0 && (
                   <span
                     className={`px-1.5 py-0.2 rounded-full font-mono text-[10px] font-bold ${
@@ -203,7 +203,7 @@ export function BuyerHeader() {
         <Link
           href="/notifications"
           aria-label="View notifications"
-          className="relative min-w-[36px] lg:min-w-[38px] min-h-[36px] lg:min-h-[38px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
+          className="relative min-w-11 min-h-11 flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
           <Bell size={18} />
           {unreadCount > 0 && (
@@ -217,7 +217,7 @@ export function BuyerHeader() {
           href="/profile"
           aria-label="View profile"
           aria-current={pathname === "/profile" ? "page" : undefined}
-          className="min-w-[36px] lg:min-w-[38px] min-h-[36px] lg:min-h-[38px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
+          className="min-w-11 min-h-11 flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
           <User size={18} />
         </Link>
@@ -225,7 +225,7 @@ export function BuyerHeader() {
         <Link
           href="/cart"
           aria-label="View shopping cart"
-          className="relative min-w-[36px] lg:min-w-[38px] min-h-[36px] lg:min-h-[38px] flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
+          className="relative min-w-11 min-h-11 flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent"
         >
           <CartFeedbackIcon target="desktop">
             <ShoppingCart size={18} />
@@ -241,10 +241,11 @@ export function BuyerHeader() {
 
         <Link
           href="/"
-          className={`${styles.exitLink} min-h-[38px] flex items-center gap-1.5 px-2 lg:px-3 py-1.5 rounded-xl text-xs font-semibold text-mocha-text-muted hover:text-mocha-danger transition-all focus-visible:outline-2 focus-visible:outline-mocha-danger`}
+          aria-label="Exit store"
+          className={`${styles.exitLink} min-h-11 min-w-11 justify-center flex items-center gap-1.5 px-2 lg:px-3 py-1.5 rounded-xl text-xs font-semibold text-mocha-text-muted hover:text-mocha-danger transition-all focus-visible:outline-2 focus-visible:outline-mocha-danger`}
         >
           <LogOut size={15} className="shrink-0" />
-          Exit Store
+          <span className="hidden xl:inline">Exit Store</span>
         </Link>
       </div>
     </header>

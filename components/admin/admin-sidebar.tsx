@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -226,16 +226,46 @@ export function AdminSidebar({
   onCloseMobile,
 }: AdminSidebarProps) {
   const pathname = usePathname() || "/admin";
+  const mobileDrawerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isMobileOpen) return;
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnDesktop = () => {
+      if (desktop.matches) onCloseMobile?.();
+    };
+    const focusFrame = requestAnimationFrame(() => {
+      mobileDrawerRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
+    });
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onCloseMobile?.();
+      } else if (event.key === "Tab") {
+        const targets = Array.from(mobileDrawerRef.current?.querySelectorAll<HTMLElement>("a[href], button:not(:disabled)") ?? []);
+        const first = targets[0];
+        const last = targets[targets.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
       }
     };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    desktop.addEventListener("change", closeOnDesktop);
+    closeOnDesktop();
+    return () => {
+      cancelAnimationFrame(focusFrame);
+      window.removeEventListener("keydown", handleKeyDown);
+      desktop.removeEventListener("change", closeOnDesktop);
+      document.body.style.overflow = previousOverflow;
+      if (previousFocus?.isConnected && previousFocus.getClientRects().length) previousFocus.focus();
+    };
   }, [isMobileOpen, onCloseMobile]);
 
   return (
@@ -244,7 +274,7 @@ export function AdminSidebar({
       <aside
         data-testid="admin-desktop-sidebar"
         aria-label="Administrator Navigation"
-        className="hidden lg:flex lg:flex-col w-[250px] shrink-0 bg-[#181825] border-r border-[#313244] min-h-screen sticky top-0 h-screen"
+        className="hidden lg:flex lg:flex-col w-[250px] shrink-0 bg-[#181825] border-r border-[#313244] sticky top-0 h-dvh"
       >
         <SidebarContent pathname={pathname} />
       </aside>
@@ -265,10 +295,12 @@ export function AdminSidebar({
             className="fixed inset-0 bg-black/65 backdrop-blur-xs transition-opacity"
           />
 
-          {/* Slide-over panel (250px) */}
+          {/* Slide-over panel */}
           <div
+            ref={mobileDrawerRef}
+            id="admin-mobile-navigation"
             data-testid="admin-mobile-sidebar"
-            className="relative z-10 w-[250px] max-w-[82vw] h-full bg-[#181825] border-r border-[#313244] shadow-[0_12px_36px_rgba(0,0,0,0.65)] flex flex-col"
+            className="relative z-10 w-[280px] max-w-[90vw] h-dvh min-h-0 bg-[#181825] border-r border-[#313244] shadow-[0_12px_36px_rgba(0,0,0,0.65)] flex flex-col"
           >
             <SidebarContent
               pathname={pathname}

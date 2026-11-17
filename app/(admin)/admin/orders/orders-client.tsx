@@ -794,7 +794,7 @@ export function OrdersClient() {
       className="flex flex-col gap-6 max-w-[1600px] mx-auto w-full"
     >
       {/* Page Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#313244]">
+      <div className="admin-page-header flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#313244]">
         <div>
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#89B4FA]/12 text-[#89B4FA] border border-[#89B4FA]/30">
@@ -955,9 +955,9 @@ export function OrdersClient() {
         </div>
 
         {/* 2. Search & Fulfillment Filter Bar */}
-        <div className="pt-3 border-t border-[#313244] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+        <div className="admin-order-filters pt-3 border-t border-[#313244] grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-[minmax(200px,1fr)_auto_auto_auto] items-end gap-3">
           {/* Real-time Search Input */}
-          <div className="relative flex-1 min-w-0">
+          <div className="relative min-w-0 sm:col-span-2 2xl:col-span-1">
             <label htmlFor="admin-orders-search" className="sr-only">
               Search orders by Order ID, Customer Name, or Product SKU
             </label>
@@ -1141,9 +1141,9 @@ export function OrdersClient() {
           role="region"
           aria-label="Orders Master Table"
           tabIndex={0}
-          className="overflow-x-auto"
+          className="admin-table-scroll overflow-x-auto"
         >
-          <table
+          <table data-responsive-table="cards" role="table"
             data-testid="orders-master-table"
             className="w-full text-left border-collapse"
           >
@@ -1232,7 +1232,7 @@ export function OrdersClient() {
                     }`}
                   >
                     {/* Checkbox */}
-                    <td
+                    <td data-label="Select"
                       className="py-3 pl-3 pr-1 text-center"
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -1247,7 +1247,7 @@ export function OrdersClient() {
                     </td>
 
                     {/* 1. Order ID */}
-                    <td className="py-3 pl-1 pr-2 whitespace-nowrap">
+                    <td data-label="Order" data-cell="primary" className="py-3 pl-1 pr-2 whitespace-nowrap">
                       <div className="font-mono font-bold text-[#CDD6F4] text-xs">
                         #{order.orderNumber}
                       </div>
@@ -1266,12 +1266,12 @@ export function OrdersClient() {
                     </td>
 
                     {/* 2. Date */}
-                    <td className="py-3 px-2 text-[#BAC2DE] whitespace-nowrap">
+                    <td data-label="Date" className="py-3 px-2 text-[#BAC2DE] whitespace-nowrap">
                       {formatDate(order.createdAt)}
                     </td>
 
                     {/* 3. Customer & Province */}
-                    <td className="py-3 px-2 whitespace-nowrap max-w-[150px]">
+                    <td data-label="Customer" className="py-3 px-2 whitespace-nowrap max-w-[150px]">
                       <div className="font-semibold text-[#CDD6F4] text-xs truncate">
                         {order.recipientName}
                       </div>
@@ -1286,7 +1286,7 @@ export function OrdersClient() {
                     </td>
 
                     {/* 4. Fulfillment Type & Courier */}
-                    <td className="py-3 px-2 whitespace-nowrap">
+                    <td data-label="Fulfillment" className="py-3 px-2 whitespace-nowrap">
                       {order.fulfillmentType === "PICKUP" ? (
                         <div className="flex flex-col gap-0.5 max-w-[175px]">
                           <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-[#94E2D5]/12 text-[#94E2D5] border border-[#94E2D5]/30 w-fit">
@@ -1316,7 +1316,7 @@ export function OrdersClient() {
                     </td>
 
                     {/* 5. Payment Method */}
-                    <td className="py-3 px-2 whitespace-nowrap">
+                    <td data-label="Payment" className="py-3 px-2 whitespace-nowrap">
                       <Badge
                         variant={
                           order.paymentMethod === "COD"
@@ -1330,7 +1330,7 @@ export function OrdersClient() {
                     </td>
 
                     {/* 6. Total Amount */}
-                    <td className="py-3 px-2.5 whitespace-nowrap">
+                    <td data-label="Total" className="py-3 px-2.5 whitespace-nowrap">
                       <div className="font-mono font-bold text-[#CDD6F4] text-xs">
                         {formatPrice(order.totalAmount)}
                       </div>
@@ -1342,7 +1342,7 @@ export function OrdersClient() {
                     </td>
 
                     {/* 7. Status Badge */}
-                    <td className="py-3 px-2 whitespace-nowrap">
+                    <td data-label="Status" className="py-3 px-2 whitespace-nowrap">
                       <span
                         data-testid={`row-status-badge-${order.orderNumber}`}
                         data-status={statusMeta.pipelineKey}
@@ -1362,7 +1362,7 @@ export function OrdersClient() {
                     </td>
 
                     {/* 8. Action */}
-                    <td
+                    <td data-label="Action" data-cell="actions"
                       className="py-3 pl-1.5 pr-3.5 text-right whitespace-nowrap"
                       onClick={(e) => e.stopPropagation()}
                     >

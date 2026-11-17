@@ -62,8 +62,7 @@ async function main() {
       shortDescription: 'Dual-core 240MHz Wi-Fi + Bluetooth microcontroller development board.',
       fullDescription: 'The ESP32-WROOM-32U is a powerful, generic Wi-Fi+BT+BLE MCU module targeting a wide variety of applications.',
       imageUrls: [
-        'https://images.unsplash.com/photo-1634452015397-ad0686a2ae2d?w=600&h=500&fit=crop&auto=format',
-        'https://images.unsplash.com/photo-1603732551658-5fabbafa84eb?w=600&h=500&fit=crop&auto=format',
+        '/images/products/esp32-wroom-32u.jpg',
       ],
       specifications: {
         Microcontroller: 'ESP32-D0WD',
@@ -85,8 +84,7 @@ async function main() {
       shortDescription: 'Standard ATmega328P based microcontroller board with 14 digital I/O.',
       fullDescription: 'The Arduino UNO R3 is a microcontroller board based on the ATmega328P. It contains everything needed to support the microcontroller.',
       imageUrls: [
-        'https://images.unsplash.com/photo-1603732551658-5fabbafa84eb?w=600&h=500&fit=crop&auto=format',
-        'https://images.unsplash.com/photo-1634452015397-ad0686a2ae2d?w=600&h=500&fit=crop&auto=format',
+        '/images/products/arduino-uno-r3.jpg',
       ],
       specifications: {
         Microcontroller: 'ATmega328P',
@@ -107,7 +105,7 @@ async function main() {
       shortDescription: 'Compact 128x64 blue OLED display module with I2C communication interface.',
       fullDescription: 'A compact 0.96 inch OLED display module using the SSD1306 driver. Communicates via I2C with two wires.',
       imageUrls: [
-        'https://images.unsplash.com/photo-1631376604263-5d803038b389?w=600&h=500&fit=crop&auto=format',
+        '/images/products/oled-096-i2c-blue.jpg',
       ],
       specifications: {
         'Driver IC': 'SSD1306',
@@ -127,7 +125,7 @@ async function main() {
       shortDescription: 'Comprehensive resistor assortment with 600 pieces across 30 standard resistance values.',
       fullDescription: 'A comprehensive assorted resistor kit containing 600 pieces across 30 different resistance values from 10Ω to 1MΩ.',
       imageUrls: [
-        'https://images.unsplash.com/photo-1746016805172-86dc8aaf6484?w=600&h=500&fit=crop&auto=format',
+        '/images/products/resistor-kit-600.jpg',
       ],
       specifications: {
         Values: '30 (10Ω – 1MΩ)',
@@ -147,7 +145,7 @@ async function main() {
       shortDescription: 'Non-contact ultrasonic range detector measuring 2cm to 400cm.',
       fullDescription: 'The HC-SR04 ultrasonic distance sensor measures distances from 2cm to 4m using ultrasonic sound waves.',
       imageUrls: [
-        'https://images.unsplash.com/photo-1649959168260-2eb9702d7b69?w=600&h=500&fit=crop&auto=format',
+        '/images/products/hc-sr04-ultrasonic.jpg',
       ],
       specifications: {
         'Operating Voltage': '5V DC',
@@ -167,7 +165,7 @@ async function main() {
       shortDescription: 'High precision calibrated digital temperature and humidity sensor module.',
       fullDescription: 'The DHT22 (AM2302) is a digital temperature and humidity sensor with calibrated digital signal output.',
       imageUrls: [
-        'https://images.unsplash.com/photo-1675602488453-c3897a475af5?w=600&h=500&fit=crop&auto=format',
+        '/images/products/dht22-sensor-module.jpg',
       ],
       specifications: {
         'Temperature Range': '-40°C to +80°C',
@@ -186,7 +184,7 @@ async function main() {
       shortDescription: 'Dual motor driver module for driving DC motors and stepper motors up to 46V/2A.',
       fullDescription: 'The L298N dual H-bridge motor driver module can control two DC motors or one stepper motor.',
       imageUrls: [
-        'https://images.unsplash.com/photo-1603732551681-2e91159b9dc2?w=600&h=500&fit=crop&auto=format',
+        '/images/products/l298n-motor-driver.jpg',
       ],
       specifications: {
         'Motor Channels': '2 (dual H-bridge)',
@@ -205,7 +203,7 @@ async function main() {
       shortDescription: 'Classic monolithic timing circuit for accurate time delays and oscillations.',
       fullDescription: 'The NE555 precision timing IC provides accurate time delays and oscillation from microseconds to hours.',
       imageUrls: [
-        'https://images.unsplash.com/photo-1631376604269-6f42b26fa9b7?w=600&h=500&fit=crop&auto=format',
+        '/images/products/ne555-timer-ic.jpg',
       ],
       specifications: {
         Package: 'DIP-8',

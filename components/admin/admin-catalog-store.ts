@@ -270,7 +270,7 @@ export async function syncAdminCatalogFromApi(): Promise<void> {
               minThreshold: item.minThreshold,
               status: computeStockStatus(item.stock, item.minThreshold),
               datasheetUrl: `https://datasheets.ohmsim.ph/${item.sku.toLowerCase()}.pdf`,
-              image: "https://images.unsplash.com/photo-1634452015397-ad0686a2ae2d?w=400&h=300&fit=crop&auto=format",
+              image: "/images/products/esp32-wroom-32u.jpg",
               specs: {},
               updatedAt: item.updatedAt || new Date().toISOString(),
             });
@@ -420,7 +420,7 @@ export function upsertAdminProduct(
       `https://datasheets.ohmsim.ph/${input.sku.trim().toLowerCase()}.pdf`,
     image:
       input.image?.trim() ||
-      "https://images.unsplash.com/photo-1634452015397-ad0686a2ae2d?w=400&h=300&fit=crop&auto=format",
+      "/images/products/esp32-wroom-32u.jpg",
     specs: { ...input.specs },
     updatedAt: now,
   };

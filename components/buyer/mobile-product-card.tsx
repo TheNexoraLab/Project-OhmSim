@@ -39,7 +39,7 @@ export function MobileProductCard({
   const isCartDisabled = isOutOfStock || isMaxInCart;
 
   return (
-    <div data-cart-source className="relative flex flex-col bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border rounded-[22px] shadow-[0_12px_30px_rgba(0,0,0,0.14)]">
+    <div data-cart-source className="relative min-w-0 flex flex-col bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border rounded-[22px] shadow-[0_12px_30px_rgba(0,0,0,0.14)]">
       <Link
         href={`/products/${product.id}`}
         aria-label={`View details for ${product.name}`}
@@ -75,11 +75,11 @@ export function MobileProductCard({
         >
           {product.name}
         </Link>
-        <p className="text-[9px] font-mono text-mocha-text-subtle">
+        <p className="break-all text-[9px] font-mono text-mocha-text-subtle">
           {product.sku}
         </p>
 
-        <div className="flex items-baseline justify-between mt-auto pt-1">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1 mt-auto pt-1">
           <span className="text-sm font-bold font-mono tracking-tight text-mocha-accent">
             {formatPrice(product.price)}
           </span>

@@ -97,15 +97,15 @@ export function ToastContainer() {
       role="status"
       aria-live="polite"
       aria-atomic="true"
-      className="fixed bottom-16 md:bottom-5 right-5 flex flex-col gap-2 z-[9999] pointer-events-none"
+      className="fixed bottom-[calc(4rem+env(safe-area-inset-bottom))] md:bottom-5 right-3 sm:right-5 w-[min(360px,calc(100vw-1.5rem))] flex flex-col gap-2 z-[9999] pointer-events-none"
     >
       {toasts.map((t) => (
         <div
           key={t.id}
-          className={`relative flex items-center gap-3 px-4 py-3 rounded-2xl text-[13px] font-semibold bg-mocha-bg-secondary/95 backdrop-blur-[20px] text-mocha-text border ${BORDER_CLASSES[t.type]} shadow-[0_8px_24px_rgba(0,0,0,0.35)] min-w-[260px] max-w-[360px] pointer-events-auto animate-in fade-in slide-in-from-bottom-2 duration-200 overflow-hidden`}
+          className={`relative flex w-full min-w-0 items-center gap-3 px-4 py-3 rounded-2xl text-[13px] font-semibold bg-mocha-bg-secondary/95 backdrop-blur-[20px] text-mocha-text border ${BORDER_CLASSES[t.type]} shadow-[0_8px_24px_rgba(0,0,0,0.35)] pointer-events-auto animate-in fade-in slide-in-from-bottom-2 duration-200 overflow-hidden`}
         >
           {ICONS[t.type]}
-          <span className="flex-1 leading-snug">{t.message}</span>
+          <span className="min-w-0 flex-1 break-words leading-snug">{t.message}</span>
           <div
             className={`absolute bottom-0 left-0 h-0.5 w-full rounded-full opacity-50 ${BAR_CLASSES[t.type]}`}
           />
