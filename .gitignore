@@ -52,5 +52,10 @@ next-env.d.ts
 # large archive files
 *.zip
 
+# scratch and temp artifacts
+/scratch/
+*.pdf
+
+
 
 
