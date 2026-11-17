@@ -103,11 +103,10 @@ export function PaymentQr({
 
   return (
     <div
-      className={`p-4 sm:p-5 rounded-2xl border transition-all ${
-        isGcash
-          ? "bg-[#007DFE]/10 border-[#007DFE]/30"
-          : "bg-[#00D665]/10 border-[#00D665]/30"
-      } flex flex-col md:flex-row items-center gap-5`}
+      className={`p-4 sm:p-5 rounded-2xl border transition-all ${isGcash
+        ? "bg-[#007DFE]/10 border-[#007DFE]/30"
+        : "bg-[#00D665]/10 border-[#00D665]/30"
+        } flex flex-col md:flex-row items-center gap-5`}
     >
       {/* Official QR Ph Card with Scannable Grid */}
       <div className="relative bg-white p-3.5 rounded-2xl shadow-lg border border-gray-200 shrink-0 flex flex-col items-center">
@@ -223,11 +222,10 @@ export function PaymentQr({
           <button
             type="button"
             onClick={handleCopyNumber}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-              copied
-                ? "bg-mocha-success/20 text-mocha-success border border-mocha-success/40"
-                : "bg-mocha-panel text-mocha-text hover:text-mocha-accent border border-mocha-border"
-            }`}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${copied
+              ? "bg-mocha-success/20 text-mocha-success border border-mocha-success/40"
+              : "bg-mocha-panel text-mocha-text hover:text-mocha-accent border border-mocha-border"
+              }`}
           >
             {copied ? <Check size={13} /> : <Copy size={13} />}
             <span>{copied ? "Copied!" : "Copy Number"}</span>

@@ -1137,21 +1137,6 @@ export function SettingsClient() {
           </div>
         </Surface>
       )}
-
-      {/* Bottom Sticky Action Footer */}
-      <div className="flex items-center justify-end gap-3 border-t border-[#313244] pt-4">
-        <Button
-          type="button"
-          variant="outline"
-          size="small"
-          onClick={handleResetDefaults}
-        >
-          Reset to Defaults
-        </Button>
-        <Button type="submit" variant="accent" size="small">
-          Save Settings
-        </Button>
-      </div>
     </form>
   );
 }
