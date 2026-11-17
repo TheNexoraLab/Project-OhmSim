@@ -376,7 +376,7 @@ export function FloatingChatWidget() {
         }}
         style={{ top: `${dockY}px` }}
         title="Drag up or down to reposition · Click to open OhmBot"
-        className={`fixed z-40 select-none touch-none transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-grab active:cursor-grabbing ${
+        className={`hidden md:block fixed z-40 select-none touch-none transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-grab active:cursor-grabbing ${
           widgetState.isOpen
             ? "opacity-0 scale-75 pointer-events-none invisible"
             : "opacity-100 scale-100 pointer-events-auto visible"

@@ -143,7 +143,7 @@ export function OrdersClient() {
             const active = statusFilter === chip.value;
             return (
               <button key={chip.value} type="button" onClick={() => setStatusFilter(chip.value)} aria-pressed={active} className="min-h-11 min-w-11 inline-flex items-center justify-center rounded-pill">
-                <span className={"px-2.5 py-1 rounded-pill text-[9px] font-bold border transition-colors " + (active ? "bg-mocha-accent/15 border-mocha-accent text-mocha-accent" : "bg-mocha-panel-raised border-mocha-panel-high text-mocha-text-subtle hover:text-mocha-text")}>{chip.label}</span>
+                <span className={"px-2.5 py-1 rounded-pill text-xs font-bold border transition-colors " + (active ? "bg-mocha-accent/15 border-mocha-accent text-mocha-accent" : "bg-mocha-panel-raised border-mocha-panel-high text-mocha-text-subtle hover:text-mocha-text")}>{chip.label}</span>
               </button>
             );
           })}

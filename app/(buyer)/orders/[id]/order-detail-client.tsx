@@ -332,9 +332,9 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
           <h2 className="text-xs font-bold uppercase tracking-wider text-mocha-text-muted">
             Ordered Components ({order.items.reduce((s, i) => s + i.qty, 0)} items)
           </h2>
-          <p className="text-[11px] text-mocha-text-muted sm:hidden">Scroll horizontally to see prices, quantities and line totals.</p>
+          
 
-          <div className="border border-mocha-border rounded-xl overflow-x-auto" tabIndex={0} role="region" aria-label="Ordered components, scroll horizontally to view all columns" data-order-items-scroll>
+          <div className="border border-mocha-border rounded-xl overflow-x-auto" tabIndex={0} role="region" aria-label="Ordered components" data-order-items-scroll>
             <table className="w-full min-w-[600px] text-left text-xs" data-order-items>
               <thead className="bg-mocha-panel-raised border-b border-mocha-border text-[10px] font-bold uppercase tracking-wider text-mocha-text-muted">
                 <tr>
@@ -375,13 +375,13 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
                     <td className="p-3 hidden sm:table-cell font-mono text-mocha-text-muted">
                       {item.productSku}
                     </td>
-                    <td className="p-3 text-right font-mono text-mocha-text">
+                    <td data-label="Unit price" className="p-3 text-right font-mono text-mocha-text">
                       {formatPrice(item.price)}
                     </td>
-                    <td className="p-3 text-center font-mono font-bold text-mocha-text">
+                    <td data-label="Quantity" className="p-3 text-center font-mono font-bold text-mocha-text">
                       {item.qty}
                     </td>
-                    <td className="p-3 pr-4 text-right font-mono font-bold text-mocha-accent">
+                    <td data-label="Subtotal" className="p-3 pr-4 text-right font-mono font-bold text-mocha-accent">
                       {formatPrice(item.price * item.qty)}
                     </td>
                   </tr>

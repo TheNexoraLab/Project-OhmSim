@@ -70,14 +70,14 @@ export default function BuyerHomePage() {
       </div>
 
       {/* 3 Metric Cards Grid (No Carousel) */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-5">
         {stats.map((s) => (
           <div
             key={s.label}
             id={`metric-${s.label.toLowerCase().replace(/\s+/g, "-")}`}
-            className="p-4 rounded-xl bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border shadow-[0_12px_30px_rgba(0,0,0,0.14)]"
+            className="min-w-0 p-2.5 sm:p-4 rounded-xl bg-gradient-to-br from-mocha-panel-raised to-mocha-panel border border-mocha-border shadow-[0_12px_30px_rgba(0,0,0,0.14)]"
           >
-            <p className={`text-2xl font-bold font-mono ${s.color}`}>
+            <p className={`text-xl sm:text-2xl font-bold font-mono ${s.color}`}>
               {s.value}
             </p>
             <p className="text-[11px] mt-1 text-mocha-text-muted">{s.label}</p>

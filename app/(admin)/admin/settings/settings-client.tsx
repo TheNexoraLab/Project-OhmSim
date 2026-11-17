@@ -102,7 +102,7 @@ export function SettingsClient() {
       setMerchantName(globalPaymentSettings.merchantName || "OHMSIM ELECTRONICS LABS");
       setMerchantSubtext(
         globalPaymentSettings.merchantSubtext ||
-          "Region III Electrical & IoT Engineering Fulfillment",
+        "Region III Electrical & IoT Engineering Fulfillment",
       );
       setGcashEnabled(globalPaymentSettings.gcash.enabled);
       setGcashAccountName(globalPaymentSettings.gcash.accountName);
@@ -318,17 +318,16 @@ export function SettingsClient() {
                 style={
                   isActive
                     ? {
-                        color: "#89B4FA",
-                        backgroundColor: "rgba(137, 180, 250, 0.14)",
-                        borderColor: "rgba(137, 180, 250, 0.45)",
-                      }
+                      color: "#89B4FA",
+                      backgroundColor: "rgba(137, 180, 250, 0.14)",
+                      borderColor: "rgba(137, 180, 250, 0.45)",
+                    }
                     : undefined
                 }
-                className={`rounded-lg border px-3.5 py-1.5 text-xs font-semibold transition-all ${
-                  isActive
-                    ? "shadow-xs"
-                    : "border-[#313244] bg-[#181825] text-[#A6ADC8] hover:border-[#45475A] hover:text-[#CDD6F4]"
-                }`}
+                className={`rounded-lg border px-3.5 py-1.5 text-xs font-semibold transition-all ${isActive
+                  ? "shadow-xs"
+                  : "border-[#313244] bg-[#181825] text-[#A6ADC8] hover:border-[#45475A] hover:text-[#CDD6F4]"
+                  }`}
               >
                 {tab.label}
               </button>
@@ -523,11 +522,10 @@ export function SettingsClient() {
                       key={province}
                       type="button"
                       onClick={() => handleToggleProvince(province)}
-                      className={`rounded-lg border px-3 py-1.5 font-mono text-xs font-semibold transition-colors ${
-                        active
-                          ? "border-[#89B4FA] bg-[#89B4FA]/14 text-[#89B4FA]"
-                          : "border-[#313244] bg-[#181825] text-[#A6ADC8]"
-                      }`}
+                      className={`rounded-lg border px-3 py-1.5 font-mono text-xs font-semibold transition-colors ${active
+                        ? "border-[#89B4FA] bg-[#89B4FA]/14 text-[#89B4FA]"
+                        : "border-[#313244] bg-[#181825] text-[#A6ADC8]"
+                        }`}
                     >
                       {active ? `✓ ${province}` : province}
                     </button>

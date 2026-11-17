@@ -199,7 +199,7 @@ function CatalogContent() {
 
       {/* Category Pills Header Row — Modern Segmented Control Track */}
       <div className="flex items-center justify-between gap-3 overflow-x-auto no-scrollbar py-0.5">
-        <div className="inline-flex items-center gap-1 p-1 bg-[#181825] border border-[#313244] rounded-2xl shadow-xs overflow-x-auto no-scrollbar">
+        <div className="inline-flex items-center gap-1 p-1 bg-mocha-bg border border-mocha-border rounded-2xl shadow-xs overflow-x-auto no-scrollbar">
           {categories.map((c) => {
             const isActive = activeCategory === c;
             return (
@@ -210,8 +210,8 @@ function CatalogContent() {
                 aria-pressed={isActive}
                 className={`shrink-0 text-xs font-semibold px-4 py-1.5 rounded-xl min-h-[34px] transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
                   isActive
-                    ? "bg-[#89B4FA] text-[#11111B] shadow-xs"
-                    : "text-[#A6ADC8] hover:text-[#CDD6F4] hover:bg-[#1E1E2E]"
+                    ? "bg-mocha-accent text-mocha-bg shadow-xs font-bold"
+                    : "text-mocha-text-muted hover:text-mocha-text hover:bg-mocha-panel/60"
                 }`}
               >
                 {c}
@@ -226,9 +226,9 @@ function CatalogContent() {
           onClick={() => setMobileFilterOpen((v) => !v)}
           aria-expanded={mobileFilterOpen}
           aria-label="Toggle parametric filter drawer"
-          className="md:hidden shrink-0 ml-auto text-xs font-semibold px-3.5 py-1.5 min-h-[36px] flex items-center gap-1.5 text-[#A6ADC8] hover:text-[#CDD6F4] border border-[#313244] rounded-xl bg-[#181825] hover:bg-[#1E1E2E] focus-visible:outline-2 focus-visible:outline-mocha-accent transition-all"
+          className="md:hidden shrink-0 ml-auto text-xs font-semibold px-3.5 py-1.5 min-h-[36px] flex items-center gap-1.5 text-mocha-text-muted hover:text-mocha-text border border-mocha-border rounded-xl bg-mocha-bg hover:bg-mocha-panel focus-visible:outline-2 focus-visible:outline-mocha-accent transition-all"
         >
-          <svg className="w-3.5 h-3.5 text-[#89B4FA]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+          <svg className="w-3.5 h-3.5 text-mocha-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
           </svg>
           Filters {isFiltered && "•"}

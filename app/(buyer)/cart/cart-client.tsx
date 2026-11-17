@@ -229,7 +229,7 @@ export function CartClient() {
                           if (!product) return null;
 
                           return (
-                            <div key={productId} className="p-3 md:px-4 flex items-center gap-3">
+                            <div key={productId} data-mobile-bundle-item className="p-3 md:px-4 flex items-center gap-3">
                               <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-mocha-border bg-mocha-bg shrink-0">
                                 <Image
                                   src={product.image}
@@ -305,7 +305,7 @@ export function CartClient() {
                 return (
                   <div
                     key={productId}
-                    className="p-4 rounded-2xl bg-mocha-panel border border-mocha-border shadow-sm flex items-center gap-4 hover:border-mocha-border-strong transition-all"
+                    data-mobile-cart-item className="p-4 rounded-2xl bg-mocha-panel border border-mocha-border shadow-sm flex items-center gap-4 hover:border-mocha-border-strong transition-all"
                   >
                     <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-mocha-border bg-mocha-bg shrink-0">
                       <Image

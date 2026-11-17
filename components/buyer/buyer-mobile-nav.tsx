@@ -13,11 +13,15 @@ import {
   Package,
   User,
   Bell,
+  CircleHelp,
 } from "lucide-react";
 import { CartFeedbackIcon } from "./cart-feedback";
 import { useNotificationCount } from "./use-notification-count";
 
+import { chatWidgetStore } from "@/lib/chat/chat-widget-store";
+
 export function BuyerMobileHeader() {
+  const pathname = usePathname();
   const unreadCount = useNotificationCount();
   return (
     <header className="flex md:hidden items-center justify-between px-3 h-14 shrink-0 sticky top-0 z-30 bg-mocha-bg-secondary/95 backdrop-blur-[20px] border-b border-mocha-border shadow-[0_1px_8px_rgba(0,0,0,0.32)]">
@@ -37,6 +41,7 @@ export function BuyerMobileHeader() {
       </Link>
 
       <div className="flex items-center gap-1">
+        {pathname !== "/chat" && <button type="button" aria-label="Open OhmSim assistant" onClick={() => chatWidgetStore.toggle()} className="min-w-[44px] min-h-[44px] flex items-center justify-center text-mocha-accent rounded-xl"><CircleHelp size={20} aria-hidden="true" /></button>}
         <Link
           href="/products"
           aria-label="Search catalog"

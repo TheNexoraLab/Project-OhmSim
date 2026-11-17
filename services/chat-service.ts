@@ -269,7 +269,39 @@ class ChatStore {
 
     const lower = text.toLowerCase();
 
-    // 1. Order Cancellation Intent
+    // 1. Order Placement & Purchasing Intent (e.g., "i want to order a arduino", "how to order a raspberry pi", "how to buy")
+    if (
+      lower.includes("how to order") ||
+      lower.includes("want to order") ||
+      lower.includes("how can i order") ||
+      lower.includes("i want to buy") ||
+      lower.includes("how to buy") ||
+      lower.includes("how do i buy") ||
+      lower.includes("how to purchase") ||
+      lower.includes("place order") ||
+      lower.includes("order a ") ||
+      lower.includes("order an ") ||
+      lower.includes("buy a ") ||
+      lower.includes("buy an ") ||
+      lower.includes("ordering") ||
+      (lower.includes("order") && (lower.includes("how") || lower.includes("want") || lower.includes("can i")))
+    ) {
+      let specificItem = "electronic components";
+      if (lower.includes("arduino")) specificItem = "Arduino microcontroller boards";
+      else if (lower.includes("raspberry")) specificItem = "Raspberry Pi boards & SBC kits";
+      else if (lower.includes("esp32") || lower.includes("esp8266")) specificItem = "ESP32/ESP8266 IoT wireless modules";
+      else if (lower.includes("sensor")) specificItem = "sensors and telemetry modules";
+      else if (lower.includes("motor") || lower.includes("servo") || lower.includes("stepper")) specificItem = "motors and actuators";
+
+      return `To order ${specificItem} on OhmSim:
+1. Browse or search our Catalog (/products) and locate your desired component.
+2. Select your required quantity and click "Add to Cart" (or add to your Bill of Materials at /bom for capstone projects).
+3. Proceed to Checkout (/checkout) and select your fulfillment method: Region III Courier Delivery (COD) or Campus Lab Pickup at Building 3, Room 204.
+4. Choose your payment method (Cash on Delivery, Pay on Pickup, GCash QR, or Maya QR) and click "Place Order".
+Our Central Luzon warehouse will immediately verify your order and begin ESD packaging!`;
+    }
+
+    // 2. Order Cancellation Intent
     if (
       lower.includes("cancel") ||
       lower.includes("cancellation") ||

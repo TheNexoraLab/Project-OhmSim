@@ -161,8 +161,8 @@ export function BuyerHeader() {
                 }}
                 className={`relative flex min-w-11 items-center gap-1 lg:gap-2 px-2 lg:px-3 py-2 rounded-xl text-xs font-semibold min-h-[44px] justify-center transition-all focus-visible:outline-2 focus-visible:outline-mocha-accent ${
                   isActive
-                    ? "bg-[#89B4FA]/15 text-[#89B4FA] border border-[#89B4FA]/30 shadow-xs"
-                    : "text-[#A6ADC8] hover:text-[#CDD6F4] hover:bg-[#1E1E2E] border border-transparent"
+                    ? "bg-mocha-accent/15 text-mocha-accent border border-mocha-accent/30 shadow-xs"
+                    : "text-mocha-text-muted hover:text-mocha-text hover:bg-mocha-panel/60 border border-transparent"
                 }`}
               >
                 <span className="shrink-0">{item.icon}</span>
@@ -171,8 +171,8 @@ export function BuyerHeader() {
                   <span
                     className={`px-1.5 py-0.2 rounded-full font-mono text-[10px] font-bold ${
                       isActive
-                        ? "bg-[#89B4FA] text-[#11111B]"
-                        : "bg-[#313244] text-[#BAC2DE]"
+                        ? "bg-mocha-accent text-mocha-bg"
+                        : "bg-mocha-panel-raised text-mocha-text-muted border border-mocha-border"
                     }`}
                   >
                     {item.badge}
@@ -188,12 +188,12 @@ export function BuyerHeader() {
       <div className="flex-1 flex items-center justify-center min-w-0 mx-2 lg:mx-6 max-w-[260px] lg:max-w-[480px] xl:max-w-[580px]">
         <form
           onSubmit={handleSearchSubmit}
-          className="group flex items-center gap-2 px-3 py-1.5 w-full bg-[#181825] border border-[#313244] rounded-xl focus-within:border-[#89B4FA] focus-within:ring-2 focus-within:ring-[#89B4FA]/20 transition-all min-h-[38px] shadow-xs"
+          className="group flex items-center gap-2 px-3 py-1.5 w-full bg-mocha-bg border border-mocha-border rounded-xl focus-within:border-mocha-accent focus-within:ring-2 focus-within:ring-mocha-accent/20 transition-all min-h-[38px] shadow-xs"
         >
           <label htmlFor="buyer-desktop-search" className="sr-only">
             Search components or SKU
           </label>
-          <Search size={16} className="text-[#A6ADC8] group-focus-within:text-[#89B4FA] shrink-0 transition-colors" />
+          <Search size={16} className="text-mocha-text-muted group-focus-within:text-mocha-accent shrink-0 transition-colors" />
           <input
             id="buyer-desktop-search"
             type="text"
@@ -205,14 +205,14 @@ export function BuyerHeader() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{ outline: "none", boxShadow: "none" }}
-            className="flex-1 bg-transparent text-xs text-[#CDD6F4] placeholder-[#6C7086] border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none min-w-0"
+            className="flex-1 bg-transparent text-xs text-mocha-text placeholder:text-mocha-text-muted/60 border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none min-w-0"
           />
           {searchQuery && (
             <button
               type="button"
               onClick={handleClearSearch}
               aria-label="Clear search query"
-              className="text-xs text-[#A6ADC8] hover:text-[#CDD6F4] px-1 py-0.5 rounded transition-colors"
+              className="text-xs text-mocha-text-muted hover:text-mocha-text px-1 py-0.5 rounded transition-colors"
             >
               ✕
             </button>

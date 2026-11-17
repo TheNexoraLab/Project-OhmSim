@@ -334,8 +334,8 @@ export function BomClient() {
           </div>
 
           {/* Stat Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-4 shrink-0 bg-mocha-bg border-b border-mocha-border">
-            <div className="p-3.5 rounded-2xl bg-mocha-panel border border-mocha-border shadow-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-3 shrink-0 bg-mocha-bg border-b border-mocha-border">
+            <div className="col-span-2 sm:col-span-1 p-3.5 rounded-2xl bg-mocha-panel border border-mocha-border shadow-sm">
               <p className="text-[10px] font-bold uppercase tracking-wider text-mocha-text-muted mb-0.5">
                 Total Estimated Cost
               </p>
