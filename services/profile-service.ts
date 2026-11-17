@@ -123,12 +123,16 @@ export function updateProfile(data: Partial<UserProfile>): { success: boolean; e
   const firstName = data.firstName !== undefined ? data.firstName.trim() : profileState.firstName;
   const lastName = data.lastName !== undefined ? data.lastName.trim() : profileState.lastName;
   const mobile = data.mobile !== undefined ? data.mobile.trim() : profileState.mobile;
+  const email = data.email !== undefined ? data.email.trim().toLowerCase() : profileState.email;
 
   if (!firstName) {
     return { success: false, error: "First name is required." };
   }
   if (!lastName) {
     return { success: false, error: "Last name is required." };
+  }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { success: false, error: "A valid email address is required." };
   }
   if (!validatePhilippineMobile(mobile)) {
     return { success: false, error: "Mobile number must be an 11-digit Philippine mobile starting with 09." };
@@ -140,7 +144,8 @@ export function updateProfile(data: Partial<UserProfile>): { success: boolean; e
     firstName,
     lastName,
     mobile,
-    email: profileState.email,
+    email,
+    studentOrGovId: data.studentOrGovId !== undefined ? data.studentOrGovId.trim() : profileState.studentOrGovId,
   };
 
   notifyProfile();
@@ -153,6 +158,7 @@ export function updateProfile(data: Partial<UserProfile>): { success: boolean; e
       body: JSON.stringify({
         firstName,
         lastName,
+        email,
         phone: mobile,
       }),
     }).catch((err) => {

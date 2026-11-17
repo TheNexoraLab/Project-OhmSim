@@ -25,7 +25,7 @@ function CatalogContent() {
 
   useEffect(() => {
     let isMounted = true;
-    getProducts()
+    getProducts({ limit: 300 })
       .then((liveProducts) => {
         if (isMounted && liveProducts.length > 0) {
           setAllProducts(liveProducts);
@@ -108,26 +108,37 @@ function CatalogContent() {
         return false;
       }
 
-      // Keyword Search (Name, SKU, or Brand)
+      // Keyword Search (Name, SKU, Brand, Category, Label, Specs, Description)
       if (search.trim()) {
         const q = search.toLowerCase().trim();
         const matchesName = p.name.toLowerCase().includes(q);
         const matchesSku = p.sku.toLowerCase().includes(q);
-        const matchesBrand = p.brand?.toLowerCase().includes(q);
-        if (!matchesName && !matchesSku && !matchesBrand) return false;
+        const matchesBrand = p.brand ? p.brand.toLowerCase().includes(q) : false;
+        const matchesCategory = p.category ? p.category.toLowerCase().includes(q) : false;
+        const matchesLabel = p.label ? p.label.toLowerCase().includes(q) : false;
+        const matchesAbout = p.about ? p.about.toLowerCase().includes(q) : false;
+        if (!matchesName && !matchesSku && !matchesBrand && !matchesCategory && !matchesLabel && !matchesAbout) {
+          return false;
+        }
       }
 
-      // Voltage filter
-      if (p.voltage < voltage[0] || p.voltage > voltage[1]) {
-        return false;
+      // Voltage filter: only apply if the user has changed the default range
+      const isVoltageCustom = voltage[0] > 3.3 || voltage[1] < 12;
+      if (isVoltageCustom) {
+        if (typeof p.voltage === "number" && (p.voltage < voltage[0] || p.voltage > voltage[1])) {
+          return false;
+        }
       }
 
-      // Resistance filter
-      if (
-        p.resistance !== null &&
-        (p.resistance < resistance[0] || p.resistance > resistance[1])
-      ) {
-        return false;
+      // Resistance filter: only apply if the user has changed the default range
+      const isResistanceCustom = resistance[0] > 10 || resistance[1] < 1000;
+      if (isResistanceCustom) {
+        if (p.resistance === null || p.resistance === undefined) {
+          return false;
+        }
+        if (p.resistance < resistance[0] || p.resistance > resistance[1]) {
+          return false;
+        }
       }
 
       // Stock threshold filter
@@ -168,7 +179,7 @@ function CatalogContent() {
         </svg>
         <input
           id="mobile-catalog-search"
-          type="search"
+          type="text"
           placeholder="Search components..."
           value={search}
           onChange={(e) => updateSearchQuery(e.target.value)}

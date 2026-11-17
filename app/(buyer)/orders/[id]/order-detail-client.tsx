@@ -79,6 +79,10 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
 
   const handleCancelOrder = async () => {
     if (!order || isCancelling) return;
+    if (typeof window !== "undefined") {
+      const confirmed = window.confirm("Are you sure you want to cancel this order? Stock will be restored and preparation halted.");
+      if (!confirmed) return;
+    }
     setIsCancelling(true);
     const result = await updateOrderStatus(order.id, {
       status: "CANCELLED",
@@ -181,7 +185,7 @@ export function OrderDetailClient({ orderId }: OrderDetailClientProps) {
           </div>
 
           <div className="flex items-center gap-2 shrink-0 print:hidden">
-            {order.status === "PENDING" && (
+            {(order.status === "PENDING" || order.status === "PREPARING") && (
               <button
                 type="button"
                 onClick={handleCancelOrder}

@@ -262,7 +262,7 @@ export function ChatClient() {
               </div>
               <input
                 id="search-convos"
-                type="search"
+                type="text"
                 value={searchConvos}
                 onChange={(e) => setSearchConvos(e.target.value)}
                 placeholder="Search conversations..."

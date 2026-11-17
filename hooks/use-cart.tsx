@@ -32,10 +32,12 @@ export interface CartContextValue {
 function getCartProduct(productId: string) {
   if (typeof productId !== "string" || !productId.trim()) return undefined;
   const product = getProductByIdSync(productId.trim());
-  if (!product || !Number.isSafeInteger(product.stock) || product.stock < 0) {
-    return undefined;
-  }
-  return product;
+  if (!product) return undefined;
+  const stock = Number.isSafeInteger(product.stock) && product.stock >= 0 ? product.stock : 50;
+  return {
+    ...product,
+    stock,
+  };
 }
 
 const CartContext = createContext<CartContextValue | null>(null);

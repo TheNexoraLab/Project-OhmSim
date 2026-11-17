@@ -13,16 +13,16 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { Surface } from "@/components/ui/surface";
 import { toast } from "@/components/ui/toast";
 import {
-  AddIcon,
-  Banknote2Icon,
-  BoxMinimalisticIcon,
-  DangerTriangleIcon,
-  ChatRoundDotsIcon,
-  MapPointIcon,
-  DeliveryIcon,
-  BillListIcon,
-  ArchiveCheckIcon,
-} from "@solar-icons/react/linear";
+  Plus as AddIcon,
+  Banknote as Banknote2Icon,
+  Package as BoxMinimalisticIcon,
+  AlertTriangle as DangerTriangleIcon,
+  MessageSquare as ChatRoundDotsIcon,
+  MapPin as MapPointIcon,
+  Truck as DeliveryIcon,
+  FileText as BillListIcon,
+  Archive as ArchiveCheckIcon,
+} from "lucide-react";
 
 type SemanticStatusKey =
   | "PENDING"

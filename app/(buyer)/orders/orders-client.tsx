@@ -134,7 +134,7 @@ export function OrdersClient() {
             <svg aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-mocha-text-subtle pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
               <circle cx="10.5" cy="10.5" r="6.5" /><path d="m16 16 4.5 4.5" />
             </svg>
-            <input id="orders-search" type="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search order ref..." className="min-h-11 w-full min-w-0 pl-9 pr-11 rounded-control border border-mocha-panel-high bg-mocha-bg-secondary text-xs text-mocha-text placeholder:text-mocha-text-subtle focus:border-mocha-accent focus:outline-none" />
+            <input id="orders-search" type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search order ref..." className="min-h-11 w-full min-w-0 pl-9 pr-11 rounded-control border border-mocha-panel-high bg-mocha-bg-secondary text-xs text-mocha-text placeholder:text-mocha-text-subtle focus:border-mocha-accent focus:outline-none" />
             {search && <button type="button" onClick={() => setSearch("")} aria-label="Clear search" className="absolute right-0 inset-y-0 w-11 flex items-center justify-center text-mocha-text-subtle hover:text-mocha-text rounded-control">✕</button>}
           </div>
         </div>
@@ -191,7 +191,7 @@ export function OrdersClient() {
               <p className="text-[11px] text-mocha-text-subtle">Placed on {formatDate(selectedOrder.createdAt)} · {selectedOrder.fulfillmentType === "PICKUP" ? "Store Pickup" : "Region III Delivery"}</p>
             </div>
             <div className="flex items-center gap-2 print:hidden">
-              {selectedOrder.status === "PENDING" && (
+              {(selectedOrder.status === "PENDING" || selectedOrder.status === "PREPARING") && (
                 <Button
                   variant="outline"
                   size="compact"

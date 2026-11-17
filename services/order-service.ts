@@ -272,6 +272,7 @@ export interface CreateOrderPayload {
   };
   pickupRecipient?: string;
   pickupPhone?: string;
+  studentOrGovId?: string;
   notes?: string;
   items: Array<{
     productId: string;
@@ -307,6 +308,7 @@ export async function createOrder(
           deliveryAddress: payload.deliveryAddress,
           pickupRecipient: payload.pickupRecipient,
           pickupPhone: payload.pickupPhone,
+          studentOrGovId: payload.studentOrGovId,
           notes: payload.notes,
         }),
       });

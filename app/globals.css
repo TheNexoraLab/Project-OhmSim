@@ -4,25 +4,25 @@
   --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  /* Catppuccin Mocha Semantic Colors */
-  --color-mocha-bg: #11111b;
-  --color-mocha-bg-secondary: #181825;
-  --color-mocha-panel: #1e1e2e;
-  --color-mocha-panel-raised: #313244;
-  --color-mocha-panel-high: #45475a;
-  --color-mocha-border: #313244;
-  --color-mocha-border-strong: #585b70;
-  --color-mocha-text: #cdd6f4;
-  --color-mocha-text-muted: #bac2de;
-  --color-mocha-text-subtle: #a6adc8;
+  /* Semantic Color Utilities mapped to theme CSS variables */
+  --color-mocha-bg: var(--mocha-bg);
+  --color-mocha-bg-secondary: var(--mocha-bg-secondary);
+  --color-mocha-panel: var(--mocha-panel);
+  --color-mocha-panel-raised: var(--mocha-panel-raised);
+  --color-mocha-panel-high: var(--mocha-panel-high);
+  --color-mocha-border: var(--mocha-border);
+  --color-mocha-border-strong: var(--mocha-border-strong);
+  --color-mocha-text: var(--mocha-text);
+  --color-mocha-text-muted: var(--mocha-text-muted);
+  --color-mocha-text-subtle: var(--mocha-text-subtle);
 
-  --color-mocha-accent: #89b4fa;
-  --color-mocha-accent-strong: #74c7ec;
-  --color-mocha-accent-secondary: #94e2d5;
+  --color-mocha-accent: var(--mocha-accent);
+  --color-mocha-accent-strong: var(--mocha-accent-strong);
+  --color-mocha-accent-secondary: var(--mocha-accent-secondary);
 
-  --color-mocha-success: #a6e3a1;
-  --color-mocha-warning: #f9e2af;
-  --color-mocha-danger: #f38ba8;
+  --color-mocha-success: var(--mocha-success);
+  --color-mocha-warning: var(--mocha-warning);
+  --color-mocha-danger: var(--mocha-danger);
 
   /* Canonical Radii */
   --radius-small: 8px;
@@ -66,6 +66,41 @@
 
   --shadow-card: 0 12px 30px rgba(0, 0, 0, 0.18);
   --shadow-raised: 0 8px 24px rgba(0, 0, 0, 0.28);
+}
+
+/* Catppuccin Latte Bright Theme / Sunlight Mode */
+[data-theme="latte"] {
+  --background: #eff1f5;
+  --foreground: #4c4f69;
+
+  --mocha-bg: #eff1f5;
+  --mocha-bg-secondary: #e6e9ef;
+  --mocha-panel: #ffffff;
+  --mocha-panel-raised: #dce0e8;
+  --mocha-panel-high: #bcc0cc;
+  --mocha-border: #ccd0da;
+  --mocha-border-strong: #acb0be;
+  --mocha-border-subtle: rgba(172, 176, 190, 0.4);
+
+  --mocha-text: #4c4f69;
+  --mocha-text-muted: #5c5f77;
+  --mocha-text-subtle: #6c6f85;
+
+  --mocha-accent: #1e66f5;
+  --mocha-accent-strong: #04a5e5;
+  --mocha-accent-secondary: #179299;
+
+  --mocha-success: #40a02b;
+  --mocha-warning: #df8e1d;
+  --mocha-danger: #d20f39;
+
+  --gradient-page: linear-gradient(180deg, #e6e9ef 0%, #eff1f5 100%);
+  --gradient-card: linear-gradient(145deg, #ffffff 0%, #f4f5f8 100%);
+  --gradient-accent: linear-gradient(135deg, #1e66f5 0%, #179299 100%);
+  --gradient-button: linear-gradient(180deg, #dce0e8 0%, #ffffff 100%);
+
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-raised: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
 
 body {

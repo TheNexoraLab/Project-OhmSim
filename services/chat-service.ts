@@ -234,15 +234,14 @@ class ChatStore {
 
     // Trigger simulated reply if sender was buyer on fixture threads
     if (newMsg.from === "buyer" && convoId.startsWith("c")) {
-      this.scheduleAutoReply(convoId);
+      this.scheduleAutoReply(convoId, messageData.text);
     }
 
     return newMsg;
   }
 
-  private scheduleAutoReply(convoId: string): void {
-    const replies = CHAT_AUTO_REPLIES[convoId] ?? CHAT_AUTO_REPLIES.c1;
-    const randomReply = replies[Math.floor(Math.random() * replies.length)];
+  private scheduleAutoReply(convoId: string, userText?: string): void {
+    const smartReply = this.generateSupportResponse(convoId, userText);
 
     const timer = setTimeout(() => {
       this.autoReplyTimers.delete(timer);
@@ -253,14 +252,116 @@ class ChatStore {
           id: `msg-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
           from: "admin",
           type: "text",
-          text: randomReply,
+          text: smartReply,
           time: timeStr,
         });
         this.emit();
       }
-    }, 1000);
+    }, 800);
 
     this.autoReplyTimers.add(timer);
+  }
+
+  private generateSupportResponse(convoId: string, text?: string): string {
+    if (!text || !text.trim()) {
+      return "Hello! How can our OhmSim technical team assist you today?";
+    }
+
+    const lower = text.toLowerCase();
+
+    // 1. Order Cancellation Intent
+    if (
+      lower.includes("cancel") ||
+      lower.includes("cancellation") ||
+      lower.includes("stop order") ||
+      lower.includes("dont want") ||
+      lower.includes("don't want")
+    ) {
+      return "To cancel an order: Go to your Orders page (/orders). While your order status is PENDING or PREPARING, you can click the red 'Cancel Order' button to immediately cancel it and restore component inventory.";
+    }
+
+    // 2. Returns & Refunds Intent
+    if (
+      lower.includes("refund") ||
+      lower.includes("return") ||
+      lower.includes("defective") ||
+      lower.includes("damaged") ||
+      lower.includes("broken") ||
+      lower.includes("exchange")
+    ) {
+      return "We offer a 7-day replacement/refund guarantee for defective components or unopened items across Region III. Please provide your Order Number and photo/video proof, and our team will process an RMA replacement.";
+    }
+
+    // 3. Shipping, Tracking & Delivery ETA Intent
+    if (
+      lower.includes("where is") ||
+      lower.includes("tracking") ||
+      lower.includes("track") ||
+      lower.includes("delivery") ||
+      lower.includes("arrive") ||
+      lower.includes("shipping") ||
+      lower.includes("rider") ||
+      lower.includes("courier") ||
+      lower.includes("status")
+    ) {
+      return "You can check real-time order status and courier tracking directly on your Orders tab (/orders). Region III door-to-door deliveries generally arrive within 1–3 business days. Campus lab pickups are ready during building hours (Mon–Sat 8AM–6PM).";
+    }
+
+    // 4. Payment, GCash, Maya & COD Intent
+    if (
+      lower.includes("gcash") ||
+      lower.includes("maya") ||
+      lower.includes("payment") ||
+      lower.includes("pay") ||
+      lower.includes("cod") ||
+      lower.includes("qr") ||
+      lower.includes("receipt")
+    ) {
+      return "We support GCash QR, Maya QR, Cash on Delivery (COD), and Pay on Pickup at Building 3, Room 204. During checkout, scan our official QR Ph code or transfer to 0917 588 6467 (GCash) / 0918 599 6292 (Maya), then enter your transaction reference number.";
+    }
+
+    // 5. Stock, Availability & Pricing Intent
+    if (
+      lower.includes("stock") ||
+      lower.includes("available") ||
+      lower.includes("how much") ||
+      lower.includes("price") ||
+      lower.includes("inventory") ||
+      lower.includes("in stock")
+    ) {
+      return "All product pricing and stock quantities on the Catalog (/products) are updated live from our Central Luzon warehouse. If you need bulk components for university capstone projects, you can compile them in the BOM tool (/bom) for reservations.";
+    }
+
+    // 6. Technical Microcontroller / Hardware Inquiries
+    if (
+      lower.includes("arduino") ||
+      lower.includes("esp32") ||
+      lower.includes("esp") ||
+      lower.includes("raspberry") ||
+      lower.includes("voltage") ||
+      lower.includes("3.3v") ||
+      lower.includes("5v") ||
+      lower.includes("pinout") ||
+      lower.includes("schematic") ||
+      lower.includes("sensor")
+    ) {
+      return "For circuit design: The ESP32 operates at 3.3V logic (VIN pin accepts 5V via onboard regulator), while Arduino Uno R3 operates at 5V logic. When connecting 5V sensors to ESP32 GPIOs, ensure you use a logic level converter or voltage divider.";
+    }
+
+    // 7. Greetings Intent
+    if (
+      lower.includes("hi") ||
+      lower.includes("hello") ||
+      lower.includes("good morning") ||
+      lower.includes("good afternoon") ||
+      lower.includes("hey")
+    ) {
+      return "Hello! Welcome to OhmSim Support. How can we help you with your electronics projects, orders, or hardware components today?";
+    }
+
+    // 8. Default contextual fallback
+    const replies = CHAT_AUTO_REPLIES[convoId] ?? CHAT_AUTO_REPLIES.c1;
+    return replies[Math.floor(Math.random() * replies.length)];
   }
 
   createConversation(name: string, subtitle: string = "New Inquiry"): ChatConversation {

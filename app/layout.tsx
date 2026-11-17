@@ -33,7 +33,14 @@ export default function RootLayout({
       lang="en"
       className={`${inter.variable} ${jetbrainsMono.variable} h-full scroll-smooth antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#11111B] text-[#CDD6F4] font-sans selection:bg-[#89B4FA]/30 selection:text-[#CDD6F4]">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("ohmsim-theme");if(t==="latte"){document.documentElement.setAttribute("data-theme","latte");}}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-mocha-bg text-mocha-text font-sans selection:bg-mocha-accent/30 selection:text-mocha-text">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[#1E1E2E] focus:text-[#89B4FA] focus:rounded-xl focus:border focus:border-[#89B4FA] focus:outline-none focus:shadow-lg focus:font-medium"

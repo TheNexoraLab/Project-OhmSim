@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useSyncExternalStore } from "react";
+import React, { useState, useEffect, useSyncExternalStore } from "react";
 import {
   getPreferencesSnapshot,
   subscribePreferences,
@@ -10,6 +10,37 @@ import { toast } from "@/components/ui/toast";
 
 export function ProfilePreferencesTab() {
   const prefs = useSyncExternalStore(subscribePreferences, getPreferencesSnapshot, getPreferencesSnapshot);
+
+  const [theme, setTheme] = useState<"mocha" | "latte">("mocha");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("ohmsim-theme");
+      if (saved === "latte" || saved === "mocha") {
+        setTheme(saved);
+      } else {
+        const currentAttr = document.documentElement.getAttribute("data-theme");
+        if (currentAttr === "latte") setTheme("latte");
+      }
+    }
+  }, []);
+
+  const handleThemeToggle = () => {
+    const nextTheme = theme === "mocha" ? "latte" : "mocha";
+    setTheme(nextTheme);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("ohmsim-theme", nextTheme);
+      document.documentElement.setAttribute("data-theme", nextTheme);
+    }
+    toast(
+      `Switched to ${
+        nextTheme === "latte"
+          ? "Catppuccin Latte (Bright Mode / Sunlight)"
+          : "Catppuccin Mocha (Dark Theme)"
+      }`,
+      "info"
+    );
+  };
 
   const handleToggle = (key: keyof typeof prefs, label: string) => {
     const nextVal = !prefs[key];
@@ -93,28 +124,44 @@ export function ProfilePreferencesTab() {
         </div>
 
         <div className="divide-y divide-mocha-border">
-          {/* Dark Mode: Locked */}
+          {/* Theme Toggle: Unlocked per JL-001 */}
           <div className="py-3 flex items-center justify-between gap-4">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <p className="text-xs font-semibold text-mocha-text">Catppuccin Mocha Dark Theme</p>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-mocha-accent/15 text-mocha-accent border border-mocha-accent/30">
-                  Locked
+                <p className="text-xs font-semibold text-mocha-text">
+                  {theme === "latte" ? "Catppuccin Latte (Bright Mode)" : "Catppuccin Mocha (Dark Mode)"}
+                </p>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                  theme === "latte"
+                    ? "bg-[#DF8E1D]/15 text-[#DF8E1D] border-[#DF8E1D]/30"
+                    : "bg-mocha-accent/15 text-mocha-accent border-mocha-accent/30"
+                }`}>
+                  {theme === "latte" ? "Sunlight Active" : "Dark Active"}
                 </span>
               </div>
               <p className="text-[11px] text-mocha-text-muted mt-0.5">
-                Canonical engineering-grade palette for all OhmSim buyer views
+                {theme === "latte"
+                  ? "High-contrast bright theme optimized for direct sunlight and bright ambient labs"
+                  : "Engineering-grade dark palette for low-light lab environments"}
               </p>
             </div>
 
-            <div
-              aria-disabled="true"
-              className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center shrink-0 cursor-not-allowed opacity-80"
+            <button
+              type="button"
+              onClick={handleThemeToggle}
+              aria-label="Toggle Bright / Sunlight Mode"
+              className="min-h-[44px] min-w-[44px] p-2 flex items-center justify-center shrink-0 cursor-pointer focus-visible:outline-2 focus-visible:outline-mocha-accent rounded-xl"
             >
-              <span className="relative inline-block w-10 h-6 rounded-full bg-mocha-accent border border-mocha-accent">
-                <span className="absolute top-0.5 left-[calc(100%-22px)] w-5 h-5 rounded-full bg-mocha-bg shadow-xs" />
+              <span className={`relative inline-block w-11 h-6 rounded-full transition-colors ${
+                theme === "latte" ? "bg-[#DF8E1D]" : "bg-mocha-accent"
+              }`}>
+                <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-xs transition-transform flex items-center justify-center text-[10px] ${
+                  theme === "latte" ? "left-[calc(100%-22px)]" : "left-0.5"
+                }`}>
+                  {theme === "latte" ? "☀️" : "🌙"}
+                </span>
               </span>
-            </div>
+            </button>
           </div>
 
           {/* Compact View: Static / Unavailable */}

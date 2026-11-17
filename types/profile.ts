@@ -10,6 +10,7 @@ export interface UserProfile {
   company: string;
   role: string;
   bio: string;
+  studentOrGovId?: string;
 }
 
 export interface UserPreferences {

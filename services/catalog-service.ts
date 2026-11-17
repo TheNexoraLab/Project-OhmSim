@@ -53,6 +53,8 @@ interface RawApiProduct {
   resistance?: number | null;
 }
 
+const LIVE_PRODUCT_CACHE = new Map<string, Product>();
+
 export function mapApiProductToProduct(raw: RawApiProduct): Product {
   const specs = raw.specs || raw.specifications || {};
   const stock = typeof raw.stock === "number" ? raw.stock : (typeof raw.stockQuantity === "number" ? raw.stockQuantity : 0);
@@ -62,7 +64,7 @@ export function mapApiProductToProduct(raw: RawApiProduct): Product {
   const image = raw.image || (raw.images && raw.images[0]) || (raw.imageUrls && raw.imageUrls[0]) || "/images/placeholder.jpg";
   const images = raw.images || raw.imageUrls || [image];
 
-  return {
+  const product: Product = {
     id: raw.id,
     sku: raw.sku,
     category: (raw.category as Exclude<Category, "All">) || "Microcontrollers",
@@ -79,6 +81,13 @@ export function mapApiProductToProduct(raw: RawApiProduct): Product {
     specs,
     about: raw.about || raw.fullDescription || raw.shortDescription || raw.name,
   };
+
+  LIVE_PRODUCT_CACHE.set(product.id, product);
+  if (product.sku) {
+    LIVE_PRODUCT_CACHE.set(product.sku.toLowerCase(), product);
+  }
+
+  return product;
 }
 
 export async function getProducts(options?: {
@@ -95,7 +104,7 @@ export async function getProducts(options?: {
       const searchParams = new URLSearchParams();
       if (options?.category && options.category !== "All") searchParams.set("category", options.category);
       if (options?.search) searchParams.set("search", options.search);
-      if (options?.limit) searchParams.set("limit", String(options.limit));
+      searchParams.set("limit", String(options?.limit || 300));
       const qs = searchParams.toString();
       const url = `${base}/api/products${qs ? `?${qs}` : ""}`;
 
@@ -103,7 +112,12 @@ export async function getProducts(options?: {
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data.products) && data.products.length > 0) {
-          return data.products.map(mapApiProductToProduct);
+          const mapped = data.products.map(mapApiProductToProduct);
+          mapped.forEach((p: Product) => {
+            LIVE_PRODUCT_CACHE.set(p.id, p);
+            LIVE_PRODUCT_CACHE.set(p.sku.toLowerCase(), p);
+          });
+          return mapped;
         }
       }
     }
@@ -119,11 +133,47 @@ export function getProductsSync(): Product[] {
 }
 
 export async function getProductById(id: string, options?: { baseUrl?: string }): Promise<Product | undefined> {
-  try {
-    const isBrowser = typeof window !== "undefined";
-    const base = options?.baseUrl || (isBrowser ? "" : null);
+  if (!id) return undefined;
 
-    if (base !== null) {
+  // On the server: query database directly with resilient fallback
+  if (typeof window === "undefined") {
+    try {
+      const { prisma } = await import("@/lib/prisma/client");
+      const dbProduct = await prisma.product.findFirst({
+        where: {
+          OR: [{ id }, { sku: id.toUpperCase() }, { sku: id }],
+        },
+        include: {
+          category: {
+            select: { id: true, name: true, slug: true },
+          },
+        },
+      });
+
+      if (dbProduct) {
+        return mapApiProductToProduct({
+          id: dbProduct.id,
+          sku: dbProduct.sku,
+          name: dbProduct.name,
+          label: dbProduct.name,
+          brand: dbProduct.brand,
+          category: dbProduct.category.name,
+          price: Number(dbProduct.price),
+          stock: dbProduct.stockQuantity,
+          minThreshold: dbProduct.minStockThreshold,
+          image: dbProduct.imageUrls[0] || "/images/placeholder.jpg",
+          images: dbProduct.imageUrls,
+          specs: (dbProduct.specifications as Record<string, string>) || {},
+          about: dbProduct.fullDescription,
+        });
+      }
+    } catch {
+      // Continue to fixture lookup
+    }
+  } else {
+    // In the browser: query API endpoint
+    try {
+      const base = options?.baseUrl || "";
       const url = `${base}/api/products/${encodeURIComponent(id)}`;
       const res = await fetch(url, { cache: "no-store" });
       if (res.ok) {
@@ -132,16 +182,29 @@ export async function getProductById(id: string, options?: { baseUrl?: string })
           return mapApiProductToProduct(data.product);
         }
       }
+    } catch {
+      // Fallback to synchronous resolver
     }
-  } catch {
-    // Graceful fallback
   }
 
   return getProductByIdSync(id);
 }
 
 export function getProductByIdSync(id: string): Product | undefined {
-  return PRODUCTS.find((p) => p.id === id);
+  if (!id) return undefined;
+  const trimmed = id.trim();
+  const lower = trimmed.toLowerCase();
+
+  // 1. Check live cache first
+  const cached = LIVE_PRODUCT_CACHE.get(trimmed) || LIVE_PRODUCT_CACHE.get(lower);
+  if (cached) return cached;
+
+  // 2. Direct match in PRODUCTS by id or sku
+  const direct = PRODUCTS.find((p) => p.id === trimmed || p.sku.toLowerCase() === lower);
+  if (direct) return direct;
+
+  // 3. Fallback: match in PRODUCTS by name or partial sku
+  return PRODUCTS.find((p) => p.name.toLowerCase() === lower || p.sku.toLowerCase().includes(lower));
 }
 
 export async function getFeaturedProducts(limit: number = 4, options?: { baseUrl?: string }): Promise<Product[]> {

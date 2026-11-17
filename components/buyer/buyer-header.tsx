@@ -15,6 +15,8 @@ import {
   User,
   ShoppingCart,
   LogOut,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { useBom } from "@/hooks/use-bom";
@@ -35,6 +37,26 @@ export function BuyerHeader() {
 
   // Synchronize visible search input text with active URL query q
   const [searchQuery, setSearchQuery] = useState(urlQuery);
+  const [isLatte, setIsLatte] = useState(false);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("ohmsim-theme");
+      const current = saved || document.documentElement.getAttribute("data-theme");
+      setIsLatte(current === "latte");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = !isLatte;
+    setIsLatte(next);
+    if (typeof window !== "undefined") {
+      const mode = next ? "latte" : "mocha";
+      localStorage.setItem("ohmsim-theme", mode);
+      document.documentElement.setAttribute("data-theme", mode);
+      toast(`Switched to ${next ? "Bright Mode (Sunlight)" : "Dark Theme (Mocha)"}`, "info");
+    }
+  };
   const [prevUrlQuery, setPrevUrlQuery] = useState(urlQuery);
   if (urlQuery !== prevUrlQuery) {
     setPrevUrlQuery(urlQuery);
@@ -174,7 +196,7 @@ export function BuyerHeader() {
           <Search size={16} className="text-[#A6ADC8] group-focus-within:text-[#89B4FA] shrink-0 transition-colors" />
           <input
             id="buyer-desktop-search"
-            type="search"
+            type="text"
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
@@ -183,7 +205,7 @@ export function BuyerHeader() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{ outline: "none", boxShadow: "none" }}
-            className="flex-1 bg-transparent text-xs text-[#CDD6F4] placeholder-[#6C7086] border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none min-w-0 [appearance:textfield] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+            className="flex-1 bg-transparent text-xs text-[#CDD6F4] placeholder-[#6C7086] border-none outline-none focus:outline-none focus:ring-0 focus-visible:outline-none min-w-0"
           />
           {searchQuery && (
             <button
@@ -198,8 +220,18 @@ export function BuyerHeader() {
         </form>
       </div>
 
-      {/* Right Cluster: Action Icons (Notifications, Profile, Cart, Exit) */}
+      {/* Right Cluster: Action Icons (Theme, Notifications, Profile, Cart, Exit) */}
       <div className="flex items-center gap-1 lg:gap-2.5 shrink-0">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          aria-label={isLatte ? "Switch to Dark Mode" : "Switch to Light / Sunlight Mode"}
+          title={isLatte ? "Switch to Dark Mode" : "Switch to Light / Sunlight Mode"}
+          className="min-w-11 min-h-11 flex items-center justify-center text-mocha-text-muted hover:text-mocha-accent transition-colors rounded-xl focus-visible:outline-2 focus-visible:outline-mocha-accent cursor-pointer"
+        >
+          {isLatte ? <Sun size={18} className="text-[#DF8E1D]" /> : <Moon size={18} />}
+        </button>
+
         <Link
           href="/notifications"
           aria-label="View notifications"

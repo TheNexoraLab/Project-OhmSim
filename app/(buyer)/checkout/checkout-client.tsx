@@ -10,6 +10,7 @@ import { computeDeliveryFee } from "@/lib/fulfillment";
 import { getSavedAddresses, createOrder } from "@/services/order-service";
 import { formatPrice } from "@/lib/format";
 import { toast } from "@/components/ui/toast";
+import { PaymentQr } from "@/components/buyer/payment-qr";
 import {
   REGION_3_PROVINCES,
   type FulfillmentType,
@@ -47,6 +48,7 @@ export function CheckoutClient() {
   // Pickup contact details
   const [pickupRecipient, setPickupRecipient] = useState("Alex Rivera");
   const [pickupContact, setPickupContact] = useState("09171234567");
+  const [studentOrGovId, setStudentOrGovId] = useState("");
 
   // Payment Channel State
   const [paymentChannel, setPaymentChannel] = useState<"CASH" | "GCASH" | "MAYA">("CASH");
@@ -346,6 +348,7 @@ export function CheckoutClient() {
         deliveryAddress: inlineDeliveryAddress,
         pickupRecipient: fulfillmentType === "PICKUP" ? finalRecipient : undefined,
         pickupPhone: fulfillmentType === "PICKUP" ? finalContact : undefined,
+        studentOrGovId: studentOrGovId.trim() || undefined,
         notes: finalNotes,
         items: orderItemsInput,
         // Fallbacks
@@ -744,9 +747,21 @@ export function CheckoutClient() {
                   </div>
                 </div>
 
-                <p className="text-[11px] text-mocha-text-subtle">
-                  Bring your Student/Faculty ID or valid government ID when collecting your order.
-                </p>
+                <div>
+                  <label className="block text-xs font-semibold text-mocha-text mb-1">
+                    Student / Faculty / Government ID Number <span className="text-mocha-accent text-[11px] font-normal">(Required for Pickup Verification)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={studentOrGovId}
+                    onChange={(e) => setStudentOrGovId(e.target.value)}
+                    placeholder="e.g. 2022-01492 (Student ID) or PRC-0182942"
+                    className="w-full px-3 py-2 text-xs font-mono rounded-xl bg-mocha-bg border border-mocha-border text-mocha-text placeholder-mocha-text-subtle focus:outline-none focus:border-mocha-accent"
+                  />
+                  <p className="text-[11px] text-mocha-text-subtle mt-1">
+                    Present this physical or digital ID card at Building 3, Room 204 when collecting your items.
+                  </p>
+                </div>
               </div>
             )}
 
@@ -863,48 +878,8 @@ export function CheckoutClient() {
               {/* Channel B & C: E-Wallet (GCash / Maya) Scan & Upload Slip */}
               {(paymentChannel === "GCASH" || paymentChannel === "MAYA") && (
                 <div className="flex flex-col gap-4">
-                  {/* Merchant QR Card */}
-                  <div className={`p-4 rounded-xl border ${
-                    paymentChannel === "GCASH"
-                      ? "bg-[#007DFE]/10 border-[#007DFE]/30"
-                      : "bg-[#00D665]/10 border-[#00D665]/30"
-                  } flex flex-col sm:flex-row items-center gap-4`}>
-                    {/* Simulated SVG QR Code */}
-                    <div className="w-28 h-28 bg-white p-2 rounded-xl shadow-md shrink-0 flex flex-col items-center justify-between border border-gray-200">
-                      <div className="flex items-center justify-between w-full">
-                        <div className="w-4 h-4 bg-black border-2 border-black" />
-                        <div className="text-[8px] font-mono font-bold text-gray-700">QR Ph</div>
-                        <div className="w-4 h-4 bg-black border-2 border-black" />
-                      </div>
-                      <div className="font-mono text-[9px] font-black text-center text-gray-900 tracking-wider">
-                        {paymentChannel}·OHMSIM
-                      </div>
-                      <div className="flex items-center justify-between w-full">
-                        <div className="w-4 h-4 bg-black border-2 border-black" />
-                        <div className="w-2 h-2 bg-black" />
-                        <div className="w-4 h-4 bg-black border-2 border-black" />
-                      </div>
-                    </div>
-
-                    {/* Merchant Details */}
-                    <div className="flex-1 text-center sm:text-left">
-                      <div className="flex items-center justify-center sm:justify-start gap-2">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase font-mono ${
-                          paymentChannel === "GCASH" ? "bg-[#007DFE] text-white" : "bg-[#00D665] text-black"
-                        }`}>
-                          {paymentChannel} MERCHANT
-                        </span>
-                        <span className="text-[11px] font-mono text-mocha-text-muted">Direct Settlement</span>
-                      </div>
-                      <p className="text-xs font-bold text-mocha-text mt-1">OHMSIM ELECTRONICS LABS</p>
-                      <p className="text-xs font-mono text-mocha-accent mt-0.5">
-                        {paymentChannel === "GCASH" ? "0917-888-OHMS (6467)" : "0918-999-MAYA (6292)"}
-                      </p>
-                      <p className="text-[11px] text-mocha-text-muted mt-1">
-                        Amount to transfer: <strong className="text-mocha-text font-mono text-xs">{formatPrice(grandTotal)}</strong>
-                      </p>
-                    </div>
-                  </div>
+                  {/* Real Scannable BSP-Verified QR Ph Voucher */}
+                  <PaymentQr channel={paymentChannel} amount={grandTotal} />
 
                   {/* Webhook Verification Banner (if verified) */}
                   {verifiedPaymentData && (

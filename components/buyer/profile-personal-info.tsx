@@ -46,6 +46,10 @@ export function ProfilePersonalInfo() {
       setError("Last name is required.");
       return;
     }
+    if (!draft.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(draft.email.trim())) {
+      setError("A valid email address is required.");
+      return;
+    }
     if (!validatePhilippineMobile(draft.mobile)) {
       setError("Mobile number must be an 11-digit Philippine mobile starting with 09 (e.g. 09171234567).");
       return;
@@ -160,20 +164,48 @@ export function ProfilePersonalInfo() {
           </div>
         </div>
 
-        {/* Email (Read-only per spec) */}
+        {/* Email Address (Editable per JL-002) */}
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center justify-between">
             <label htmlFor="profile-email" className="text-xs font-semibold text-mocha-text-muted">
-              Email Address
+              Email Address *
             </label>
-            <span className="text-[10px] text-mocha-text-muted">Read-only (identity changes unavailable)</span>
+            {editing && <span className="text-[10px] text-mocha-accent">Editable</span>}
           </div>
           <input
             id="profile-email"
             type="email"
-            readOnly
-            value={profile.email}
-            className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-mocha-panel-raised border border-mocha-border/60 text-mocha-text-muted cursor-not-allowed outline-none min-h-[44px]"
+            readOnly={!editing}
+            value={editing ? draft.email : profile.email}
+            onChange={(e) => setDraft((d) => ({ ...d, email: e.target.value }))}
+            className={`w-full px-3.5 py-2.5 text-xs rounded-xl transition-all min-h-[44px] ${
+              editing
+                ? "bg-mocha-bg border border-mocha-border text-mocha-text focus:border-mocha-accent focus:ring-2 focus:ring-mocha-accent/20 outline-none"
+                : "bg-mocha-panel-raised border border-mocha-border/60 text-mocha-text cursor-default outline-none"
+            }`}
+          />
+        </div>
+
+        {/* Student / Faculty / Government ID (JL-004) */}
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center justify-between">
+            <label htmlFor="profile-id-number" className="text-xs font-semibold text-mocha-text-muted">
+              Student / Faculty / Government ID Number
+            </label>
+            <span className="text-[10px] text-mocha-text-muted">Used for pickup &amp; campus lab verification</span>
+          </div>
+          <input
+            id="profile-id-number"
+            type="text"
+            readOnly={!editing}
+            value={editing ? (draft.studentOrGovId ?? "") : (profile.studentOrGovId ?? "")}
+            placeholder="e.g. 2022-01492 or PRC-0182942"
+            onChange={(e) => setDraft((d) => ({ ...d, studentOrGovId: e.target.value }))}
+            className={`w-full px-3.5 py-2.5 text-xs rounded-xl transition-all min-h-[44px] font-mono ${
+              editing
+                ? "bg-mocha-bg border border-mocha-border text-mocha-text focus:border-mocha-accent focus:ring-2 focus:ring-mocha-accent/20 outline-none"
+                : "bg-mocha-panel-raised border border-mocha-border/60 text-mocha-text cursor-default outline-none"
+            }`}
           />
         </div>
 
