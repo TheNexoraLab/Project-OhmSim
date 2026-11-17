@@ -1,0 +1,202 @@
+.admin-content > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-page-header {
+  flex-wrap: wrap;
+}
+
+.admin-page-header > div {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.admin-page-header > div:first-child > div:first-child {
+  flex-wrap: wrap;
+}
+
+.admin-content :is(h1, h2, h3) {
+  overflow-wrap: anywhere;
+}
+
+.admin-table-scroll {
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+}
+
+.admin-order-filters > div:not(:first-child) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  min-width: 0;
+}
+
+.admin-order-filters select {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+.admin-chat-page {
+  height: calc(100dvh - 128px);
+  min-height: 460px;
+}
+
+.admin-chat-page > .admin-page-header {
+  flex-shrink: 0;
+}
+
+.admin-chat-layout {
+  display: grid;
+  grid-template-columns: minmax(230px, 0.8fr) minmax(0, 1.7fr);
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  gap: 20px;
+}
+
+.admin-chat-threads {
+  min-width: 0;
+  min-height: 0;
+}
+
+@media (max-width: 1023px) {
+  .admin-chat-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-chat-layout[data-mobile-thread-open="false"] .admin-chat-workspace,
+  .admin-chat-layout[data-mobile-thread-open="true"] .admin-chat-threads {
+    display: none;
+  }
+}
+
+/* Keep desktop columns readable and scroll only the table at tablet widths. */
+table[data-responsive-table] {
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  /* Retain the real table and its headers for assistive technology. */
+  table[data-responsive-table],
+  table[data-responsive-table] > tbody {
+    display: block;
+    min-width: 0;
+    width: 100%;
+  }
+
+  table[data-responsive-table] > thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  table[data-responsive-table] > tbody > tr {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    padding: 20px 16px;
+  }
+
+  table[data-responsive-table] > tbody > tr > td {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: start;
+    gap: 4px 12px;
+    min-width: 0;
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    border: 0;
+    text-align: left;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  table[data-responsive-table] > tbody > tr > td.hidden,
+  table[data-responsive-table] > tbody > tr > td[data-hidden-mobile="true"] {
+    display: none !important;
+  }
+
+  table[data-responsive-table="cards"][data-card-mode="full"] > tbody > tr {
+    padding: 14px;
+    gap: 0;
+  }
+
+  table[data-responsive-table="cards"][data-card-mode="full"] td[data-cell="primary"] {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  table[data-responsive-table] td[data-label]::before {
+    content: attr(data-label);
+    grid-column: 1;
+    grid-row: 1;
+    color: #a6adc8;
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: normal;
+  }
+
+  table[data-responsive-table] td > * {
+    min-width: 0;
+    max-width: 100%;
+    grid-column: 2;
+  }
+
+  table[data-responsive-table] td > .inline-flex {
+    justify-self: start;
+  }
+
+  table[data-responsive-table] td[data-cell="primary"] {
+    display: block;
+    order: -2;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #313244;
+    font-size: 13px;
+  }
+
+  table[data-responsive-table] td[data-cell="primary"]::before,
+  table[data-responsive-table] td[data-cell="actions"]::before {
+    content: none;
+  }
+
+  table[data-responsive-table] td[data-cell="actions"] {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    padding-top: 4px;
+  }
+
+  table[data-responsive-table] td[colspan] {
+    display: block;
+    padding: 24px 4px;
+    text-align: center;
+  }
+
+  table[data-responsive-table] td :is(.truncate, .whitespace-nowrap) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .admin-page-header > div:last-child {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 479px) {
+  .admin-content {
+    padding: 16px 12px 24px;
+  }
+
+  .admin-page-header h1 {
+    font-size: 20px;
+  }
+}

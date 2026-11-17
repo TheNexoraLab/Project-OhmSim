@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { Search, X, Plus } from "lucide-react";
 import { formatPrice } from "@/lib/format";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -133,7 +134,7 @@ export function ProductsClient() {
       className="flex flex-col gap-6 max-w-[1600px] mx-auto w-full"
     >
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#313244]">
+      <div className="admin-page-header flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#313244]">
         <div>
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-[#89B4FA]/12 text-[#89B4FA] border border-[#89B4FA]/30">
@@ -169,89 +170,78 @@ export function ProductsClient() {
             onClick={handleOpenAddModal}
             className="text-xs font-bold gap-1.5"
           >
-            <svg
-              aria-hidden="true"
-              className="w-3.5 h-3.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
+            <Plus size={14} className="stroke-[2.5]" />
             <span>Add Product</span>
           </Button>
         </div>
       </div>
 
       {/* Catalog Summary Strip */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
         <Surface
           variant="panel"
-          className="p-4 bg-[#1E1E2E] border border-[#313244] flex items-center justify-between"
+          className="p-3 sm:p-4 bg-[#1E1E2E] border border-[#313244] flex items-start sm:items-center justify-between rounded-xl"
         >
           <div>
-            <p className="text-[11px] font-mono uppercase text-[#A6ADC8]">
-              Total Catalog SKUs
+            <p className="text-[10px] sm:text-[11px] font-mono uppercase text-[#A6ADC8]">
+              Total SKUs
             </p>
-            <p className="mt-1 text-xl font-bold font-mono text-[#CDD6F4]">
+            <p className="mt-0.5 sm:mt-1 text-lg sm:text-xl font-bold font-mono text-[#CDD6F4]">
               {kpiSummary.total}
             </p>
           </div>
-          <Badge variant="primary" className="font-mono">
-            ALL SKUS
+          <Badge variant="primary" className="font-mono text-[9px] sm:text-[10px] px-1.5 py-0.2 sm:px-2">
+            ALL
           </Badge>
         </Surface>
 
         <Surface
           variant="panel"
-          className="p-4 bg-[#1E1E2E] border border-[#313244] flex items-center justify-between"
+          className="p-3 sm:p-4 bg-[#1E1E2E] border border-[#313244] flex items-start sm:items-center justify-between rounded-xl"
         >
           <div>
-            <p className="text-[11px] font-mono uppercase text-[#A6ADC8]">
-              In-Stock Healthy
+            <p className="text-[10px] sm:text-[11px] font-mono uppercase text-[#A6ADC8]">
+              In-Stock
             </p>
-            <p className="mt-1 text-xl font-bold font-mono text-[#A6E3A1]">
+            <p className="mt-0.5 sm:mt-1 text-lg sm:text-xl font-bold font-mono text-[#A6E3A1]">
               {kpiSummary.inStock}
             </p>
           </div>
-          <Badge variant="success" className="font-mono">
-            ACTIVE
+          <Badge variant="success" className="font-mono text-[9px] sm:text-[10px] px-1.5 py-0.2 sm:px-2">
+            HEALTHY
           </Badge>
         </Surface>
 
         <Surface
           variant="panel"
-          className="p-4 bg-[#1E1E2E] border border-[#313244] flex items-center justify-between"
+          className="p-3 sm:p-4 bg-[#1E1E2E] border border-[#313244] flex items-start sm:items-center justify-between rounded-xl"
         >
           <div>
-            <p className="text-[11px] font-mono uppercase text-[#A6ADC8]">
-              Low-Stock SKUs
+            <p className="text-[10px] sm:text-[11px] font-mono uppercase text-[#A6ADC8]">
+              Low-Stock
             </p>
-            <p className="mt-1 text-xl font-bold font-mono text-[#F9E2AF]">
+            <p className="mt-0.5 sm:mt-1 text-lg sm:text-xl font-bold font-mono text-[#F9E2AF]">
               {kpiSummary.lowStock}
             </p>
           </div>
-          <Badge variant="warning" className="font-mono">
+          <Badge variant="warning" className="font-mono text-[9px] sm:text-[10px] px-1.5 py-0.2 sm:px-2">
             ALERT
           </Badge>
         </Surface>
 
         <Surface
           variant="panel"
-          className="p-4 bg-[#1E1E2E] border border-[#313244] flex items-center justify-between"
+          className="p-3 sm:p-4 bg-[#1E1E2E] border border-[#313244] flex items-start sm:items-center justify-between rounded-xl"
         >
           <div>
-            <p className="text-[11px] font-mono uppercase text-[#A6ADC8]">
-              Out-of-Stock SKUs
+            <p className="text-[10px] sm:text-[11px] font-mono uppercase text-[#A6ADC8]">
+              Out-of-Stock
             </p>
-            <p className="mt-1 text-xl font-bold font-mono text-[#F38BA8]">
+            <p className="mt-0.5 sm:mt-1 text-lg sm:text-xl font-bold font-mono text-[#F38BA8]">
               {kpiSummary.outOfStock}
             </p>
           </div>
-          <Badge variant="danger" className="font-mono">
+          <Badge variant="danger" className="font-mono text-[9px] sm:text-[10px] px-1.5 py-0.2 sm:px-2">
             DEPLETED
           </Badge>
         </Surface>
@@ -261,52 +251,43 @@ export function ProductsClient() {
       <Surface
         variant="panel"
         data-testid="products-filter-bar"
-        className="p-4 sm:p-5 bg-[#1E1E2E] border border-[#313244] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 shadow-[0_12px_30px_rgba(0,0,0,0.22)]"
+        className="p-3.5 sm:p-4 bg-[#1E1E2E] border border-[#313244] flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 rounded-xl shadow-[0_12px_30px_rgba(0,0,0,0.22)]"
       >
         <div className="relative flex-1 min-w-0">
           <label htmlFor="admin-products-search" className="sr-only">
             Search products by name, SKU, or brand
           </label>
-          <svg
-            aria-hidden="true"
-            className="w-4 h-4 text-[#A6ADC8] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
+          <Search
+            size={14}
+            className="text-[#A6ADC8] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+          />
           <input
             id="admin-products-search"
             data-testid="admin-products-search-input"
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by component name, SKU (e.g. ESP32-WROOM-32U), or brand..."
-            className="w-full min-h-[44px] pl-10 pr-10 py-2 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#45475A] focus:border-[#89B4FA] text-xs text-[#CDD6F4] placeholder:text-[#A6ADC8] focus:outline-none transition-colors"
+            placeholder="Search name, SKU, or brand..."
+            className="w-full min-h-[40px] pl-9 pr-9 py-2 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#45475A] focus:border-[#89B4FA] text-xs text-[#CDD6F4] placeholder:text-[#A6ADC8] focus:outline-none transition-colors"
           />
           {searchQuery && (
             <button
               type="button"
               aria-label="Clear product search"
               onClick={() => setSearchQuery("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[36px] min-h-[36px] inline-flex items-center justify-center rounded-lg text-xs text-[#A6ADC8] hover:text-[#CDD6F4]"
+              className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[32px] min-h-[32px] inline-flex items-center justify-center rounded-lg text-xs text-[#A6ADC8] hover:text-[#CDD6F4]"
             >
-              ✕
+              <X size={13} />
             </button>
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 shrink-0">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-3 shrink-0">
           {/* Category Filter Dropdown */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
             <label
               htmlFor="product-category-filter"
-              className="text-xs font-mono text-[#A6ADC8]"
+              className="text-[10px] sm:text-xs font-mono text-[#A6ADC8]"
             >
               Category:
             </label>
@@ -315,7 +296,7 @@ export function ProductsClient() {
               data-testid="product-category-filter-select"
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="min-h-[44px] px-3.5 py-2 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#45475A] focus:border-[#89B4FA] text-xs font-semibold text-[#CDD6F4] focus:outline-none cursor-pointer"
+              className="w-full sm:w-auto min-h-[38px] px-2.5 py-1.5 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#45475A] focus:border-[#89B4FA] text-xs font-semibold text-[#CDD6F4] focus:outline-none cursor-pointer"
             >
               <option value="ALL">All Categories</option>
               {categories.map((cat) => (
@@ -327,10 +308,10 @@ export function ProductsClient() {
           </div>
 
           {/* Stock Status Filter Dropdown */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
             <label
               htmlFor="product-status-filter"
-              className="text-xs font-mono text-[#A6ADC8]"
+              className="text-[10px] sm:text-xs font-mono text-[#A6ADC8]"
             >
               Status:
             </label>
@@ -339,7 +320,7 @@ export function ProductsClient() {
               data-testid="product-status-filter-select"
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="min-h-[44px] px-3.5 py-2 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#45475A] focus:border-[#89B4FA] text-xs font-semibold text-[#CDD6F4] focus:outline-none cursor-pointer"
+              className="w-full sm:w-auto min-h-[38px] px-2.5 py-1.5 rounded-xl bg-[#181825] border border-[#313244] hover:border-[#45475A] focus:border-[#89B4FA] text-xs font-semibold text-[#CDD6F4] focus:outline-none cursor-pointer"
             >
               <option value="ALL">All Statuses</option>
               <option value="in-stock">In-Stock</option>
@@ -350,21 +331,24 @@ export function ProductsClient() {
         </div>
       </Surface>
 
-      {/* Products Master Table */}
+      {/* Products Master Container */}
       <Surface
         variant="panel"
         data-testid="products-table-panel"
-        className="bg-[#1E1E2E] border border-[#313244] overflow-hidden shadow-[0_12px_30px_rgba(0,0,0,0.22)]"
+        className="bg-[#1E1E2E] border border-[#313244] overflow-hidden rounded-xl shadow-[0_12px_30px_rgba(0,0,0,0.22)]"
       >
         <div
           role="region"
           aria-label="Products catalog table"
           tabIndex={0}
-          className="overflow-x-auto"
+          className="admin-table-scroll overflow-x-auto"
         >
           <table
+            data-responsive-table="cards"
+            data-card-mode="full"
+            role="table"
             data-testid="admin-products-table"
-            className="w-full min-w-[980px] text-left border-collapse"
+            className="w-full text-left border-collapse"
           >
             <thead>
               <tr className="bg-[#181825] border-b border-[#313244] text-[10px] font-mono font-bold uppercase tracking-wider text-[#A6ADC8]">
@@ -410,8 +394,12 @@ export function ProductsClient() {
                     data-testid={`product-row-${product.sku}`}
                     className="hover:bg-[#313244]/35 transition-colors"
                   >
-                    {/* 1. SKU */}
-                    <td className="py-3.5 pl-5 pr-3 whitespace-nowrap">
+                    {/* 1. SKU (Desktop only) */}
+                    <td
+                      data-label="SKU"
+                      data-hidden-mobile="true"
+                      className="hidden md:table-cell py-3.5 pl-5 pr-3 whitespace-nowrap"
+                    >
                       <span className="font-mono font-bold text-[#89B4FA] text-xs">
                         {product.sku}
                       </span>
@@ -420,8 +408,12 @@ export function ProductsClient() {
                       </span>
                     </td>
 
-                    {/* 2. Image Thumbnail */}
-                    <td className="py-3.5 px-3 whitespace-nowrap">
+                    {/* 2. Image Thumbnail (Desktop only) */}
+                    <td
+                      data-label="Image"
+                      data-hidden-mobile="true"
+                      className="hidden md:table-cell py-3.5 px-3 whitespace-nowrap"
+                    >
                       <div className="w-12 h-12 rounded-xl overflow-hidden bg-[#181825] border border-[#313244] shrink-0 flex items-center justify-center">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
@@ -432,45 +424,154 @@ export function ProductsClient() {
                       </div>
                     </td>
 
-                    {/* 3. Component Name */}
-                    <td className="py-3.5 px-3 max-w-[300px]">
-                      <div className="font-bold text-[#CDD6F4] leading-snug">
-                        {product.name}
-                      </div>
-                      <div className="text-[11px] text-[#A6ADC8] truncate mt-0.5">
-                        {product.shortDescription}
-                      </div>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-[10px] font-mono text-[#94E2D5]">
-                          {specCount} technical specs
-                        </span>
-                        {product.datasheetUrl && (
-                          <a
-                            href={product.datasheetUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-[10px] font-mono text-[#89B4FA] hover:underline"
+                    {/* 3. Component Name (Full card on mobile, primary column on desktop) */}
+                    <td
+                      data-cell="primary"
+                      className="py-3.5 px-3 max-w-[300px] md:max-w-none"
+                    >
+                      {/* Mobile Card Layout (< 768px) */}
+                      <div className="md:hidden flex flex-col gap-2.5">
+                        {/* Header: Thumbnail + SKU + Name + Status */}
+                        <div className="flex items-start gap-3">
+                          <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#181825] border border-[#313244] shrink-0 flex items-center justify-center">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={product.image}
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-1">
+                              <span className="font-mono text-[10px] font-bold text-[#89B4FA] uppercase">
+                                {product.sku}
+                              </span>
+                              <span
+                                style={{
+                                  backgroundColor: statusBadge.bg,
+                                  color: statusBadge.text,
+                                  borderColor: statusBadge.border,
+                                }}
+                                className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold uppercase border"
+                              >
+                                <span
+                                  className="w-1.5 h-1.5 rounded-full"
+                                  style={{ backgroundColor: statusBadge.text }}
+                                />
+                                <span>{statusBadge.label}</span>
+                              </span>
+                            </div>
+
+                            <h3 className="font-bold text-xs text-[#CDD6F4] leading-snug mt-0.5 truncate">
+                              {product.name}
+                            </h3>
+
+                            <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-[#A6ADC8]">
+                              <span className="text-[#94E2D5] font-mono text-[10px]">{product.category}</span>
+                              <span>·</span>
+                              <span className="text-[#BAC2DE] truncate">{product.brand || "Generic"}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Specs summary */}
+                        <div className="flex items-center justify-between text-[10.5px] text-[#A6ADC8] bg-[#181825]/60 px-2.5 py-1.5 rounded-lg border border-[#313244]/50">
+                          <span className="font-mono text-[#94E2D5]">
+                            {specCount} technical specs
+                          </span>
+                          {product.datasheetUrl && (
+                            <a
+                              href={product.datasheetUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-mono text-[#89B4FA] hover:underline"
+                            >
+                              Datasheet PDF ↗
+                            </a>
+                          )}
+                        </div>
+
+                        {/* Price, Stock & Action Row */}
+                        <div className="flex items-center justify-between pt-1 border-t border-[#313244]/60">
+                          <div>
+                            <span className="text-[9.5px] text-[#A6ADC8] block">Price</span>
+                            <span className="font-mono font-bold text-xs text-[#CDD6F4]">
+                              {formatPrice(product.price)}
+                            </span>
+                          </div>
+
+                          <div className="text-center">
+                            <span className="text-[9.5px] text-[#A6ADC8] block">On Hand</span>
+                            <span className="font-mono font-bold text-xs text-[#BAC2DE]">
+                              {product.stock} units
+                            </span>
+                          </div>
+
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="compact"
+                            data-testid={`edit-product-btn-mobile-${product.sku}`}
+                            onClick={() => handleOpenEditModal(product)}
+                            className="text-xs font-semibold px-3 h-7.5"
                           >
-                            Datasheet PDF ↗
-                          </a>
-                        )}
+                            Edit Product
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Desktop View (>= 768px) */}
+                      <div className="hidden md:block">
+                        <div className="font-bold text-[#CDD6F4] leading-snug">
+                          {product.name}
+                        </div>
+                        <div className="text-[11px] text-[#A6ADC8] truncate mt-0.5">
+                          {product.shortDescription}
+                        </div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className="text-[10px] font-mono text-[#94E2D5]">
+                            {specCount} technical specs
+                          </span>
+                          {product.datasheetUrl && (
+                            <a
+                              href={product.datasheetUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-[10px] font-mono text-[#89B4FA] hover:underline"
+                            >
+                              Datasheet PDF ↗
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </td>
 
-                    {/* 4. Category */}
-                    <td className="py-3.5 px-3 whitespace-nowrap">
+                    {/* 4. Category (Desktop only) */}
+                    <td
+                      data-label="Category"
+                      data-hidden-mobile="true"
+                      className="hidden md:table-cell py-3.5 px-3 whitespace-nowrap"
+                    >
                       <Badge variant="neutral" className="font-mono">
                         {product.category}
                       </Badge>
                     </td>
 
-                    {/* 5. Price */}
-                    <td className="py-3.5 px-3 font-mono font-bold text-[#CDD6F4] whitespace-nowrap">
+                    {/* 5. Price (Desktop only) */}
+                    <td
+                      data-label="Price"
+                      data-hidden-mobile="true"
+                      className="hidden md:table-cell py-3.5 px-3 font-mono font-bold text-[#CDD6F4] whitespace-nowrap"
+                    >
                       {formatPrice(product.price)}
                     </td>
 
-                    {/* 6. Stock Level */}
-                    <td className="py-3.5 px-3 whitespace-nowrap">
+                    {/* 6. Stock Level (Desktop only) */}
+                    <td
+                      data-label="Stock"
+                      data-hidden-mobile="true"
+                      className="hidden md:table-cell py-3.5 px-3 whitespace-nowrap"
+                    >
                       <div className="font-mono font-bold text-[#CDD6F4]">
                         {product.stock} units
                       </div>
@@ -479,8 +580,12 @@ export function ProductsClient() {
                       </div>
                     </td>
 
-                    {/* 7. Status */}
-                    <td className="py-3.5 px-3 whitespace-nowrap">
+                    {/* 7. Status (Desktop only) */}
+                    <td
+                      data-label="Status"
+                      data-hidden-mobile="true"
+                      className="hidden md:table-cell py-3.5 px-3 whitespace-nowrap"
+                    >
                       <span
                         data-testid={`product-status-${product.sku}`}
                         style={{
@@ -498,8 +603,12 @@ export function ProductsClient() {
                       </span>
                     </td>
 
-                    {/* 8. Actions */}
-                    <td className="py-3.5 pl-3 pr-5 text-right whitespace-nowrap">
+                    {/* 8. Actions (Desktop only) */}
+                    <td
+                      data-cell="actions"
+                      data-hidden-mobile="true"
+                      className="hidden md:table-cell py-3.5 pl-3 pr-5 text-right whitespace-nowrap"
+                    >
                       <Button
                         type="button"
                         variant="outline"
@@ -535,8 +644,9 @@ export function ProductsClient() {
                           setSelectedCategory("ALL");
                           setSelectedStatus("ALL");
                         }}
+                        className="text-xs font-semibold"
                       >
-                        Reset Filters
+                        Clear Filters
                       </Button>
                     </div>
                   </td>
@@ -725,7 +835,7 @@ function ProductFormModal({
       {/* Modal Box */}
       <div
         data-testid="product-form-modal"
-        className="relative z-10 w-full max-w-3xl max-h-[90vh] bg-[#1E1E2E] border border-[#45475A] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.75)] flex flex-col overflow-hidden text-[#CDD6F4]"
+        className="relative z-10 w-full max-w-3xl max-h-[calc(100dvh-2rem)] bg-[#1E1E2E] border border-[#45475A] rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.75)] flex flex-col overflow-hidden text-[#CDD6F4]"
       >
         {/* Modal Header */}
         <div className="px-6 py-4 bg-[#181825] border-b border-[#313244] flex items-center justify-between gap-3 shrink-0">
@@ -990,7 +1100,7 @@ function ProductFormModal({
 
           {/* Technical Specs Key-Values Editor */}
           <div className="p-4 rounded-xl bg-[#181825] border border-[#313244] space-y-3">
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <h3 className="text-xs font-mono font-bold uppercase text-[#89B4FA]">
                   Technical Specifications (Key-Value Pairs)
@@ -1016,7 +1126,7 @@ function ProductFormModal({
               {specRows.map((row, idx) => (
                 <div
                   key={row.id}
-                  className="flex items-center gap-2"
+                  className="grid grid-cols-[minmax(0,1fr)_40px] sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_40px] items-center gap-2"
                 >
                   <input
                     type="text"
@@ -1026,7 +1136,7 @@ function ProductFormModal({
                       handleSpecChange(row.id, "key", e.target.value)
                     }
                     placeholder="Parameter (e.g. Operating Voltage)"
-                    className="flex-1 min-h-[38px] px-3 py-1.5 rounded-lg bg-[#11111B] border border-[#313244] font-mono text-xs text-[#CDD6F4] focus:border-[#89B4FA] focus:outline-none"
+                    className="min-w-0 min-h-[38px] px-3 py-1.5 rounded-lg bg-[#11111B] border border-[#313244] font-mono text-xs text-[#CDD6F4] focus:border-[#89B4FA] focus:outline-none"
                   />
                   <input
                     type="text"
@@ -1036,13 +1146,13 @@ function ProductFormModal({
                       handleSpecChange(row.id, "value", e.target.value)
                     }
                     placeholder="Value (e.g. 3.3V – 5V)"
-                    className="flex-1 min-h-[38px] px-3 py-1.5 rounded-lg bg-[#11111B] border border-[#313244] font-mono text-xs text-[#CDD6F4] focus:border-[#89B4FA] focus:outline-none"
+                    className="min-w-0 min-h-[38px] px-3 py-1.5 rounded-lg bg-[#11111B] border border-[#313244] font-mono text-xs text-[#CDD6F4] focus:border-[#89B4FA] focus:outline-none"
                   />
                   <button
                     type="button"
                     aria-label={`Remove specification row ${idx + 1}`}
                     onClick={() => handleRemoveSpecRow(row.id)}
-                    className="min-w-[38px] min-h-[38px] inline-flex items-center justify-center rounded-lg bg-[#1E1E2E] border border-[#313244] text-[#A6ADC8] hover:text-[#F38BA8] hover:border-[#F38BA8]/40 cursor-pointer"
+                    className="col-start-2 row-start-1 row-span-2 sm:col-start-3 sm:row-start-auto sm:row-span-1 min-w-[38px] min-h-[38px] inline-flex items-center justify-center rounded-lg bg-[#1E1E2E] border border-[#313244] text-[#A6ADC8] hover:text-[#F38BA8] hover:border-[#F38BA8]/40 cursor-pointer"
                   >
                     ✕
                   </button>
@@ -1052,7 +1162,7 @@ function ProductFormModal({
           </div>
 
           {/* Modal Footer */}
-          <div className="pt-3 border-t border-[#313244] flex items-center justify-end gap-2.5">
+          <div className="pt-3 border-t border-[#313244] flex flex-wrap items-center justify-end gap-2.5">
             <Button
               type="button"
               variant="surface"
